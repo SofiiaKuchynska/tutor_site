@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sofiia | Tutor Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <style>body { font-family: 'Inter', sans-serif; }</style>
+</head>
+<body class="bg-slate-50 p-4 md:p-8 text-gray-800">
+    <div class="max-w-5xl mx-auto">
+        <nav class="flex gap-4 mb-8">
+            <button onclick="showTab('public', this)" class="tab-btn bg-indigo-600 text-white px-6 py-2 rounded-full shadow-sm font-semibold transition">Віконця</button>
+            <button onclick="showTab('private', this)" class="tab-btn bg-white text-indigo-600 px-6 py-2 rounded-full shadow-sm border font-semibold transition">Мій розклад</button>
+            <button onclick="showTab('log', this)" class="tab-btn bg-white text-indigo-600 px-6 py-2 rounded-full shadow-sm border font-semibold transition">Журнал</button>
+        </nav>
+
+        <div id="public" class="tab-content block">
+            <div class="bg-white p-6 rounded-3xl shadow-lg border border-indigo-100">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold text-indigo-800">Вільні місця ✨</h2>
+                    <button onclick="copyFreeHours()" id="copyBtn" class="bg-indigo-100 text-indigo-700 px-4 py-2 rounded-xl text-xs font-bold">Копіювати 📋</button>
+                </div>
+                <div id="public-grid" class="grid grid-cols-1 sm:grid-cols-3 gap-4"></div>
+            </div>
+        </div>
+
+        <div id="private" class="tab-content hidden">
+            <h2 class="text-2xl font-bold mb-6 text-indigo-900">Заняття на тиждень</h2>
+            <div id="private-list" class="space-y-4"></div>
+        </div>
+
+        <div id="log" class="tab-content hidden">
+            <h2 class="text-2xl font-bold mb-6 text-indigo-900">Журнал тем</h2>
+            <div class="bg-white rounded-2xl shadow-sm border overflow-hidden">
+                <table class="w-full text-left text-sm">
+                    <thead class="bg-indigo-50 text-indigo-900 font-bold uppercase">
+                        <tr><th class="p-4">Дата</th><th class="p-4">Учень</th><th class="p-4">Тема</th><th class="p-4">Бал</th></tr>
+                    </thead>
+                    <tbody id="log-body"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQgrwL7j8Mlat4GqhSWe9xAivXD_PzWZ0TRedmHRgVuv_x6Hv7J_Kf4B8duzcN6asmBwCureC2q8toG/pub?output=csv";
+        let freeSlotsText = "";
+
+        function showTab(tabId, btn) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.replace('block', 'hidden'));
+            document.getElementById(tabId).classList.replace('hidden', 'block');
+            document.querySelectorAll('.tab-btn').forEach(b => { b.classList.replace('bg-indigo-600', 'bg-white'); b.classList.replace('text-white', 'text-indigo-600'); });
+            btn.classList.replace('bg-white', 'bg-indigo-600'); btn.classList.replace('text-indigo-600', 'text-white');
+        }
+
+        async function loadData() {
+            try {
+                const res = await fetch(SHEET_URL);
+                const data = await res.text();
+                const separator = data.split('\n')[0].includes(';') ? ';' : ',';
+                const rows = data.split('\n').slice(1).filter(r => r.trim());
+
+                const publicGrid = document.getElementById('public-grid');
+                const privateList = document.getElementById('private-list');
+                const logBody = document.getElementById('log-body');
+
+                let slotsArray = [];
+                rows.forEach(line => {
+                    const col = line.split(separator).map(c => c.replace(/^"|"$/g, '').trim());
+                    if (col.length < 6) return;
+                    const [day, time, student, subj, link, status, topic, hw, grade] = col;
+                    const hour = parseInt(time) || 0;
+
+                    if (status.toLowerCase().includes('вільно') && hour >= 16) {
+                        publicGrid.innerHTML += `<div class="bg-indigo-50 p-4 rounded-2xl border border-indigo-100"><div class="font-bold">${day}</div><div class="text-indigo-600">${time}</div></div>`;
+                        slotsArray.push(`• ${day}: ${time}`);
+                    }
+
+                    if (status.toLowerCase().includes('зайнято')) {
+                        const isViolation = hour < 16 && !student.includes("Всеволод");
+                        privateList.innerHTML += `<div class="${isViolation ? 'bg-red-50 border-red-500 border-2' : 'bg-white border-indigo-500 border-l-8'} p-4 rounded-xl shadow-sm flex justify-between items-center">
+                            <div><div class="text-[10px] font-bold text-gray-400 uppercase">${day} | ${time} ${isViolation ? '⚠️ РАНІШЕ 16:00!' : ''}</div><div class="font-bold text-indigo-900">${student}</div></div>
+                            ${link.includes('http') ? `<a href="${link}" target="_blank" class="bg-indigo-600 text-white px-3 py-1 rounded-lg text-xs">Урок</a>` : `<span class="text-gray-400 text-[10px] italic">${link}</span>`}</div>`;
+                        if (topic && topic !== '-') {
+                            logBody.innerHTML += `<tr class="border-t hover:bg-gray-50"><td class="p-3 text-xs">${day}</td><td class="p-3 font-bold">${student}</td><td class="p-3 text-gray-600">${topic}</td><td class="p-3 font-bold text-indigo-600">${grade || '-'}</td></tr>`;
+                        }
+                    }
+                });
+                freeSlotsText = slotsArray.length ? "Вільні віконця:\n" + slotsArray.join('\n') : "Вільних місць немає.";
+                if (!publicGrid.innerHTML) publicGrid.innerHTML = '<p class="text-gray-400 italic">Немає віконець після 16:00</p>';
+            } catch (err) { console.error(err); }
+        }
+        function copyFreeHours() { navigator.clipboard.writeText(freeSlotsText).then(() => alert("Скопійовано! ✅")); }
+        loadData();
+    </script>
+</body>
+</html>
