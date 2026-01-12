@@ -3,42 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sofiia | Tutor Dashboard</title>
+    <title>Sofiia | Tutor Dashboard 2.0</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-    <style>body { font-family: 'Inter', sans-serif; }</style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .grid-week { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1rem; }
+        @media (max-width: 768px) { .grid-week { grid-template-columns: 1fr; } }
+        .slot-free { background-color: #f0fdf4; border: 1px solid #bbf7d0; color: #166534; }
+        .slot-busy { background-color: #f3f4f6; border: 1px solid #e5e7eb; color: #9ca3af; }
+    </style>
 </head>
 <body class="bg-slate-50 p-4 md:p-8 text-gray-800">
-    <div class="max-w-5xl mx-auto">
-        <nav class="flex gap-4 mb-8">
-            <button onclick="showTab('public', this)" class="tab-btn bg-indigo-600 text-white px-6 py-2 rounded-full shadow-sm font-semibold transition">Віконця</button>
-            <button onclick="showTab('private', this)" class="tab-btn bg-white text-indigo-600 px-6 py-2 rounded-full shadow-sm border font-semibold transition">Мій розклад</button>
-            <button onclick="showTab('log', this)" class="tab-btn bg-white text-indigo-600 px-6 py-2 rounded-full shadow-sm border font-semibold transition">Журнал</button>
+
+    <div class="max-w-6xl mx-auto">
+        <nav class="flex justify-center gap-2 sm:gap-4 mb-10">
+            <button onclick="showTab('public', this)" class="tab-btn bg-indigo-600 text-white px-6 py-2 rounded-2xl shadow-md font-semibold transition">Віконця</button>
+            <button onclick="showTab('private', this)" class="tab-btn bg-white text-indigo-600 px-6 py-2 rounded-2xl shadow-sm border font-semibold transition">Мій розклад</button>
+            <button onclick="showTab('log', this)" class="tab-btn bg-white text-indigo-600 px-6 py-2 rounded-2xl shadow-sm border font-semibold transition">Журнал</button>
         </nav>
 
         <div id="public" class="tab-content block">
-            <div class="bg-white p-6 rounded-3xl shadow-lg border border-indigo-100">
-                <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-2xl font-bold text-indigo-800">Вільні місця ✨</h2>
-                    <button onclick="copyFreeHours()" id="copyBtn" class="bg-indigo-100 text-indigo-700 px-4 py-2 rounded-xl text-xs font-bold">Копіювати 📋</button>
+            <div class="bg-white p-8 rounded-[2rem] shadow-xl border border-indigo-50">
+                <div class="flex justify-between items-center mb-8">
+                    <h2 class="text-3xl font-bold text-slate-900">Графік на тиждень ✨</h2>
+                    <button onclick="copyFreeHours()" id="copyBtn" class="bg-indigo-600 text-white px-5 py-2 rounded-xl text-sm font-bold hover:bg-indigo-700 shadow-lg transition">Копіювати текстом 📋</button>
                 </div>
-                <div id="public-grid" class="grid grid-cols-1 sm:grid-cols-3 gap-4"></div>
+                <div id="public-week" class="grid-week">
+                    </div>
             </div>
         </div>
 
         <div id="private" class="tab-content hidden">
-            <h2 class="text-2xl font-bold mb-6 text-indigo-900">Заняття на тиждень</h2>
-            <div id="private-list" class="space-y-4"></div>
+            <div class="bg-white p-8 rounded-[2rem] shadow-xl border border-slate-100">
+                <h2 class="text-3xl font-bold text-slate-900 mb-8">Мій робочий тиждень</h2>
+                <div id="private-week" class="grid-week">
+                    </div>
+            </div>
         </div>
 
         <div id="log" class="tab-content hidden">
-            <h2 class="text-2xl font-bold mb-6 text-indigo-900">Журнал тем</h2>
-            <div class="bg-white rounded-2xl shadow-sm border overflow-hidden">
-                <table class="w-full text-left text-sm">
-                    <thead class="bg-indigo-50 text-indigo-900 font-bold uppercase">
-                        <tr><th class="p-4">Дата</th><th class="p-4">Учень</th><th class="p-4">Тема</th><th class="p-4">Бал</th></tr>
+            <div class="bg-white rounded-[2rem] shadow-xl border border-slate-100 overflow-hidden">
+                <table class="w-full text-left">
+                    <thead class="bg-slate-50 text-slate-500 text-xs font-bold uppercase tracking-wider">
+                        <tr>
+                            <th class="p-6">Дата</th>
+                            <th class="p-6">Учень</th>
+                            <th class="p-6">Тема заняття</th>
+                            <th class="p-6 text-center">Результат</th>
+                        </tr>
                     </thead>
-                    <tbody id="log-body"></tbody>
+                    <tbody id="log-body" class="divide-y divide-slate-100">
+                        </tbody>
                 </table>
             </div>
         </div>
@@ -46,53 +62,115 @@
 
     <script>
         const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQgrwL7j8Mlat4GqhSWe9xAivXD_PzWZ0TRedmHRgVuv_x6Hv7J_Kf4B8duzcN6asmBwCureC2q8toG/pub?output=csv";
+        const DAYS = ["Понеділок", "Вівторок", "Середа", "Четвер", "П'ятниця"];
         let freeSlotsText = "";
 
         function showTab(tabId, btn) {
             document.querySelectorAll('.tab-content').forEach(t => t.classList.replace('block', 'hidden'));
             document.getElementById(tabId).classList.replace('hidden', 'block');
-            document.querySelectorAll('.tab-btn').forEach(b => { b.classList.replace('bg-indigo-600', 'bg-white'); b.classList.replace('text-white', 'text-indigo-600'); });
-            btn.classList.replace('bg-white', 'bg-indigo-600'); btn.classList.replace('text-indigo-600', 'text-white');
+            document.querySelectorAll('.tab-btn').forEach(b => {
+                b.classList.replace('bg-indigo-600', 'bg-white');
+                b.classList.replace('text-white', 'text-indigo-600');
+            });
+            btn.classList.replace('bg-white', 'bg-indigo-600');
+            btn.classList.replace('text-white', 'text-white');
         }
 
         async function loadData() {
             try {
-                const res = await fetch(SHEET_URL);
-                const data = await res.text();
-                const separator = data.split('\n')[0].includes(';') ? ';' : ',';
-                const rows = data.split('\n').slice(1).filter(r => r.trim());
+                const response = await fetch(SHEET_URL);
+                const csvText = await response.text();
+                const separator = csvText.split('\n')[0].includes(';') ? ';' : ',';
+                const rows = csvText.split('\n').slice(1).filter(r => r.trim());
 
-                const publicGrid = document.getElementById('public-grid');
-                const privateList = document.getElementById('private-list');
-                const logBody = document.getElementById('log-body');
+                const dataByDay = { "Понеділок": [], "Вівторок": [], "Середа": [], "Четвер": [], "П'ятниця": [] };
 
-                let slotsArray = [];
                 rows.forEach(line => {
                     const col = line.split(separator).map(c => c.replace(/^"|"$/g, '').trim());
-                    if (col.length < 6) return;
-                    const [day, time, student, subj, link, status, topic, hw, grade] = col;
-                    const hour = parseInt(time) || 0;
-
-                    if (status.toLowerCase().includes('вільно') && hour >= 16) {
-                        publicGrid.innerHTML += `<div class="bg-indigo-50 p-4 rounded-2xl border border-indigo-100"><div class="font-bold">${day}</div><div class="text-indigo-600">${time}</div></div>`;
-                        slotsArray.push(`• ${day}: ${time}`);
-                    }
-
-                    if (status.toLowerCase().includes('зайнято')) {
-                        const isViolation = hour < 16 && !student.includes("Всеволод");
-                        privateList.innerHTML += `<div class="${isViolation ? 'bg-red-50 border-red-500 border-2' : 'bg-white border-indigo-500 border-l-8'} p-4 rounded-xl shadow-sm flex justify-between items-center">
-                            <div><div class="text-[10px] font-bold text-gray-400 uppercase">${day} | ${time} ${isViolation ? '⚠️ РАНІШЕ 16:00!' : ''}</div><div class="font-bold text-indigo-900">${student}</div></div>
-                            ${link.includes('http') ? `<a href="${link}" target="_blank" class="bg-indigo-600 text-white px-3 py-1 rounded-lg text-xs">Урок</a>` : `<span class="text-gray-400 text-[10px] italic">${link}</span>`}</div>`;
-                        if (topic && topic !== '-') {
-                            logBody.innerHTML += `<tr class="border-t hover:bg-gray-50"><td class="p-3 text-xs">${day}</td><td class="p-3 font-bold">${student}</td><td class="p-3 text-gray-600">${topic}</td><td class="p-3 font-bold text-indigo-600">${grade || '-'}</td></tr>`;
-                        }
+                    const dayName = col[0].split(' ')[0]; // Отримуємо тільки назву дня
+                    if (dataByDay[dayName]) {
+                        dataByDay[dayName].push({
+                            time: col[1], student: col[2], subject: col[3],
+                            link: col[4], status: col[5], topic: col[6], grade: col[8]
+                        });
                     }
                 });
-                freeSlotsText = slotsArray.length ? "Вільні віконця:\n" + slotsArray.join('\n') : "Вільних місць немає.";
-                if (!publicGrid.innerHTML) publicGrid.innerHTML = '<p class="text-gray-400 italic">Немає віконець після 16:00</p>';
-            } catch (err) { console.error(err); }
+
+                renderPublic(dataByDay);
+                renderPrivate(dataByDay);
+                renderLog(rows, separator);
+
+            } catch (err) { console.error("Помилка:", err); }
         }
-        function copyFreeHours() { navigator.clipboard.writeText(freeSlotsText).then(() => alert("Скопійовано! ✅")); }
+
+        function renderPublic(data) {
+            const container = document.getElementById('public-week');
+            container.innerHTML = '';
+            let copyText = "Вільні віконця для запису:\n";
+
+            DAYS.forEach(day => {
+                let dayHtml = `<div class="flex flex-col gap-3"><h3 class="font-bold text-center text-slate-400 mb-2">${day}</h3>`;
+                data[day].forEach(slot => {
+                    const hour = parseInt(slot.time);
+                    if (hour < 16 && !slot.student.includes("Всеволод")) return;
+
+                    const isFree = slot.status.toLowerCase().includes('вільно');
+                    const cssClass = isFree ? 'slot-free font-bold' : 'slot-busy text-xs';
+                    dayHtml += `<div class="${cssClass} p-3 rounded-xl text-center shadow-sm">${slot.time} ${isFree ? '' : '(Зайнято)'}</div>`;
+                    if (isFree) copyText += `• ${day}: ${slot.time}\n`;
+                });
+                dayHtml += `</div>`;
+                container.innerHTML += dayHtml;
+            });
+            freeSlotsText = copyText;
+        }
+
+        function renderPrivate(data) {
+            const container = document.getElementById('private-week');
+            container.innerHTML = '';
+
+            DAYS.forEach(day => {
+                let dayHtml = `<div class="flex flex-col gap-4"><h3 class="font-bold text-center text-indigo-900 mb-2 bg-indigo-50 py-2 rounded-xl">${day}</h3>`;
+                data[day].forEach(slot => {
+                    if (!slot.student || slot.status.toLowerCase().includes('вільно')) return;
+
+                    const meetLink = slot.link.includes('http') ? slot.link : 'https://meet.google.com';
+                    dayHtml += `
+                        <div class="bg-white p-4 rounded-2xl border-l-4 border-indigo-500 shadow-sm hover:shadow-md transition">
+                            <div class="text-[10px] font-bold text-slate-400">${slot.time}</div>
+                            <div class="font-bold text-slate-800 mb-3">${slot.student}</div>
+                            <a href="${meetLink}" target="_blank" class="block text-center bg-slate-900 text-white py-2 rounded-lg text-xs font-semibold hover:bg-indigo-600 transition">Урок ⮕</a>
+                        </div>`;
+                });
+                dayHtml += `</div>`;
+                container.innerHTML += dayHtml;
+            });
+        }
+
+        function renderLog(rows, sep) {
+            const body = document.getElementById('log-body');
+            body.innerHTML = '';
+            rows.forEach(line => {
+                const col = line.split(sep).map(c => c.replace(/^"|"$/g, '').trim());
+                if (!col[6] || col[6] === '-') return;
+                body.innerHTML += `
+                    <tr class="hover:bg-slate-50 transition">
+                        <td class="p-6 text-slate-400 text-xs">${col[0]}</td>
+                        <td class="p-6 font-bold text-slate-700">${col[2]}</td>
+                        <td class="p-6 text-slate-600 italic">${col[6]}</td>
+                        <td class="p-6 text-center"><span class="bg-indigo-50 text-indigo-600 px-3 py-1 rounded-full font-bold text-xs">${col[8] || '-'}</span></td>
+                    </tr>`;
+            });
+        }
+
+        function copyFreeHours() {
+            navigator.clipboard.writeText(freeSlotsText).then(() => {
+                const btn = document.getElementById('copyBtn');
+                btn.innerText = "Скопійовано! ✅";
+                setTimeout(() => btn.innerText = "Копіювати текстом 📋", 2000);
+            });
+        }
+
         loadData();
     </script>
 </body>
