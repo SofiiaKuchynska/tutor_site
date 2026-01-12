@@ -3,22 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sofiia Pro | Tutor App</title>
+    <title>Sofiia Tutor App | Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; background: #fcfcfd; }
+        body { font-family: 'Inter', sans-serif; background: #f8fafc; }
         .tab-btn.active { background: #4f46e5; color: white; }
         .slot-free { background: #f0fdf4; border: 1px solid #dcfce7; color: #166534; cursor: pointer; }
-        .slot-busy { background: #f9fafb; border: 1px solid #f3f4f6; color: #9ca3af; }
+        .slot-busy { background: #f9fafb; border: 1px solid #e2e8f0; color: #94a3b8; }
+        .success-flash { animation: flash 2s ease-out; }
+        @keyframes flash { 0% { background-color: #dcfce7; } 100% { background-color: white; } }
     </style>
 </head>
 <body class="pb-10">
     <div class="max-w-[1100px] mx-auto px-4 pt-6">
         <nav class="flex bg-white p-1 rounded-xl shadow-sm border mb-8 sticky top-4 z-50">
-            <button onclick="showTab('public', this)" class="tab-btn active flex-1 py-2 rounded-lg font-bold text-xs transition-all">Віконця</button>
-            <button onclick="showTab('private', this)" class="tab-btn flex-1 py-2 rounded-lg font-bold text-xs text-slate-500 transition-all">Розклад</button>
-            <button onclick="showTab('log', this)" class="tab-btn flex-1 py-2 rounded-lg font-bold text-xs text-slate-500 transition-all">Історія</button>
+            <button onclick="showTab('public', this)" class="tab-btn active flex-1 py-2 rounded-lg font-bold text-[10px] sm:text-xs transition-all">Віконця</button>
+            <button onclick="showTab('private', this)" class="tab-btn flex-1 py-2 rounded-lg font-bold text-[10px] sm:text-xs text-slate-500 transition-all">Розклад</button>
+            <button onclick="showTab('log', this)" class="tab-btn flex-1 py-2 rounded-lg font-bold text-[10px] sm:text-xs text-slate-500 transition-all">Історія</button>
         </nav>
 
         <div id="public" class="tab-content block">
@@ -28,7 +30,7 @@
         <div id="private" class="tab-content hidden">
             <div class="flex justify-between items-center mb-6">
                 <h2 id="sched-title" class="text-xl font-black">Сьогодні</h2>
-                <button onclick="toggleWeek()" id="twBtn" class="text-[10px] font-bold bg-indigo-50 text-indigo-600 px-3 py-1 rounded-lg">Весь тиждень</button>
+                <button onclick="toggleWeek()" id="twBtn" class="text-[9px] font-bold bg-indigo-50 text-indigo-600 px-3 py-1 rounded-lg">Весь тиждень</button>
             </div>
             <div id="private-week" class="grid grid-cols-1 md:grid-cols-5 gap-3"></div>
         </div>
@@ -36,7 +38,7 @@
         <div id="log" class="tab-content hidden">
             <input type="text" id="histSearch" oninput="filterHist()" placeholder="Пошук учня..." class="w-full p-3 mb-4 rounded-xl border-none bg-white shadow-sm font-bold text-sm outline-none">
             <div class="bg-white rounded-2xl shadow-sm border overflow-hidden">
-                <table class="w-full text-left text-xs">
+                <table class="w-full text-left text-[11px]">
                     <tbody id="log-body" class="divide-y"></tbody>
                 </table>
             </div>
@@ -46,11 +48,13 @@
     <script>
         const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQgrwL7j8Mlat4GqhSWe9xAivXD_PzWZ0TRedmHRgVuv_x6Hv7J_Kf4B8duzcN6asmBwCureC2q8toG/pub?output=csv";
         const API_URL = "https://script.google.com/macros/s/AKfycbx8spV7-VAOd2M6bmXUT1pg3nSMtHQ6NenIBQQAcBEIeQRlYEadieVUAzCQsNkLFWcV/exec";
-        const DAYS = ["Понеділок", "Вівторок", "Середа", "Четвер", "П'ятниця"];
         
+        const DAYS = ["Понеділок", "Вівторок", "Середа", "Четвер", "П'ятниця"];
         let allData = [];
         let showFull = false;
-        const today = new Intl.DateTimeFormat('uk-UA', { weekday: 'long' }).format(new Date());
+
+        const dateObj = new Date();
+        const today = new Intl.DateTimeFormat('uk-UA', { weekday: 'long' }).format(dateObj);
         const todayName = today.charAt(0).toUpperCase() + today.slice(1);
 
         function showTab(t, b) {
@@ -61,14 +65,16 @@
         }
 
         async function load() {
-            const res = await fetch(SHEET_URL);
-            const text = await res.text();
-            const sep = text.includes(';') ? ';' : ',';
-            allData = text.split('\n').slice(1).filter(r => r.trim()).map(r => {
-                const c = r.split(sep).map(x => x.replace(/^"|"$/g, '').trim());
-                return { d: c[0], t: c[1], s: c[2], st: c[5], tp: c[6], g: c[8], l: c[4] };
-            });
-            render();
+            try {
+                const res = await fetch(SHEET_URL);
+                const text = await res.text();
+                const sep = text.includes(';') ? ';' : ',';
+                allData = text.split('\n').slice(1).filter(r => r.trim()).map(r => {
+                    const c = r.split(sep).map(x => x.replace(/^"|"$/g, '').trim());
+                    return { d: c[0], t: c[1], s: c[2], st: c[5], tp: c[6], g: c[8] };
+                });
+                render();
+            } catch (e) { console.error("Loading error", e); }
         }
 
         function render() {
@@ -79,17 +85,16 @@
             DAYS.forEach(day => {
                 const isT = day === todayName;
                 let pubH = `<div class="space-y-2"><h3 class="text-[9px] font-bold text-slate-300 uppercase text-center">${day}</h3>`;
-                let privH = `<div class="space-y-3"><h3 class="text-[9px] font-bold ${isT ? 'text-indigo-600' : 'text-slate-300'} uppercase text-center">${day} ${isT ? '•' : ''}</h3>`;
+                let privH = `<div class="space-y-3"><h3 class="text-[9px] font-bold ${isT ? 'text-indigo-600' : 'text-slate-300'} uppercase text-center">${day}</h3>`;
 
                 const daySlots = allData.filter(x => x.d.includes(day));
                 daySlots.forEach((s, i) => {
                     const free = s.st.toLowerCase().includes('вільно');
-                    const hr = parseInt(s.t);
-                    if (hr >= 16 || s.s.includes("Всеволод")) {
+                    if (parseInt(s.t) >= 16 || s.s.includes("Всеволод")) {
                         pubH += `<div onclick="${free ? `book('${s.d}','${s.t}')` : ''}" class="p-2 rounded-lg text-center text-[10px] font-bold ${free ? 'slot-free' : 'slot-busy'}">${s.t}</div>`;
                     }
                     if (!free && (showFull || isT)) {
-                        privH += `<div class="bg-white p-3 rounded-xl border border-slate-100 shadow-sm space-y-2">
+                        privH += `<div id="card-${day}-${i}" class="bg-white p-3 rounded-xl border border-slate-100 shadow-sm space-y-2">
                             <div class="text-[9px] font-bold text-indigo-500 uppercase">${s.t} - ${s.s}</div>
                             <input type="text" id="tp-${day}-${i}" placeholder="Тема" value="${s.tp||''}" class="w-full text-[10px] p-2 bg-slate-50 rounded-lg outline-none">
                             <div class="flex gap-2">
@@ -105,22 +110,41 @@
         }
 
         async function book(d, t) {
-            const s = prompt(`Учень на ${d}, ${t}:`);
-            if (s) { await fetch(API_URL, {method:"POST", mode:"no-cors", body:JSON.stringify({action:'book', day:d, time:t, student:s})}); location.reload(); }
+            const s = prompt(`Записати учня на ${d}, ${t}:`);
+            if (s) {
+                await fetch(API_URL, {method:"POST", mode:"no-cors", body:JSON.stringify({action:'book', day:d, time:t, student:s})});
+                alert("Запит надіслано! Дані з'являться в таблиці миттєво, а на сайті через 5 хв.");
+                location.reload();
+            }
         }
 
         async function upd(d, t, dn, i) {
             const tp = document.getElementById(`tp-${dn}-${i}`).value;
             const g = document.getElementById(`g-${dn}-${i}`).value;
-            await fetch(API_URL, {method:"POST", mode:"no-cors", body:JSON.stringify({action:'update', day:d, time:t, topic:tp, grade:g})});
-            alert("ОК!");
+            const btn = event.target;
+            
+            btn.innerText = "⏳";
+            
+            try {
+                await fetch(API_URL, {method:"POST", mode:"no-cors", body:JSON.stringify({action:'update', day:d, time:t, topic:tp, grade:g})});
+                btn.innerText = "ЗБЕРЕЖЕНО";
+                btn.classList.replace('bg-indigo-600', 'bg-green-600');
+                document.getElementById(`card-${dn}-${i}`).classList.add('success-flash');
+                
+                // Оновлюємо локальні дані, щоб вони не зникли до перезавантаження
+                const idx = allData.findIndex(x => x.d === d && x.t === t);
+                if (idx !== -1) { allData[idx].tp = tp; allData[idx].g = g; }
+                
+            } catch (e) {
+                alert("Помилка з'єднання!");
+            }
         }
 
         function filterHist() {
             const q = document.getElementById('histSearch').value.toLowerCase();
             const b = document.getElementById('log-body');
             if (q.length < 2) { b.innerHTML = ''; return; }
-            const f = allData.filter(x => x.s.toLowerCase().includes(q) && x.tp && x.tp !== '-').slice(0,5);
+            const f = allData.filter(x => x.s.toLowerCase().includes(q) && x.tp && x.tp !== '-').slice(0,10);
             b.innerHTML = f.map(x => `<tr class="bg-white"><td class="p-3 font-bold text-[10px]">${x.d}<br>${x.s}</td><td class="p-3 text-[10px] italic text-slate-500">${x.tp}</td><td class="p-3 text-center font-bold text-indigo-600">${x.g||'-'}</td></tr>`).join('');
         }
 
