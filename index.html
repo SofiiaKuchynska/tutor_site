@@ -7,50 +7,37 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        body { font-family: 'Inter', sans-serif; background: #fcfcfd; }
         .tab-btn.active { background: #4f46e5; color: white; }
         .slot-free { background: #f0fdf4; border: 1px solid #dcfce7; color: #166534; cursor: pointer; }
-        .slot-free:hover { background: #dcfce7; }
-        .slot-busy { background: #f1f5f9; border: 1px solid #e2e8f0; color: #94a3b8; }
+        .slot-busy { background: #f9fafb; border: 1px solid #f3f4f6; color: #9ca3af; }
     </style>
 </head>
 <body class="pb-10">
-
-    <div class="max-w-[1200px] mx-auto px-4 pt-6">
-        <nav class="flex bg-white p-1 rounded-2xl shadow-sm border mb-8 sticky top-4 z-50">
-            <button onclick="showTab('public', this)" class="tab-btn active flex-1 py-3 rounded-xl font-bold text-sm transition-all">Віконця</button>
-            <button onclick="showTab('private', this)" class="tab-btn flex-1 py-3 rounded-xl font-bold text-sm text-slate-500 transition-all">Розклад</button>
-            <button onclick="showTab('log', this)" class="tab-btn flex-1 py-3 rounded-xl font-bold text-sm text-slate-500 transition-all">Історія</button>
+    <div class="max-w-[1100px] mx-auto px-4 pt-6">
+        <nav class="flex bg-white p-1 rounded-xl shadow-sm border mb-8 sticky top-4 z-50">
+            <button onclick="showTab('public', this)" class="tab-btn active flex-1 py-2 rounded-lg font-bold text-xs transition-all">Віконця</button>
+            <button onclick="showTab('private', this)" class="tab-btn flex-1 py-2 rounded-lg font-bold text-xs text-slate-500 transition-all">Розклад</button>
+            <button onclick="showTab('log', this)" class="tab-btn flex-1 py-2 rounded-lg font-bold text-xs text-slate-500 transition-all">Історія</button>
         </nav>
 
-        <div id="public" class="tab-content block animate-in fade-in">
-            <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-100">
-                <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-xl font-black">Доступні години</h2>
-                    <span class="text-[10px] text-slate-400">Натисніть на віконце, щоб записати учня</span>
-                </div>
-                <div id="public-week" class="grid grid-cols-1 md:grid-cols-5 gap-4"></div>
-            </div>
+        <div id="public" class="tab-content block">
+            <div id="public-week" class="grid grid-cols-1 md:grid-cols-5 gap-3"></div>
         </div>
 
-        <div id="private" class="tab-content hidden animate-in slide-in-from-bottom-4">
+        <div id="private" class="tab-content hidden">
             <div class="flex justify-between items-center mb-6">
-                <h2 id="schedule-title" class="text-2xl font-black italic">Сьогодні</h2>
-                <button onclick="toggleFullWeek()" id="toggleWeekBtn" class="text-xs font-bold text-indigo-600 bg-indigo-50 px-4 py-2 rounded-xl">Показати весь тиждень</button>
+                <h2 id="sched-title" class="text-xl font-black">Сьогодні</h2>
+                <button onclick="toggleWeek()" id="twBtn" class="text-[10px] font-bold bg-indigo-50 text-indigo-600 px-3 py-1 rounded-lg">Весь тиждень</button>
             </div>
-            <div id="private-week" class="grid grid-cols-1 md:grid-cols-5 gap-4"></div>
+            <div id="private-week" class="grid grid-cols-1 md:grid-cols-5 gap-3"></div>
         </div>
 
-        <div id="log" class="tab-content hidden animate-in fade-in">
-            <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 mb-6">
-                <input type="text" id="historySearch" oninput="filterHistory()" placeholder="Введіть ім'я учня для пошуку історії..." 
-                    class="w-full p-4 bg-slate-50 rounded-2xl border-none focus:ring-2 focus:ring-indigo-400 outline-none font-bold">
-            </div>
-            <div class="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
-                <table class="w-full text-left text-sm">
-                    <tbody id="log-body" class="divide-y divide-slate-50">
-                        <tr><td class="p-10 text-center text-slate-400">Почніть вводити ім'я учня</td></tr>
-                    </tbody>
+        <div id="log" class="tab-content hidden">
+            <input type="text" id="histSearch" oninput="filterHist()" placeholder="Пошук учня..." class="w-full p-3 mb-4 rounded-xl border-none bg-white shadow-sm font-bold text-sm outline-none">
+            <div class="bg-white rounded-2xl shadow-sm border overflow-hidden">
+                <table class="w-full text-left text-xs">
+                    <tbody id="log-body" class="divide-y"></tbody>
                 </table>
             </div>
         </div>
@@ -58,324 +45,87 @@
 
     <script>
         const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQgrwL7j8Mlat4GqhSWe9xAivXD_PzWZ0TRedmHRgVuv_x6Hv7J_Kf4B8duzcN6asmBwCureC2q8toG/pub?output=csv";
-        const API_URL = "<!DOCTYPE html>
-<html lang="uk">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sofiia Pro | Tutor App</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
-        .tab-btn.active { background: #4f46e5; color: white; }
-        .slot-free { background: #f0fdf4; border: 1px solid #dcfce7; color: #166534; cursor: pointer; }
-        .slot-free:hover { background: #dcfce7; }
-        .slot-busy { background: #f1f5f9; border: 1px solid #e2e8f0; color: #94a3b8; }
-    </style>
-</head>
-<body class="pb-10">
-
-    <div class="max-w-[1200px] mx-auto px-4 pt-6">
-        <nav class="flex bg-white p-1 rounded-2xl shadow-sm border mb-8 sticky top-4 z-50">
-            <button onclick="showTab('public', this)" class="tab-btn active flex-1 py-3 rounded-xl font-bold text-sm transition-all">Віконця</button>
-            <button onclick="showTab('private', this)" class="tab-btn flex-1 py-3 rounded-xl font-bold text-sm text-slate-500 transition-all">Розклад</button>
-            <button onclick="showTab('log', this)" class="tab-btn flex-1 py-3 rounded-xl font-bold text-sm text-slate-500 transition-all">Історія</button>
-        </nav>
-
-        <div id="public" class="tab-content block animate-in fade-in">
-            <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-100">
-                <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-xl font-black">Доступні години</h2>
-                    <span class="text-[10px] text-slate-400">Натисніть на віконце, щоб записати учня</span>
-                </div>
-                <div id="public-week" class="grid grid-cols-1 md:grid-cols-5 gap-4"></div>
-            </div>
-        </div>
-
-        <div id="private" class="tab-content hidden animate-in slide-in-from-bottom-4">
-            <div class="flex justify-between items-center mb-6">
-                <h2 id="schedule-title" class="text-2xl font-black italic">Сьогодні</h2>
-                <button onclick="toggleFullWeek()" id="toggleWeekBtn" class="text-xs font-bold text-indigo-600 bg-indigo-50 px-4 py-2 rounded-xl">Показати весь тиждень</button>
-            </div>
-            <div id="private-week" class="grid grid-cols-1 md:grid-cols-5 gap-4"></div>
-        </div>
-
-        <div id="log" class="tab-content hidden animate-in fade-in">
-            <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 mb-6">
-                <input type="text" id="historySearch" oninput="filterHistory()" placeholder="Введіть ім'я учня для пошуку історії..." 
-                    class="w-full p-4 bg-slate-50 rounded-2xl border-none focus:ring-2 focus:ring-indigo-400 outline-none font-bold">
-            </div>
-            <div class="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
-                <table class="w-full text-left text-sm">
-                    <tbody id="log-body" class="divide-y divide-slate-50">
-                        <tr><td class="p-10 text-center text-slate-400">Почніть вводити ім'я учня</td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQgrwL7j8Mlat4GqhSWe9xAivXD_PzWZ0TRedmHRgVuv_x6Hv7J_Kf4B8duzcN6asmBwCureC2q8toG/pub?output=csv";
-        const API_URL = "ВСТАВ_СЮДИ_СВІЙ_URL_З_APPS_SCRIPT";
+        const API_URL = "https://script.google.com/macros/s/AKfycbx8spV7-VAOd2M6bmXUT1pg3nSMtHQ6NenIBQQAcBEIeQRlYEadieVUAzCQsNkLFWcV/exec";
         const DAYS = ["Понеділок", "Вівторок", "Середа", "Четвер", "П'ятниця"];
         
         let allData = [];
-        let isFullWeekVisible = false;
+        let showFull = false;
+        const today = new Intl.DateTimeFormat('uk-UA', { weekday: 'long' }).format(new Date());
+        const todayName = today.charAt(0).toUpperCase() + today.slice(1);
 
-        // Визначаємо сьогоднішній день українською
-        const todayName = new Intl.DateTimeFormat('uk-UA', { weekday: 'long' }).format(new Date());
-        const formattedToday = todayName.charAt(0).toUpperCase() + todayName.slice(1);
-
-        function showTab(tabId, btn) {
-            document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden'));
-            document.getElementById(tabId).classList.remove('hidden');
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active', 'text-white'));
-            btn.classList.add('active');
+        function showTab(t, b) {
+            document.querySelectorAll('.tab-content').forEach(x => x.classList.add('hidden'));
+            document.getElementById(t).classList.remove('hidden');
+            document.querySelectorAll('.tab-btn').forEach(x => x.classList.remove('active', 'text-white'));
+            b.classList.add('active');
         }
 
-        async function loadData() {
+        async function load() {
             const res = await fetch(SHEET_URL);
             const text = await res.text();
-            const sep = text.split('\n')[0].includes(';') ? ';' : ',';
-            const rows = text.split('\n').slice(1).filter(r => r.trim());
-            
-            allData = rows.map(r => {
-                const c = r.split(sep).map(col => col.replace(/^"|"$/g, '').trim());
-                return { date: c[0], time: c[1], student: c[2], subject: c[3], link: c[4], status: c[5], topic: c[6], grade: c[8] };
+            const sep = text.includes(';') ? ';' : ',';
+            allData = text.split('\n').slice(1).filter(r => r.trim()).map(r => {
+                const c = r.split(sep).map(x => x.replace(/^"|"$/g, '').trim());
+                return { d: c[0], t: c[1], s: c[2], st: c[5], tp: c[6], g: c[8], l: c[4] };
             });
-
-            renderPublic();
-            renderPrivate();
+            render();
         }
 
-        function renderPublic() {
-            const grid = document.getElementById('public-week');
-            grid.innerHTML = '';
+        function render() {
+            const pub = document.getElementById('public-week');
+            const priv = document.getElementById('private-week');
+            pub.innerHTML = ''; priv.innerHTML = '';
+
             DAYS.forEach(day => {
-                let html = `<div class="space-y-2"><h3 class="text-[10px] font-black text-slate-300 uppercase text-center mb-2">${day}</h3>`;
-                const daySlots = allData.filter(d => d.date.includes(day));
-                daySlots.forEach(s => {
-                    const isFree = s.status.toLowerCase().includes('вільно');
-                    const hour = parseInt(s.time);
-                    if (hour < 16 && !s.student.includes("Всеволод")) return;
+                const isT = day === todayName;
+                let pubH = `<div class="space-y-2"><h3 class="text-[9px] font-bold text-slate-300 uppercase text-center">${day}</h3>`;
+                let privH = `<div class="space-y-3"><h3 class="text-[9px] font-bold ${isT ? 'text-indigo-600' : 'text-slate-300'} uppercase text-center">${day} ${isT ? '•' : ''}</h3>`;
 
-                    html += `<div onclick="${isFree ? `bookSlot('${s.date}', '${s.time}')` : ''}" 
-                        class="p-3 rounded-xl text-center text-xs font-bold transition-all ${isFree ? 'slot-free shadow-sm' : 'slot-busy'}">
-                        ${s.time} ${isFree ? '➕' : ''}
-                    </div>`;
-                });
-                grid.innerHTML += html + `</div>`;
-            });
-        }
-
-        function renderPrivate() {
-            const grid = document.getElementById('private-week');
-            grid.innerHTML = '';
-            
-            DAYS.forEach(day => {
-                const isToday = day === formattedToday;
-                if (!isFullWeekVisible && !isToday) return;
-
-                let html = `<div class="space-y-3">
-                    <h3 class="text-[10px] font-black ${isToday ? 'text-indigo-600' : 'text-slate-400'} uppercase text-center mb-2">${day} ${isToday ? '• СЬОГОДНІ' : ''}</h3>`;
-                
-                const dayLessons = allData.filter(d => d.date.includes(day) && !d.status.toLowerCase().includes('вільно'));
-                
-                dayLessons.forEach((s, idx) => {
-                    const url = s.link.includes('http') ? s.link : 'https://meet.google.com';
-                    html += `
-                        <div class="bg-white p-4 rounded-3xl shadow-sm border border-slate-100 space-y-3">
-                            <div class="text-[10px] font-black text-indigo-500 uppercase">${s.time} - ${s.student}</div>
-                            <input type="text" id="topic-${day}-${idx}" placeholder="Тема..." value="${s.topic || ''}" class="w-full text-xs p-2 bg-slate-50 rounded-xl outline-none">
+                const daySlots = allData.filter(x => x.d.includes(day));
+                daySlots.forEach((s, i) => {
+                    const free = s.st.toLowerCase().includes('вільно');
+                    const hr = parseInt(s.t);
+                    if (hr >= 16 || s.s.includes("Всеволод")) {
+                        pubH += `<div onclick="${free ? `book('${s.d}','${s.t}')` : ''}" class="p-2 rounded-lg text-center text-[10px] font-bold ${free ? 'slot-free' : 'slot-busy'}">${s.t}</div>`;
+                    }
+                    if (!free && (showFull || isT)) {
+                        privH += `<div class="bg-white p-3 rounded-xl border border-slate-100 shadow-sm space-y-2">
+                            <div class="text-[9px] font-bold text-indigo-500 uppercase">${s.t} - ${s.s}</div>
+                            <input type="text" id="tp-${day}-${i}" placeholder="Тема" value="${s.tp||''}" class="w-full text-[10px] p-2 bg-slate-50 rounded-lg outline-none">
                             <div class="flex gap-2">
-                                <input type="text" id="grade-${day}-${idx}" placeholder="Бал" value="${s.grade || ''}" class="w-10 text-xs p-2 bg-slate-50 rounded-xl text-center outline-none">
-                                <button onclick="saveUpdate('${s.date}', '${s.time}', '${day}', ${idx})" class="flex-1 bg-indigo-600 text-white text-[10px] font-bold py-2 rounded-xl">ЗБЕРЕГТИ</button>
+                                <input type="text" id="g-${day}-${i}" placeholder="Бал" value="${s.g||''}" class="w-8 text-[10px] p-2 bg-slate-50 rounded-lg text-center outline-none">
+                                <button onclick="upd('${s.d}','${s.t}','${day}',${i})" class="flex-1 bg-indigo-600 text-white text-[9px] font-bold py-2 rounded-lg">ЗБЕРЕГТИ</button>
                             </div>
-                            <a href="${url}" target="_blank" class="block w-full text-center bg-slate-900 text-white py-2 rounded-xl font-bold text-[10px]">УРОК ⮕</a>
                         </div>`;
+                    }
                 });
-                grid.innerHTML += html + (dayLessons.length === 0 ? '<p class="text-[10px] text-center text-slate-300 italic">Немає занять</p></div>' : '</div>');
+                pub.innerHTML += pubH + '</div>';
+                if (showFull || isT) priv.innerHTML += privH + '</div>';
             });
         }
 
-        async function bookSlot(day, time) {
-            const student = prompt(`Записати учня на ${day}, ${time}:`);
-            if (!student) return;
-
-            try {
-                await fetch(API_URL, { method: "POST", mode: "no-cors", body: JSON.stringify({ action: 'book', day, time, student }) });
-                alert("Записано! Оновіть сторінку через хвилину.");
-                location.reload();
-            } catch (e) { alert("Помилка!"); }
+        async function book(d, t) {
+            const s = prompt(`Учень на ${d}, ${t}:`);
+            if (s) { await fetch(API_URL, {method:"POST", mode:"no-cors", body:JSON.stringify({action:'book', day:d, time:t, student:s})}); location.reload(); }
         }
 
-        async function saveUpdate(day, time, dayName, idx) {
-            const topic = document.getElementById(`topic-${dayName}-${idx}`).value;
-            const grade = document.getElementById(`grade-${dayName}-${idx}`).value;
-            try {
-                await fetch(API_URL, { method: "POST", mode: "no-cors", body: JSON.stringify({ action: 'update', day, time, topic, grade }) });
-                alert("Дані збережено!");
-            } catch (e) { alert("Помилка!"); }
+        async function upd(d, t, dn, i) {
+            const tp = document.getElementById(`tp-${dn}-${i}`).value;
+            const g = document.getElementById(`g-${dn}-${i}`).value;
+            await fetch(API_URL, {method:"POST", mode:"no-cors", body:JSON.stringify({action:'update', day:d, time:t, topic:tp, grade:g})});
+            alert("ОК!");
         }
 
-        function filterHistory() {
-            const name = document.getElementById('historySearch').value.toLowerCase();
-            const body = document.getElementById('log-body');
-            if (name.length < 2) { body.innerHTML = '<tr><td class="p-10 text-center text-slate-400">Введіть хоча б 2 літери</td></tr>'; return; }
-
-            const filtered = allData
-                .filter(d => d.student.toLowerCase().includes(name) && d.topic && d.topic !== '-')
-                .slice(0, 5); // Беремо останні 5
-
-            body.innerHTML = filtered.length ? filtered.map(s => `
-                <tr class="bg-white hover:bg-slate-50 transition">
-                    <td class="p-4 font-bold text-xs">${s.date}<br><span class="text-indigo-500">${s.student}</span></td>
-                    <td class="p-4 text-xs italic text-slate-600">${s.topic}</td>
-                    <td class="p-4 text-center font-black text-indigo-600">${s.grade || '-'}</td>
-                </tr>
-            `).join('') : '<tr><td class="p-10 text-center text-slate-400">Нічого не знайдено</td></tr>';
+        function filterHist() {
+            const q = document.getElementById('histSearch').value.toLowerCase();
+            const b = document.getElementById('log-body');
+            if (q.length < 2) { b.innerHTML = ''; return; }
+            const f = allData.filter(x => x.s.toLowerCase().includes(q) && x.tp && x.tp !== '-').slice(0,5);
+            b.innerHTML = f.map(x => `<tr class="bg-white"><td class="p-3 font-bold text-[10px]">${x.d}<br>${x.s}</td><td class="p-3 text-[10px] italic text-slate-500">${x.tp}</td><td class="p-3 text-center font-bold text-indigo-600">${x.g||'-'}</td></tr>`).join('');
         }
 
-        function toggleFullWeek() {
-            isFullWeekVisible = !isFullWeekVisible;
-            document.getElementById('schedule-title').innerText = isFullWeekVisible ? "Весь тиждень" : "Сьогодні";
-            document.getElementById('toggleWeekBtn').innerText = isFullWeekVisible ? "Тільки сьогодні" : "Весь тиждень";
-            renderPrivate();
-        }
-
-        loadData();
-    </script>
-</body>
-</html>";
-        const DAYS = ["Понеділок", "Вівторок", "Середа", "Четвер", "П'ятниця"];
-        
-        let allData = [];
-        let isFullWeekVisible = false;
-
-        // Визначаємо сьогоднішній день українською
-        const todayName = new Intl.DateTimeFormat('uk-UA', { weekday: 'long' }).format(new Date());
-        const formattedToday = todayName.charAt(0).toUpperCase() + todayName.slice(1);
-
-        function showTab(tabId, btn) {
-            document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden'));
-            document.getElementById(tabId).classList.remove('hidden');
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active', 'text-white'));
-            btn.classList.add('active');
-        }
-
-        async function loadData() {
-            const res = await fetch(SHEET_URL);
-            const text = await res.text();
-            const sep = text.split('\n')[0].includes(';') ? ';' : ',';
-            const rows = text.split('\n').slice(1).filter(r => r.trim());
-            
-            allData = rows.map(r => {
-                const c = r.split(sep).map(col => col.replace(/^"|"$/g, '').trim());
-                return { date: c[0], time: c[1], student: c[2], subject: c[3], link: c[4], status: c[5], topic: c[6], grade: c[8] };
-            });
-
-            renderPublic();
-            renderPrivate();
-        }
-
-        function renderPublic() {
-            const grid = document.getElementById('public-week');
-            grid.innerHTML = '';
-            DAYS.forEach(day => {
-                let html = `<div class="space-y-2"><h3 class="text-[10px] font-black text-slate-300 uppercase text-center mb-2">${day}</h3>`;
-                const daySlots = allData.filter(d => d.date.includes(day));
-                daySlots.forEach(s => {
-                    const isFree = s.status.toLowerCase().includes('вільно');
-                    const hour = parseInt(s.time);
-                    if (hour < 16 && !s.student.includes("Всеволод")) return;
-
-                    html += `<div onclick="${isFree ? `bookSlot('${s.date}', '${s.time}')` : ''}" 
-                        class="p-3 rounded-xl text-center text-xs font-bold transition-all ${isFree ? 'slot-free shadow-sm' : 'slot-busy'}">
-                        ${s.time} ${isFree ? '➕' : ''}
-                    </div>`;
-                });
-                grid.innerHTML += html + `</div>`;
-            });
-        }
-
-        function renderPrivate() {
-            const grid = document.getElementById('private-week');
-            grid.innerHTML = '';
-            
-            DAYS.forEach(day => {
-                const isToday = day === formattedToday;
-                if (!isFullWeekVisible && !isToday) return;
-
-                let html = `<div class="space-y-3">
-                    <h3 class="text-[10px] font-black ${isToday ? 'text-indigo-600' : 'text-slate-400'} uppercase text-center mb-2">${day} ${isToday ? '• СЬОГОДНІ' : ''}</h3>`;
-                
-                const dayLessons = allData.filter(d => d.date.includes(day) && !d.status.toLowerCase().includes('вільно'));
-                
-                dayLessons.forEach((s, idx) => {
-                    const url = s.link.includes('http') ? s.link : 'https://meet.google.com';
-                    html += `
-                        <div class="bg-white p-4 rounded-3xl shadow-sm border border-slate-100 space-y-3">
-                            <div class="text-[10px] font-black text-indigo-500 uppercase">${s.time} - ${s.student}</div>
-                            <input type="text" id="topic-${day}-${idx}" placeholder="Тема..." value="${s.topic || ''}" class="w-full text-xs p-2 bg-slate-50 rounded-xl outline-none">
-                            <div class="flex gap-2">
-                                <input type="text" id="grade-${day}-${idx}" placeholder="Бал" value="${s.grade || ''}" class="w-10 text-xs p-2 bg-slate-50 rounded-xl text-center outline-none">
-                                <button onclick="saveUpdate('${s.date}', '${s.time}', '${day}', ${idx})" class="flex-1 bg-indigo-600 text-white text-[10px] font-bold py-2 rounded-xl">ЗБЕРЕГТИ</button>
-                            </div>
-                            <a href="${url}" target="_blank" class="block w-full text-center bg-slate-900 text-white py-2 rounded-xl font-bold text-[10px]">УРОК ⮕</a>
-                        </div>`;
-                });
-                grid.innerHTML += html + (dayLessons.length === 0 ? '<p class="text-[10px] text-center text-slate-300 italic">Немає занять</p></div>' : '</div>');
-            });
-        }
-
-        async function bookSlot(day, time) {
-            const student = prompt(`Записати учня на ${day}, ${time}:`);
-            if (!student) return;
-
-            try {
-                await fetch(API_URL, { method: "POST", mode: "no-cors", body: JSON.stringify({ action: 'book', day, time, student }) });
-                alert("Записано! Оновіть сторінку через хвилину.");
-                location.reload();
-            } catch (e) { alert("Помилка!"); }
-        }
-
-        async function saveUpdate(day, time, dayName, idx) {
-            const topic = document.getElementById(`topic-${dayName}-${idx}`).value;
-            const grade = document.getElementById(`grade-${dayName}-${idx}`).value;
-            try {
-                await fetch(API_URL, { method: "POST", mode: "no-cors", body: JSON.stringify({ action: 'update', day, time, topic, grade }) });
-                alert("Дані збережено!");
-            } catch (e) { alert("Помилка!"); }
-        }
-
-        function filterHistory() {
-            const name = document.getElementById('historySearch').value.toLowerCase();
-            const body = document.getElementById('log-body');
-            if (name.length < 2) { body.innerHTML = '<tr><td class="p-10 text-center text-slate-400">Введіть хоча б 2 літери</td></tr>'; return; }
-
-            const filtered = allData
-                .filter(d => d.student.toLowerCase().includes(name) && d.topic && d.topic !== '-')
-                .slice(0, 5); // Беремо останні 5
-
-            body.innerHTML = filtered.length ? filtered.map(s => `
-                <tr class="bg-white hover:bg-slate-50 transition">
-                    <td class="p-4 font-bold text-xs">${s.date}<br><span class="text-indigo-500">${s.student}</span></td>
-                    <td class="p-4 text-xs italic text-slate-600">${s.topic}</td>
-                    <td class="p-4 text-center font-black text-indigo-600">${s.grade || '-'}</td>
-                </tr>
-            `).join('') : '<tr><td class="p-10 text-center text-slate-400">Нічого не знайдено</td></tr>';
-        }
-
-        function toggleFullWeek() {
-            isFullWeekVisible = !isFullWeekVisible;
-            document.getElementById('schedule-title').innerText = isFullWeekVisible ? "Весь тиждень" : "Сьогодні";
-            document.getElementById('toggleWeekBtn').innerText = isFullWeekVisible ? "Тільки сьогодні" : "Весь тиждень";
-            renderPrivate();
-        }
-
-        loadData();
+        function toggleWeek() { showFull = !showFull; document.getElementById('sched-title').innerText = showFull ? "Весь тиждень" : "Сьогодні"; render(); }
+        load();
     </script>
 </body>
 </html>
