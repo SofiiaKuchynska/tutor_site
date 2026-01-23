@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Методичний тренажер: Геометрія 6 клас</title>
+    
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        :root {
+            --primary: #4A90E2;
+            --secondary: #F5A623;
+            --success: #27AE60;
+            --danger: #E74C3C;
+            --dark: #2C3E50;
+            --light: #F8F9FA;
+            --white: #FFFFFF;
+        }
+
+        * { box-sizing: border-box; }
+        body, html { margin: 0; padding: 0; height: 100%; font-family: 'Segoe UI', Roboto, sans-serif; overflow: hidden; background: #e0e0e0; }
+
+        .app-container { display: flex; height: 100vh; width: 100vw; }
+
+        /* ЛІВА ЧАСТИНА: КОНТЕНТ */
+        .content-area {
+            flex: 1;
+            height: 100%;
+            overflow-y: auto;
+            background: var(--white);
+            padding: 30px;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            scroll-behavior: smooth;
+        }
+
+        /* ПРАВА ЧАСТИНА: ДОШКА */
+        .whiteboard-area {
+            flex: 1;
+            height: 100%;
+            background: #fdfdfd;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* СТИЛІ ТЕОРІЇ ТА ЗАВДАНЬ */
+        .lesson-section { margin-bottom: 50px; border-bottom: 2px solid var(--light); padding-bottom: 20px; }
+        .theory-box {
+            background: #f0f7ff;
+            border-left: 5px solid var(--primary);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+        }
+        .theory-box h3 { margin-top: 0; color: var(--primary); }
+
+        .task-card {
+            background: var(--light);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            transition: all 0.3s;
+        }
+        .task-card:hover { transform: translateX(5px); border-color: var(--primary); }
+        .task-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .difficulty { font-size: 0.8rem; padding: 3px 8px; border-radius: 4px; font-weight: bold; }
+        .diff-easy { background: #d4edda; color: #155724; }
+        .diff-medium { background: #fff3cd; color: #856404; }
+        .diff-hard { background: #f8d7da; color: #721c24; }
+
+        .input-zone { display: flex; gap: 10px; margin: 15px 0; align-items: center; }
+        input { padding: 10px; border: 2px solid #ccc; border-radius: 6px; width: 100px; font-size: 1rem; }
+        
+        button { cursor: pointer; border: none; border-radius: 6px; padding: 10px 15px; font-weight: 600; transition: 0.2s; }
+        .btn-check { background: var(--primary); color: white; }
+        .btn-hint { background: var(--secondary); color: white; margin-left: 5px; }
+        .btn-sol { background: var(--dark); color: white; margin-left: 5px; }
+        button:hover { opacity: 0.9; }
+
+        .feedback { font-weight: bold; margin-top: 10px; display: none; }
+        .hidden-content { display: none; margin-top: 15px; padding: 15px; background: #fff; border: 1px dashed #aaa; border-radius: 6px; font-size: 0.95rem; line-height: 1.5; }
+
+        /* ЛАБОРАТОРІЯ */
+        .lab-box { background: #fffcf0; border: 2px solid var(--secondary); padding: 20px; border-radius: 12px; margin: 20px 0; }
+        .chart-container { display: flex; align-items: flex-end; justify-content: space-around; height: 200px; border-bottom: 2px solid var(--dark); margin-top: 20px; padding-bottom: 5px; }
+        .bar { background: var(--primary); width: 40px; transition: height 0.5s ease; position: relative; }
+        .bar-label { position: absolute; bottom: -25px; left: 50%; transform: translateX(-50%); font-size: 10px; white-space: nowrap; }
+
+        /* ДОШКА ТУЛЗ */
+        .board-tools { background: var(--dark); padding: 10px; display: flex; gap: 10px; color: white; flex-wrap: wrap; }
+        canvas { flex: 1; cursor: crosshair; touch-action: none; }
+        .tool-btn { background: #444; color: white; padding: 5px 10px; font-size: 0.9rem; }
+        .tool-btn.active { background: var(--primary); }
+
+        #final-modal {
+            display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: white; padding: 40px; border-radius: 20px; box-shadow: 0 0 50px rgba(0,0,0,0.5);
+            z-index: 1000; text-align: center; width: 400px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <div class="content-area" id="scroll-target">
+        <h1>🎡 Математичний інтенсив: Геометрія</h1>
+        <p><i>6 клас | Повторення та поглиблення</i></p>
+
+        <div class="lesson-section">
+            <div class="theory-box">
+                <h3>1. Довжина кола</h3>
+                <p><b>Коло</b> — це множина точок площини, рівновіддалених від центра.</p>
+                <ul>
+                    <li>Відстань від центра до будь-якої точки кола — <b>радіус ($r$)</b>.</li>
+                    <li>Відрізок, що сполучає дві точки кола і проходить через центр — <b>діаметр ($d$)</b>. $d = 2r$.</li>
+                    <li>Довжина кола ($C$) обчислюється за формулами:</li>
+                </ul>
+                <p>$$C = 2\pi r \quad \text{або} \quad C = \pi d$$</p>
+                <p>Число $\pi \approx 3,14$</p>
+            </div>
+
+            <div id="tasks-block-1"></div>
+        </div>
+
+        <div class="lesson-section">
+            <div class="theory-box">
+                <h3>2. Площа круга</h3>
+                <p><b>Круг</b> — це частина площини, обмежена колом (разом із самим колом).</p>
+                <p>Площа круга ($S$) обчислюється за формулою:</p>
+                <p>$$S = \pi r^2$$</p>
+                <p>Пам'ятай: якщо дано діаметр, спочатку знайди радіус: $r = d : 2$.</p>
+            </div>
+            <div id="tasks-block-2"></div>
+        </div>
+
+        <div class="lesson-section">
+            <div class="theory-box">
+                <h3>3. Діаграми</h3>
+                <p>Діаграми використовують для наочного порівняння величин.</p>
+                <ul>
+                    <li><b>Стовпчасті:</b> висота стовпця відповідає значенню.</li>
+                    <li><b>Кругові:</b> весь круг — це $100\%$ ($360^\circ$).</li>
+                </ul>
+            </div>
+
+            <div class="lab-box">
+                <h4>🧪 Лабораторія діаграм</h4>
+                <p>Введи 4 числа через пробіл (напр: 10 25 15 30):</p>
+                <input type="text" id="lab-data" style="width: 200px;" value="20 40 10 30">
+                <button class="btn-check" onclick="updateLabChart()">Побудувати</button>
+                <div class="chart-container" id="lab-chart"></div>
+            </div>
+
+            <div id="tasks-block-3"></div>
+        </div>
+
+        <div class="lesson-section">
+            <div class="theory-box">
+                <h3>4. Циліндр, Конус, Куля</h3>
+                <p>Це об'ємні фігури, які утворюються обертанням плоских фігур:</p>
+                <ul>
+                    <li><b>Циліндр:</b> обертання прямокутника навколо сторони. Має дві основи (круги) та бічну поверхню.</li>
+                    <li><b>Конус:</b> обертання прямокутного трикутника навколо катета. Має вершину та одну основу (круг).</li>
+                    <li><b>Куля:</b> обертання півкруга навколо діаметра.</li>
+                </ul>
+            </div>
+            <div id="tasks-block-4"></div>
+        </div>
+
+        <button onclick="calculateFinalScore()" style="width: 100%; padding: 20px; background: var(--success); color: white; font-size: 1.2rem; margin-bottom: 50px;">Завершити урок та отримати оцінку</button>
+    </div>
+
+    <div class="whiteboard-area">
+        <div class="board-tools">
+            <button class="tool-btn active" onclick="setTool('pen', this)">✏️ Олівець</button>
+            <button class="tool-btn" onclick="setTool('eraser', this)">🧽 Гумка</button>
+            <button class="tool-btn" onclick="drawStatic('circle')">⭕ Коло</button>
+            <button class="tool-btn" onclick="drawStatic('grid')">📏 Сітка</button>
+            <button class="tool-btn" style="background:var(--danger)" onclick="clearCanvas()">🗑️ Очистити</button>
+            <span>Колір: <input type="color" id="colorPicker" value="#2C3E50" style="width:30px; height:30px; padding:0; border:none"></span>
+        </div>
+        <canvas id="canvas"></canvas>
+    </div>
+</div>
+
+<div id="final-modal">
+    <h2 id="final-title">Чудова робота!</h2>
+    <p id="final-stat"></p>
+    <p id="final-msg"></p>
+    <button class="btn-check" onclick="location.reload()">Спробувати ще раз</button>
+</div>
+
+<script>
+    const state = {
+        score: 0,
+        answered: new Set(),
+        totalTasks: 25,
+        tool: 'pen',
+        isDrawing: false
+    };
+
+    // Дані для завдань
+    const tasksData = [
+        // БЛОК 1: Довжина кола (1-4)
+        { id: 1, block: 1, diff: 'easy', q: "Знайдіть довжину кола, радіус якого $5$ см. (π ≈ 3,14)", ans: 31.4, hint: "Використай $C = 2 \\cdot 3,14 \\cdot 5$", sol: "$C = 2 \\pi r = 2 \\cdot 3,14 \\cdot 5 = 31,4$ см." },
+        { id: 2, block: 1, diff: 'easy', q: "Діаметр кола $10$ см. Чому дорівнює його довжина?", ans: 31.4, hint: "Формула $C = \\pi d$.", sol: "$C = 3,14 \\cdot 10 = 31,4$ см." },
+        { id: 3, block: 1, diff: 'medium', q: "Довжина кола дорівнює $18,84$ см. Знайдіть його радіус.", ans: 3, hint: "$r = C : (2\\pi)$", sol: "$r = 18,84 : (2 \\cdot 3,14) = 18,84 : 6,28 = 3$ см." },
+        { id: 4, block: 1, diff: 'hard', q: "Колесо проїхало $1256$ м, зробивши $200$ обертів. Знайдіть радіус колеса в метрах.", ans: 1, hint: "Спочатку знайди довжину кола (шлях за 1 оберт), потім радіус.", sol: "1) $C = 1256 : 200 = 6,28$ м. 2) $r = 6,28 : (2 \\cdot 3,14) = 1$ м." },
+
+        // БЛОК 2: Площа круга (5-8)
+        { id: 5, block: 2, diff: 'easy', q: "Знайдіть площу круга з радіусом $4$ см.", ans: 50.24, hint: "$S = 3,14 \\cdot 4^2$", sol: "$S = 3,14 \\cdot 16 = 50,24$ см²." },
+        { id: 6, block: 2, diff: 'medium', q: "Знайдіть площу круга, діаметр якого $6$ дм.", ans: 28.26, hint: "Спочатку знайди $r = 6:2 = 3$. Потім площу.", sol: "$r = 3$ дм. $S = 3,14 \\cdot 3^2 = 3,14 \\cdot 9 = 28,26$ дм²." },
+        { id: 7, block: 2, diff: 'medium', q: "Довжина кола дорівнює $25,12$ см. Обчисліть площу цього круга.", ans: 50.24, hint: "Знайди $r$ з довжини, а потім $S$.", sol: "1) $r = 25,12 : 6,28 = 4$ см. 2) $S = 3,14 \\cdot 4^2 = 50,24$ см²." },
+        { id: 8, block: 2, diff: 'hard', q: "Площа круга дорівнює $314$ см². Знайдіть його радіус.", ans: 10, hint: "$r^2 = S : \\pi$. Яке число в квадраті дає 100?", sol: "$r^2 = 314 : 3,14 = 100$. Отже, $r = 10$ см." },
+
+        // БЛОК 3: Діаграми (9-12)
+        { id: 9, block: 3, diff: 'easy', q: "На круговій діаграмі сектор 'Яблука' займає $1/4$ круга. Скільки це відсотків?", ans: 25, hint: "Повний круг це $100\%$.", sol: "$100 : 4 = 25\%$." },
+        { id: 10, block: 3, diff: 'medium', q: "У класі 30 учнів. 12 учнів відвідують спорт. Який градус має бути у цього сектора на діаграмі?", ans: 144, hint: "$360^\\circ$ — це 30 учнів. Знайди скільки припадає на одного.", sol: "1) $360 : 30 = 12^\\circ$ на 1 учня. 2) $12 \\cdot 12 = 144^\\circ$." },
+        { id: 11, block: 3, diff: 'easy', q: "На стовпчастій діаграмі висота стовпця 5 см відповідає 10 тоннам. Яку масу показує стовпець висотою 8 см?", ans: 16, hint: "Визнач ціну поділки (скільки тонн в 1 см).", sol: "1) $10 : 5 = 2$ тонни в 1 см. 2) $8 \\cdot 2 = 16$ тонн." },
+        { id: 12, block: 3, diff: 'hard', q: "На діаграмі три сектори. Перший - $30\%$, другий - $45\%$. Скільки градусів має третій сектор?", ans: 90, hint: "Знайди відсоток третього сектора, а потім переведи у градуси.", sol: "1) $100 - (30+45) = 25\%$. 2) $360 \\cdot 0,25 = 90^\\circ$." },
+
+        // БЛОК 4: ЦИЛІНДР, КОНУС, КУЛЯ (13-25)
+        { id: 13, block: 4, diff: 'easy', q: "Скільки основ має циліндр?", ans: 2, hint: "Подивись на малюнок банки.", sol: "У циліндра дві основи (нижня і верхня), які є рівними кругами." },
+        { id: 14, block: 4, diff: 'easy', q: "Яка фігура є бічною поверхнею розгортки циліндра? 1-трикутник, 2-прямокутник, 3-коло.", ans: 2, hint: "Уяви, що ти розрізав етикетку від консервної банки.", sol: "Розгорткою бічної поверхні циліндра є прямокутник." },
+        { id: 15, block: 4, diff: 'medium', q: "Радіус кулі $7$ см. Чому дорівнює її діаметр?", ans: 14, hint: "$d = 2r$.", sol: "$7 \\cdot 2 = 14$ см." },
+        { id: 16, block: 4, diff: 'hard', q: "Осьовий переріз циліндра - квадрат зі стороною $10$ см. Знайдіть радіус основи циліндра.", ans: 5, hint: "Сторона квадрата дорівнює діаметру основи.", sol: "Оскільки переріз - квадрат, то $d = 10$ см. Тоді $r = 10 : 2 = 5$ см." },
+        { id: 17, block: 4, diff: 'medium', q: "Знайдіть площу основи циліндра, якщо його радіус $3$ см. (π ≈ 3,14)", ans: 28.26, hint: "Основа циліндра - це круг. Шукай $S = \\pi r^2$.", sol: "$S = 3,14 \\cdot 3^2 = 3,14 \\cdot 9 = 28,26$ см²." },
+        { id: 18, block: 4, diff: 'easy', q: "Скільки вершин має конус?", ans: 1, hint: "Це 'гострий' кінець фігури.", sol: "У конуса лише одна вершина." },
+        { id: 19, block: 4, diff: 'medium', q: "Діаметр основи конуса $12$ см. Знайдіть радіус основи.", ans: 6, hint: "$r = d : 2$.", sol: "$12 : 2 = 6$ см." },
+        { id: 20, block: 4, diff: 'hard', q: "Радіус основи циліндра $2$ см, а висота $5$ см. Знайдіть площу бічної поверхні. ($S = 2\\pi rh$)", ans: 62.8, hint: "$S = 2 \\cdot 3,14 \\cdot 2 \\cdot 5$.", sol: "$S = 2 \\cdot 3,14 \\cdot 2 \\cdot 5 = 62,8$ см²." },
+        { id: 21, block: 4, diff: 'medium', q: "Найбільша відстань між двома точками кулі радіусом $15$ см дорівнює...", ans: 30, hint: "Ця відстань - це діаметр.", sol: "$d = 2 \\cdot 15 = 30$ см." },
+        { id: 22, block: 4, diff: 'easy', q: "Яку форму має переріз кулі площиною?", ans: 0, q_alt: "1 - квадрат, 2 - круг, 3 - трикутник", ans: 2, hint: "Уяви, що ти розрізав апельсин.", sol: "Будь-який переріз кулі площиною є кругом." },
+        { id: 23, block: 4, diff: 'hard', q: "Радіус основи конуса $4$ см. Знайдіть площу основи.", ans: 50.24, hint: "Основа конуса - круг. $S = \\pi r^2$.", sol: "$S = 3,14 \\cdot 4^2 = 50,24$ см²." },
+        { id: 24, block: 4, diff: 'medium', q: "Довжина екватора кулі $31,4$ см. Знайдіть радіус цієї кулі.", ans: 5, hint: "Екватор - це коло. $r = C : (2\\pi)$.", sol: "$r = 31,4 : (2 \\cdot 3,14) = 5$ см." },
+        { id: 25, block: 4, diff: 'hard', q: "Висота циліндра $8$ см, радіус основи $3$ см. Чому дорівнює діаметр осьового перерізу?", ans: 6, q_alt: "Мається на увазі ширина прямокутника перерізу.", ans: 6, hint: "Ширина перерізу циліндра - це його діаметр.", sol: "$d = 2 \\cdot r = 2 \\cdot 3 = 6$ см." }
+    ];
+
+    // Додаємо ще 9 змішаних завдань до 25
+    for(let i=17; i<=25; i++) {
+        tasksData.push({
+            id: i, block: 5, diff: i > 21 ? 'hard' : 'medium',
+            q: `Завдання на повторення №${i}: Знайдіть довжину дуги півкола, якщо радіус дорівнює ${i} см. (π ≈ 3,14)`,
+            ans: (3.14 * i).toFixed(2),
+            hint: "Довжина півкола — це половина довжини кола: $\\pi r$.",
+            sol: `$\\pi \\cdot ${i} = 3,14 \\cdot ${i} = ${(3.14 * i).toFixed(2)}$ см.`
+        });
+    }
+
+    // Рендер завдань
+    function renderTasks() {
+        tasksData.forEach(t => {
+            const container = document.getElementById(`tasks-block-${t.block > 4 ? 4 : t.block}`);
+            const card = document.createElement('div');
+            card.className = 'task-card';
+            card.id = `task-${t.id}`;
+            card.innerHTML = `
+                <div class="task-header">
+                    <strong>Завдання №${t.id}</strong>
+                    <span class="difficulty diff-${t.diff}">${t.diff.toUpperCase()}</span>
+                </div>
+                <div class="task-text">${t.q} ${t.q_alt ? '<br><small>'+t.q_alt+'</small>' : ''}</div>
+                <div class="input-zone">
+                    <input type="text" placeholder="Відповідь" id="input-${t.id}">
+                    <button class="btn-check" onclick="checkAnswer(${t.id}, ${t.ans})">Перевірити</button>
+                    <button class="btn-hint" onclick="toggleVisibility('hint-${t.id}')">💡</button>
+                    <button class="btn-sol" onclick="toggleVisibility('sol-${t.id}')">📝</button>
+                </div>
+                <div class="feedback" id="feed-${t.id}"></div>
+                <div class="hidden-content" id="hint-${t.id}"><b>Підказка:</b> ${t.hint}</div>
+                <div class="hidden-content" id="sol-${t.id}"><b>Розв'язання:</b> ${t.sol}</div>
+            `;
+            container.appendChild(card);
+        });
+        MathJax.typeset();
+    }
+
+    function checkAnswer(id, correct) {
+        const userVal = document.getElementById(`input-${id}`).value.replace(',', '.');
+        const feed = document.getElementById(`feed-${id}`);
+        feed.style.display = 'block';
+
+        if (Math.abs(parseFloat(userVal) - correct) < 0.1) {
+            feed.innerHTML = "✅ Вірно!";
+            feed.style.color = "var(--success)";
+            state.answered.add(id);
+        } else {
+            feed.innerHTML = "❌ Неправильно. Спробуй ще раз або глянь підказку.";
+            feed.style.color = "var(--danger)";
+        }
+    }
+
+    function toggleVisibility(id) {
+        const el = document.getElementById(id);
+        el.style.display = el.style.display === 'block' ? 'none' : 'block';
+    }
+
+    // ЛАБА
+    function updateLabChart() {
+        const data = document.getElementById('lab-data').value.split(' ').map(Number);
+        const container = document.getElementById('lab-chart');
+        container.innerHTML = '';
+        const max = Math.max(...data);
+        data.forEach((val, i) => {
+            const bar = document.createElement('div');
+            bar.className = 'bar';
+            bar.style.height = '0px';
+            setTimeout(() => bar.style.height = (val / max * 180) + 'px', 100);
+            bar.innerHTML = `<span class="bar-label">Пункт ${i+1}</span>`;
+            container.appendChild(bar);
+        });
+    }
+
+    // ДОШКА
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    const colorPicker = document.getElementById('colorPicker');
+
+    function resize() {
+        canvas.width = canvas.parentElement.clientWidth;
+        canvas.height = canvas.parentElement.clientHeight - 50;
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    function setTool(t, btn) {
+        state.tool = t;
+        document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+    }
+
+    canvas.addEventListener('mousedown', (e) => { state.isDrawing = true; draw(e); });
+    canvas.addEventListener('mousemove', draw);
+    window.addEventListener('mouseup', () => { state.isDrawing = false; ctx.beginPath(); });
+
+    function draw(e) {
+        if (!state.isDrawing) return;
+        const rect = canvas.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        ctx.lineWidth = state.tool === 'eraser' ? 30 : 3;
+        ctx.lineCap = 'round';
+        ctx.strokeStyle = state.tool === 'eraser' ? '#fdfdfd' : colorPicker.value;
+
+        ctx.lineTo(x, y);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+    }
+
+    function drawStatic(type) {
+        ctx.strokeStyle = colorPicker.value;
+        ctx.lineWidth = 2;
+        if(type === 'circle') {
+            ctx.beginPath();
+            ctx.arc(canvas.width/2, canvas.height/2, 80, 0, Math.PI*2);
+            ctx.stroke();
+        } else if(type === 'grid') {
+            ctx.strokeStyle = '#eee';
+            for(let i=0; i<canvas.width; i+=40) {
+                ctx.moveTo(i,0); ctx.lineTo(i, canvas.height);
+            }
+            for(let j=0; j<canvas.height; j+=40) {
+                ctx.moveTo(0,j); ctx.lineTo(canvas.width, j);
+            }
+            ctx.stroke();
+        }
+    }
+
+    function clearCanvas() { ctx.clearRect(0, 0, canvas.width, canvas.height); }
+
+    function calculateFinalScore() {
+        const score = state.answered.size;
+        const percent = (score / state.totalTasks) * 100;
+        document.getElementById('final-modal').style.display = 'block';
+        document.getElementById('final-stat').innerText = `Виконано завдань: ${score} з ${state.totalTasks} (${percent.toFixed(0)}%)`;
+        
+        let msg = "";
+        if (percent >= 90) msg = "Неймовірно! Ти справжній майстер геометрії! 🏆";
+        else if (percent >= 70) msg = "Чудовий результат! Математика — твій коник! 🌟";
+        else if (percent >= 50) msg = "Непогано, але можна ще трохи попрактикуватись! 💪";
+        else msg = "Головне не результат, а шлях! Спробуй ще раз і все вийде! ✨";
+        
+        document.getElementById('final-msg').innerText = msg;
+    }
+
+    renderTasks();
+    updateLabChart();
+</script>
+
+</body>
+</html>
