@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Геометрична прогресія: Від нуля до Профі</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root {
+            --primary: #4a90e2;
+            --secondary: #f5f7fa;
+            --accent: #50e3c2;
+            --danger: #ff5a5f;
+            --text: #2c3e50;
+            --white: #ffffff;
+            --shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            height: 100vh;
+            overflow: hidden;
+            color: var(--text);
+            background: var(--secondary);
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        /* --- ЛІВА ЧАСТИНА (КОНТЕНТ) --- */
+        .content-side {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+            background: var(--white);
+            border-right: 2px solid #e1e8ed;
+            scroll-behavior: smooth;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--secondary);
+        }
+
+        .theory-block {
+            background: #f0f7ff;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            border-left: 5px solid var(--primary);
+        }
+
+        .task-card {
+            background: var(--white);
+            border: 1px solid #edf2f7;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: var(--shadow);
+            transition: transform 0.2s;
+        }
+
+        .task-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            border: 2px solid #cbd5e0;
+            border-radius: 8px;
+            outline: none;
+            width: 100px;
+        }
+
+        button {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-check { background: var(--primary); color: white; }
+        .btn-hint { background: #edf2f7; color: #4a5568; }
+        .btn-solution { background: #fff5f5; color: #c53030; }
+
+        .feedback { margin-top: 10px; font-weight: bold; min-height: 20px; }
+        .hint-text, .solution-text {
+            display: none;
+            margin-top: 10px;
+            padding: 10px;
+            background: #f8fafc;
+            border-radius: 8px;
+            font-style: italic;
+            font-size: 0.9em;
+        }
+
+        /* --- ПРАВА ЧАСТИНА (ДОШКА) --- */
+        .board-side {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #2d3436;
+            position: relative;
+        }
+
+        #whiteboard {
+            flex-grow: 1;
+            cursor: crosshair;
+            background: #ffffff;
+        }
+
+        .toolbar {
+            padding: 15px;
+            background: #1e272e;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .tool-btn {
+            background: #485460;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 5px;
+            font-size: 12px;
+        }
+
+        .tool-btn:hover { background: var(--primary); }
+
+        /* --- ВІЗУАЛІЗАЦІЯ --- */
+        .progression-viz {
+            display: flex;
+            align-items: flex-end;
+            gap: 10px;
+            height: 100px;
+            margin: 20px 0;
+            padding: 10px;
+            background: #fff;
+            border-radius: 10px;
+        }
+        .bar {
+            background: var(--primary);
+            width: 30px;
+            transition: height 0.5s ease;
+        }
+
+        /* --- ФІНАЛ --- */
+        #final-screen {
+            display: none;
+            text-align: center;
+            padding: 50px;
+        }
+
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="content-side" id="content">
+        <div class="header">
+            <h1>📈 Геометрична Прогресія</h1>
+            <p>9 клас | Повний курс за 1 годину</p>
+        </div>
+
+        <section id="step1">
+            <div class="theory-block">
+                <h3>1. Що це таке?</h3>
+                <p>Уявіть, що кількість лайків під вашим постом щогодини <b>подвоюється</b>. Це і є геометрична прогресія.</p>
+                <p>Кожне наступне число отримується множенням попереднього на стале число \( q \) (знаменник).</p>
+                <p>Формула: \( b_n = b_1 \cdot q^{n-1} \)</p>
+            </div>
+
+            <div id="tasks-container-1">
+                </div>
+        </section>
+
+        <section id="simulation" class="theory-block">
+            <h3>Візуальна Лабораторія</h3>
+            <p>Подивіться, як швидко зростає прогресія при \( b_1=2 \) та різних \( q \):</p>
+            <div class="progression-viz" id="viz-container"></div>
+            <input type="range" id="q-slider" min="1" max="3" step="0.5" value="2" style="width: 100%">
+            <p>Знаменник \( q \): <span id="q-val">2</span></p>
+        </section>
+
+        <section id="step2">
+            <div class="theory-block">
+                <h3>2. Сума прогресії</h3>
+                <p>Щоб не додавати всі числа вручну, є формула:</p>
+                <p>\[ S_n = \frac{b_1(q^n - 1)}{q - 1} \]</p>
+            </div>
+            <div id="tasks-container-2"></div>
+        </section>
+
+        <section id="test-section">
+            <div class="theory-block" style="background: #fff3cd; border-color: #ffc107;">
+                <h3>🏁 Фінальний тест</h3>
+                <div id="final-test"></div>
+            </div>
+        </section>
+
+        <button class="btn-check" style="width: 100%; padding: 20px; font-size: 1.2em;" onclick="finishLesson()">Завершити урок</button>
+
+        <div id="final-screen">
+            <h2 id="final-score"></h2>
+            <p id="praise-msg" style="font-size: 1.5em; color: var(--primary);"></p>
+            <button onclick="location.reload()" class="btn-hint">Почати спочатку</button>
+        </div>
+    </div>
+
+    <div class="board-side">
+        <div class="toolbar">
+            <button class="tool-btn" onclick="setTool('pencil')">✏️ Олівець</button>
+            <button class="tool-btn" onclick="setTool('eraser')">🧽 Гумка</button>
+            <button class="tool-btn" onclick="clearCanvas()">🗑️ Очистити</button>
+            <button class="tool-btn" onclick="drawGrid()">🌐 Сітка</button>
+            <button class="tool-btn" onclick="drawCoordinateSystem()">📊 Осі</button>
+        </div>
+        <canvas id="whiteboard"></canvas>
+    </div>
+</div>
+
+<script>
+    // --- ДАНІ ЗАВДАНЬ (20 задач + 5 тестів) ---
+    const tasks = [
+        // Блок 1: b1 та q
+        { id: 1, q: "Дано: b1 = 3, q = 2. Знайдіть b2.", a: "6", hint: "Помножте b1 на q", sol: "3 * 2 = 6" },
+        { id: 2, q: "Дано: b1 = 10, q = 0.5. Знайдіть b2.", a: "5", hint: "Половина від 10", sol: "10 * 0.5 = 5" },
+        { id: 3, q: "Прогресія: 2, 6, 18... Знайдіть q.", a: "3", hint: "Поділіть b2 на b1", sol: "6 / 2 = 3" },
+        { id: 4, q: "b1 = 5, q = -2. Знайдіть b3.", a: "20", hint: "b3 = b1 * q * q", sol: "5 * (-2)^2 = 5 * 4 = 20" },
+        { id: 5, q: "b2 = 12, b3 = 48. Знайдіть q.", a: "4", hint: "q = b3 / b2", sol: "48 / 12 = 4" },
+        { id: 6, q: "b1 = 1/2, q = 2. Знайдіть b4.", a: "4", hint: "1/2 * 2^3", sol: "0.5 * 8 = 4" },
+        { id: 7, q: "Знайдіть четвертий член: 1, 5, 25...", a: "125", hint: "Множте на 5", sol: "25 * 5 = 125" },
+        { id: 8, q: "b1 = 100, q = 0.1. Знайдіть b3.", a: "1", hint: "100 * 0.1 * 0.1", sol: "100 * 0.01 = 1" },
+        { id: 9, q: "Чи є послідовність 2, 4, 12 геометричною? (так/ні)", a: "ні", hint: "Перевірте чи сталий множник", sol: "4/2=2, але 12/4=3. Ні." },
+        { id: 10, q: "b1 = 7, q = 1. Знайдіть b10.", a: "7", hint: "При q=1 всі члени рівні", sol: "7 * 1^9 = 7" },
+        // Блок 2: Сума та властивості
+        { id: 11, q: "Знайдіть S2, якщо b1 = 5, q = 3.", a: "20", hint: "b1 + b2", sol: "5 + 15 = 20" },
+        { id: 12, q: "Знайдіть середнє: b1=4, b3=9. Знайдіть b2 (додатнє).", a: "6", hint: "Квадрат середнього дорівнює добутку сусідніх", sol: "sqrt(4*9) = 6" },
+        { id: 13, q: "b1 = 1, q = 2. Знайдіть S3.", a: "7", hint: "1 + 2 + 4", sol: "(1*(2^3-1))/(2-1) = 7" },
+        { id: 14, q: "b1 = 8, q = 0.5. Знайдіть S3.", a: "14", hint: "8 + 4 + 2", sol: "14" },
+        { id: 15, q: "Чи може q бути рівним 0? (так/ні)", a: "ні", hint: "За означенням q не дорівнює 0", sol: "Ні" },
+        { id: 16, q: "b1 = 3, b2 = -6. Знайдіть q.", a: "-2", hint: "Поділіть від'ємне на додатнє", sol: "-6 / 3 = -2" },
+        { id: 17, q: "b1 = 10, q = 2. Знайдіть b5.", a: "160", hint: "10 * 2^4", sol: "10 * 16 = 160" },
+        { id: 18, q: "b1 = 1, q = 3. Знайдіть b3 + b1.", a: "10", hint: "1 + 9", sol: "10" },
+        { id: 19, q: "S2 = 10, b1 = 2. Знайдіть q.", a: "4", hint: "2 + 2q = 10", sol: "2q = 8, q = 4" },
+        { id: 20, q: "b1 = 0.2, q = 5. Знайдіть b2.", a: "1", hint: "0.2 * 5", sol: "1" }
+    ];
+
+    const testQuestions = [
+        { q: "Яка формула n-го члена?", options: ["b1 + d(n-1)", "b1 * q^(n-1)", "b1 / q"], correct: 1 },
+        { q: "Знаменник q = 3, b1 = 2. Чому дорівнює b3?", options: ["6", "12", "18"], correct: 2 },
+        { q: "Якщо |q| < 1, прогресія називається...", options: ["Зростаючою", "Нескінченно спадною", "Помилковою"], correct: 1 },
+        { q: "Добуток b1 * b3 дорівнює...", options: ["b2", "b2^2", "2*b2"], correct: 1 },
+        { q: "b1=5, q=1. Знайдіть S10.", options: ["50", "5", "5^10"], correct: 0 }
+    ];
+
+    let score = 0;
+    let totalPossible = tasks.length + testQuestions.length;
+
+    // --- ГЕНЕРАЦІЯ КОНТЕНТУ ---
+    function initApp() {
+        const container1 = document.getElementById('tasks-container-1');
+        const container2 = document.getElementById('tasks-container-2');
+
+        tasks.forEach((t, index) => {
+            const card = document.createElement('div');
+            card.className = 'task-card';
+            card.innerHTML = `
+                <p><b>Завдання ${t.id}:</b> ${t.q}</p>
+                <div class="input-group">
+                    <input type="text" id="ans-${t.id}" placeholder="Відповідь">
+                    <button class="btn-check" onclick="checkTask(${t.id}, '${t.a}')">Перевірити</button>
+                </div>
+                <div class="feedback" id="feed-${t.id}"></div>
+                <button class="btn-hint" onclick="toggleHint(${t.id}, 'hint')">Підказка</button>
+                <button class="btn-solution" onclick="toggleHint(${t.id}, 'sol')">Розв'язання</button>
+                <div class="hint-text" id="hint-${t.id}">${t.hint}</div>
+                <div class="solution-text" id="sol-${t.id}">${t.sol}</div>
+            `;
+            if (index < 10) container1.appendChild(card);
+            else container2.appendChild(card);
+        });
+
+        const testContainer = document.getElementById('final-test');
+        testQuestions.forEach((t, i) => {
+            const qDiv = document.createElement('div');
+            qDiv.style.marginBottom = "20px";
+            qDiv.innerHTML = `<p><b>${i+1}. ${t.q}</b></p>`;
+            t.options.forEach((opt, optIdx) => {
+                qDiv.innerHTML += `
+                    <label style="display: block; margin: 5px 0;">
+                        <input type="radio" name="test-${i}" value="${optIdx}"> ${opt}
+                    </label>
+                `;
+            });
+            testContainer.appendChild(qDiv);
+        });
+
+        updateViz(2);
+    }
+
+    // --- ЛОГІКА ЗАВДАНЬ ---
+    window.checkTask = (id, correct) => {
+        const userAns = document.getElementById(`ans-${id}`).value.trim().toLowerCase();
+        const feed = document.getElementById(`feed-${id}`);
+        if (userAns === correct) {
+            feed.innerText = "✅ Вірно!";
+            feed.style.color = "green";
+            score++;
+        } else {
+            feed.innerText = "❌ Спробуй ще раз";
+            feed.style.color = "red";
+        }
+    };
+
+    window.toggleHint = (id, type) => {
+        const el = document.getElementById(`${type}-${id}`);
+        el.style.display = el.style.display === 'block' ? 'none' : 'block';
+    };
+
+    // --- ВІЗУАЛІЗАЦІЯ ---
+    const slider = document.getElementById('q-slider');
+    slider.oninput = function() {
+        const q = parseFloat(this.value);
+        document.getElementById('q-val').innerText = q;
+        updateViz(q);
+    };
+
+    function updateViz(q) {
+        const container = document.getElementById('viz-container');
+        container.innerHTML = '';
+        let b = 2;
+        for (let i = 0; i < 5; i++) {
+            const bar = document.createElement('div');
+            bar.className = 'bar';
+            bar.style.height = `${Math.min(b * 5, 100)}%`;
+            container.appendChild(bar);
+            b *= q;
+        }
+    }
+
+    // --- ФІНАЛ ---
+    window.finishLesson = () => {
+        let testScore = 0;
+        testQuestions.forEach((t, i) => {
+            const selected = document.querySelector(`input[name="test-${i}"]:checked`);
+            if (selected && parseInt(selected.value) === t.correct) testScore++;
+        });
+
+        const total = score + testScore;
+        const percent = Math.round((total / totalPossible) * 100);
+        
+        document.getElementById('content').innerHTML = `
+            <div id="final-screen" style="display:block">
+                <h2>Урок завершено!</h2>
+                <div style="font-size: 3em; margin: 20px 0;">${percent}%</div>
+                <p>Твій результат: ${total} з ${totalPossible}</p>
+                <p id="praise-msg">${getPraise(percent)}</p>
+                <button onclick="location.reload()" class="btn-check">Ще раз?</button>
+            </div>
+        `;
+    };
+
+    function getPraise(p) {
+        if (p > 90) return "Ти — справжній магістр прогресій! Гордість класу! 🏆";
+        if (p > 70) return "Чудова робота! Твої знання зростають у геометричній прогресії! 🚀";
+        if (p > 40) return "Добрий старт! Ще трохи практики, і ти будеш професіоналом. 💪";
+        return "Не здавайся! Кожен великий математик починав з помилок. Ти зможеш! ✨";
+    }
+
+    // --- CANVAS (ДОШКА) ---
+    const canvas = document.getElementById('whiteboard');
+    const ctx = canvas.getContext('2d');
+    let drawing = false;
+    let tool = 'pencil';
+
+    function resizeCanvas() {
+        canvas.width = canvas.parentElement.clientWidth;
+        canvas.height = canvas.parentElement.clientHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    canvas.addEventListener('mousedown', () => drawing = true);
+    canvas.addEventListener('mouseup', () => { drawing = false; ctx.beginPath(); });
+    canvas.addEventListener('mousemove', draw);
+
+    function draw(e) {
+        if (!drawing) return;
+        ctx.lineWidth = tool === 'eraser' ? 20 : 2;
+        ctx.lineCap = 'round';
+        ctx.strokeStyle = tool === 'eraser' ? '#ffffff' : '#2d3436';
+
+        ctx.lineTo(e.offsetX, e.offsetY);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(e.offsetX, e.offsetY);
+    }
+
+    window.setTool = (t) => tool = t;
+    window.clearCanvas = () => ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    window.drawGrid = () => {
+        ctx.strokeStyle = '#e1e8ed';
+        ctx.lineWidth = 1;
+        for (let i = 0; i < canvas.width; i += 30) {
+            ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, canvas.height); ctx.stroke();
+        }
+        for (let i = 0; i < canvas.height; i += 30) {
+            ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(canvas.width, i); ctx.stroke();
+        }
+    };
+
+    window.drawCoordinateSystem = () => {
+        ctx.strokeStyle = '#2d3436';
+        ctx.lineWidth = 2;
+        const midX = canvas.width / 2;
+        const midY = canvas.height / 2;
+        // X
+        ctx.beginPath(); ctx.moveTo(0, midY); ctx.lineTo(canvas.width, midY); ctx.stroke();
+        // Y
+        ctx.beginPath(); ctx.moveTo(midX, 0); ctx.lineTo(midX, canvas.height); ctx.stroke();
+    };
+
+    initApp();
+</script>
+
+</body>
+</html>
