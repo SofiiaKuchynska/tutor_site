@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Алгебра 7: Від Дужок до Степенів</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['\\(', '\\)']],
+                displayMath: [['\\[', '\\]']]
+            },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #fcfcfd; overflow: hidden; }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+        .task-card { border: 1px solid #f1f5f9; transition: all 0.25s ease; }
+        .task-card:hover { border-color: #3b82f6; transform: translateY(-2px); }
+        .canvas-container { position: relative; background: #ffffff; cursor: crosshair; }
+        .tool-active { @apply bg-blue-600 text-white shadow-lg shadow-blue-200; }
+    </style>
+</head>
+<body class="h-screen flex text-slate-900">
+
+    <div class="w-full lg:w-1/2 flex flex-col bg-white border-r border-slate-200">
+        <header class="p-6 border-b border-slate-50 flex justify-between items-center bg-white/90 backdrop-blur-md sticky top-0 z-30">
+            <div>
+                <h1 class="text-2xl font-extrabold tracking-tight text-slate-800">Конструктор Виразів</h1>
+                <p class="text-[10px] font-bold text-blue-500 uppercase tracking-[0.2em] mt-1">Рівень: Середній • 7 Клас</p>
+            </div>
+            <div class="flex flex-col items-end">
+                <div class="flex items-center gap-2 mb-1">
+                    <span id="prog-percent" class="text-xs font-black text-slate-400">0%</span>
+                </div>
+                <div class="w-32 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                    <div id="prog-bar" class="h-full bg-blue-600 transition-all duration-700" style="width: 0%"></div>
+                </div>
+            </div>
+        </header>
+
+        <main class="flex-1 overflow-y-auto p-8 space-y-12 custom-scrollbar">
+            
+            <section id="warmup-area" class="bg-slate-900 rounded-[2.5rem] p-8 text-center text-white relative overflow-hidden">
+                <div class="relative z-10">
+                    <div class="text-3xl mb-4">⚡</div>
+                    <h3 class="text-xl font-bold mb-2">Швидкий фокус</h3>
+                    <p class="text-slate-400 text-sm mb-6">Запам'ятай 3 числа за 2 секунди</p>
+                    <div id="mem-nums" class="flex justify-center gap-6 h-12 items-center font-black text-4xl text-blue-400"></div>
+                    
+                    <div id="mem-input-wrap" class="hidden space-y-4">
+                        <input type="text" id="mem-ans" class="w-48 mx-auto block bg-white/10 border border-white/20 rounded-2xl p-4 text-center text-2xl font-bold outline-none focus:border-blue-500 transition-all" placeholder="Числа через пробіл">
+                        <button onclick="verifyWarmup()" class="bg-blue-600 text-white px-10 py-3 rounded-2xl font-bold hover:bg-blue-500 transition">Перевірити</button>
+                    </div>
+                    <button id="mem-btn" onclick="runWarmup()" class="bg-white text-slate-900 px-10 py-4 rounded-2xl font-bold hover:scale-105 transition active:scale-95">Я готовий</button>
+                </div>
+            </section>
+
+            <section class="space-y-6">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-orange-100 text-orange-600 rounded-2xl flex items-center justify-center font-black">1</div>
+                    <h2 class="text-2xl font-black">Розкриття дужок</h2>
+                </div>
+                
+                <div class="bg-orange-50/50 p-6 rounded-3xl border border-orange-100">
+                    <p class="text-slate-600 leading-relaxed mb-4">
+                        Якщо перед дужками стоїть <strong class="text-orange-700">мінус</strong>, ми прибираємо його, а всі знаки в дужках змінюємо на протилежні. 
+                        Якщо <strong class="text-blue-700">число</strong> — множимо його на кожен доданок всередині.
+                    </p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 font-bold text-sm">
+                        <div class="bg-white p-3 rounded-xl border border-orange-100">\( -(a - b) = -a + b \)</div>
+                        <div class="bg-white p-3 rounded-xl border border-orange-100">\( 3(x + 2) = 3x + 6 \)</div>
+                    </div>
+                </div>
+
+                <div id="brackets-tasks" class="space-y-4"></div>
+            </section>
+
+            <section class="space-y-6">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center font-black">2</div>
+                    <h2 class="text-2xl font-black">Числові степені</h2>
+                </div>
+                
+                <div class="bg-blue-50/50 p-6 rounded-3xl border border-blue-100">
+                    <p class="text-slate-600 leading-relaxed">
+                        Степінь — це «скорочене множення». Число внизу (основа) множиться на себе стільки разів, скільки вказує число вгорі (показник).
+                    </p>
+                    <p class="mt-2 font-bold text-blue-800 italic">Важливо: будь-яке число в нульовому степені дорівнює 1.</p>
+                </div>
+
+                <div id="powers-val-tasks" class="space-y-4"></div>
+            </section>
+
+            <section class="space-y-6">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-indigo-100 text-indigo-600 rounded-2xl flex items-center justify-center font-black">3</div>
+                    <h2 class="text-2xl font-black">Властивості степенів</h2>
+                </div>
+                <div id="powers-prop-tasks" class="space-y-4"></div>
+            </section>
+
+            <div class="pt-10 border-t border-slate-100">
+                <button onclick="finishLesson()" class="w-full bg-slate-900 text-white py-6 rounded-[2.5rem] font-black text-xl hover:bg-blue-600 transition-all shadow-xl shadow-blue-200 transform active:scale-[0.98]">
+                    ЗАВЕРШИТИ УРОК
+                </button>
+            </div>
+        </main>
+    </div>
+
+    <div class="hidden lg:flex w-1/2 flex-col bg-slate-50 relative p-6">
+        <div class="absolute top-10 left-1/2 -translate-x-1/2 z-40 flex items-center gap-1 bg-white/90 backdrop-blur-xl p-2 rounded-2xl shadow-2xl border border-slate-200">
+            <button onclick="changeTool('pen')" id="tool-pen" class="p-3 rounded-xl hover:bg-slate-100 transition tool-active">✏️</button>
+            <button onclick="changeTool('eraser')" id="tool-eraser" class="p-3 rounded-xl hover:bg-slate-100 transition">🧽</button>
+            <div class="w-px h-6 bg-slate-200 mx-2"></div>
+            <button onclick="toggleBoardGrid()" class="px-4 py-2 text-[10px] font-black text-slate-500 hover:text-blue-600 uppercase tracking-widest">Сітка</button>
+            <button onclick="clearBoard()" class="px-4 py-2 text-[10px] font-black text-red-500 hover:bg-red-50 rounded-xl uppercase tracking-widest">Очистити</button>
+        </div>
+
+        <div class="canvas-container flex-1 bg-white rounded-[3rem] shadow-inner border border-slate-200 overflow-hidden" id="canvas-wrap">
+            <canvas id="board"></canvas>
+        </div>
+        
+        <div class="mt-4 flex justify-between items-center px-4">
+            <p class="text-[10px] font-bold text-slate-300 uppercase tracking-widest">Interactive Whiteboard v3.0</p>
+            <div class="flex gap-2">
+                <div class="w-2 h-2 rounded-full bg-blue-500"></div>
+                <div class="w-2 h-2 rounded-full bg-slate-200"></div>
+                <div class="w-2 h-2 rounded-full bg-slate-200"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-md z-50 hidden flex items-center justify-center p-6">
+        <div class="bg-white rounded-[3.5rem] p-12 max-w-sm w-full text-center shadow-2xl transform transition-all">
+            <div class="text-7xl mb-6" id="res-emoji">🎉</div>
+            <h2 class="text-3xl font-black text-slate-800 mb-2">Урок пройдено!</h2>
+            <p id="res-score" class="text-blue-600 font-black text-2xl mb-4"></p>
+            <p id="res-msg" class="text-slate-500 mb-10 italic leading-relaxed"></p>
+            <button onclick="location.reload()" class="w-full bg-slate-900 text-white py-5 rounded-3xl font-bold hover:bg-blue-600 transition shadow-lg shadow-blue-100">Почати знову</button>
+        </div>
+    </div>
+
+<script>
+    // --- TASK DATABASE (30 ITEMS) ---
+    const bracketTasks = [
+        { q: "Спростіть: \\( 5x + (2x - 3) \\)", a: "7x-3", h: "Якщо перед дужками '+', просто прибери їх.", s: "5x + 2x - 3 = 7x - 3" },
+        { q: "Розкрийте дужки: \\( -(a + 10) \\)", a: "-a-10", h: "Зміни всі знаки на протилежні.", s: "-a - 10" },
+        { q: "Спростіть: \\( 10 - (x + 10) \\)", a: "-x", h: "10 та -10 дадуть нуль.", s: "10 - x - 10 = -x" },
+        { q: "Спростіть: \\( 2(y + 3) \\)", a: "2y+6", h: "Множ 2 на y та на 3.", s: "2y + 6" },
+        { q: "Розкрийте: \\( -3(b - 4) \\)", a: "-3b+12", h: "Увага: -3 помножити на -4 буде +12.", s: "-3b + 12" },
+        { q: "Спростіть: \\( x + (5 - x) \\)", a: "5", h: "x та -x знищуються.", s: "5" },
+        { q: "Розкрийте: \\( 0.5(4a - 2) \\)", a: "2a-1", h: "Половина від 4a та від 2.", s: "2a - 1" },
+        { q: "Спростіть: \\( (m+n) - (m-n) \\)", a: "2n", h: "Друга дужка змінить знаки: -m + n.", s: "m + n - m + n = 2n" },
+        { q: "Спростіть: \\( 7x - 2(x + 1) \\)", a: "5x-2", h: "Спочатку розкрий дужки: -2x - 2.", s: "7x - 2x - 2 = 5x - 2" },
+        { q: "Спростіть: \\( a - (b - (a + b)) \\)", a: "2a", h: "Розкривай внутрішні дужки першими.", s: "a - (b - a - b) = a - (-a) = 2a" }
+    ];
+
+    const powerValTasks = [
+        { q: "Обчисліть: \\( 2^4 \\)", a: "16", h: "2 * 2 * 2 * 2", s: "16" },
+        { q: "Обчисліть: \\( 3^3 \\)", a: "27", h: "3 * 3 * 3", s: "27" },
+        { q: "Обчисліть: \\( (-5)^2 \\)", a: "25", h: "Квадрат завжди додатний.", s: "25" },
+        { q: "Обчисліть: \\( (-2)^3 \\)", a: "-8", h: "Непарний степінь зберігає мінус.", s: "-8" },
+        { q: "Обчисліть: \\( 10^4 \\)", a: "10000", h: "Одиниця та 4 нулі.", s: "10000" },
+        { q: "Обчисліть: \\( 7^0 \\)", a: "1", h: "Будь-яке число в нульовому степені...", s: "1" },
+        { q: "Обчисліть: \\( (1/2)^2 \\)", a: "1/4", h: "1/2 * 1/2", s: "1/4" },
+        { q: "Обчисліть: \\( 0.1^2 \\)", a: "0.01", h: "Одна десята помножити на одну десяту.", s: "0.01" },
+        { q: "Обчисліть: \\( 2^2 + 3^2 \\)", a: "13", h: "4 + 9", s: "13" },
+        { q: "Обчисліть: \\( 5^1 \\)", a: "5", h: "Число в першому степені не змінюється.", s: "5" }
+    ];
+
+    const powerPropTasks = [
+        { q: "Спростіть: \\( x^5 \\cdot x^2 \\)", a: "x^7", h: "Показники додаються.", s: "x^7" },
+        { q: "Спростіть: \\( a^{10} : a^7 \\)", a: "a^3", h: "Показники віднімаються.", s: "a^3" },
+        { q: "Спростіть: \\( (y^4)^3 \\)", a: "y^12", h: "Показники перемножуються.", s: "y^12" },
+        { q: "Спростіть: \\( b \\cdot b^4 \\cdot b \\)", a: "b^6", h: "Пам'ятай: b = b^1.", s: "b^6" },
+        { q: "Спростіть: \\( (2x)^2 \\)", a: "4x^2", h: "Піднеси і 2, і x.", s: "4x^2" },
+        { q: "Обчисліть: \\( 2^7 : 2^4 \\)", a: "8", h: "Це 2 в кубі.", s: "2^3 = 8" },
+        { q: "Спростіть: \\( x^n \\cdot x^3 \\)", a: "x^{n+3}", h: "Просто додай показники.", s: "x^{n+3}" },
+        { q: "Спростіть: \\( (a^2 \\cdot a)^3 \\)", a: "a^9", h: "Спочатку в дужках: a^3.", s: "a^9" },
+        { q: "Обчисліть: \\( 10^6 : 10^4 \\)", a: "100", h: "Це 10 в квадраті.", s: "100" },
+        { q: "Спростіть: \\( (x^5)^0 \\)", a: "1", h: "Все, що в нульовому степені...", s: "1" }
+    ];
+
+    let solved = 0;
+    const total = 30;
+
+    function render() {
+        const bCont = document.getElementById('brackets-tasks');
+        const vCont = document.getElementById('powers-val-tasks');
+        const pCont = document.getElementById('powers-prop-tasks');
+
+        bracketTasks.forEach((t, i) => bCont.innerHTML += createTaskHTML(t, i, 'orange'));
+        powerValTasks.forEach((t, i) => vCont.innerHTML += createTaskHTML(t, i+10, 'blue'));
+        powerPropTasks.forEach((t, i) => pCont.innerHTML += createTaskHTML(t, i+20, 'indigo'));
+        
+        MathJax.typeset();
+    }
+
+    function createTaskHTML(t, id, color) {
+        return `
+            <div id="card-${id}" class="task-card bg-white p-6 rounded-[2rem] shadow-sm">
+                <div class="flex justify-between items-start mb-4">
+                    <span class="text-[10px] font-black text-slate-300 uppercase tracking-widest">Завдання ${id+1}</span>
+                    <div id="check-${id}" class="hidden w-5 h-5 rounded-full bg-green-500 text-white flex items-center justify-center text-[8px]">✓</div>
+                </div>
+                <p class="text-lg font-bold text-slate-700 mb-6">${t.q}</p>
+                <div class="flex gap-2">
+                    <input type="text" id="in-${id}" class="flex-1 bg-slate-50 border-2 border-slate-50 rounded-2xl px-5 py-3 focus:outline-none focus:border-${color}-500 transition-all font-semibold" placeholder="Відповідь">
+                    <button onclick="validate(${id})" class="bg-slate-900 text-white px-6 py-3 rounded-2xl font-bold hover:bg-blue-600 transition-all transform active:scale-90">Перевірити</button>
+                </div>
+                <div class="flex gap-4 mt-4">
+                    <button onclick="toggleInfo(${id}, 'h')" class="text-[10px] font-bold text-blue-500 hover:text-blue-700 uppercase">Підказка</button>
+                    <button onclick="toggleInfo(${id}, 's')" class="text-[10px] font-bold text-slate-300 hover:text-slate-500 uppercase ml-auto">Рішення</button>
+                </div>
+                <div id="hint-${id}" class="hidden mt-4 p-4 bg-blue-50 text-blue-700 rounded-2xl text-xs border border-blue-100 font-medium">💡 ${t.h}</div>
+                <div id="sol-${id}" class="hidden mt-4 p-4 bg-slate-50 text-slate-500 rounded-2xl text-xs border border-slate-100 italic">${t.s}</div>
+            </div>
+        `;
+    }
+
+    function validate(id) {
+        const val = document.getElementById(`in-${id}`).value.trim().replace(/\s/g, '').toLowerCase();
+        // Dynamic merge of task lists for validation
+        const allTasks = [...bracketTasks, ...powerValTasks, ...powerPropTasks];
+        const correct = allTasks[id].a.replace(/\s/g, '').replace(/\\/g, '').replace('{', '').replace('}', '').toLowerCase();
+        
+        const card = document.getElementById(`card-${id}`);
+        if (val === correct || val === correct.replace('^', '')) {
+            if (!card.classList.contains('solved')) {
+                solved++;
+                card.classList.add('solved', 'bg-green-50/20', 'border-green-100');
+                document.getElementById(`check-${id}`).classList.remove('hidden');
+                updateProgress();
+            }
+        } else {
+            card.classList.add('border-red-200');
+            setTimeout(() => card.classList.remove('border-red-200'), 800);
+        }
+    }
+
+    function updateProgress() {
+        const p = Math.round((solved / total) * 100);
+        document.getElementById('prog-bar').style.width = p + '%';
+        document.getElementById('prog-percent').innerText = p + '%';
+    }
+
+    function toggleInfo(id, type) {
+        document.getElementById(type === 'h' ? `hint-${id}` : `sol-${id}`).classList.toggle('hidden');
+    }
+
+    // --- MEMORY GAME ---
+    let sequence = [];
+    function runWarmup() {
+        sequence = Array.from({length: 3}, () => Math.floor(Math.random() * 89) + 10);
+        document.getElementById('mem-nums').innerText = sequence.join('   ');
+        document.getElementById('mem-btn').classList.add('hidden');
+        setTimeout(() => {
+            document.getElementById('mem-nums').innerText = "??  ??  ??";
+            document.getElementById('mem-input-wrap').classList.remove('hidden');
+        }, 2000);
+    }
+
+    function verifyWarmup() {
+        if (document.getElementById('mem-ans').value.trim() === sequence.join(' ')) {
+            alert("Чудово! Твій мозок розігрітий.");
+            document.getElementById('warmup-area').style.opacity = '0.3';
+            document.getElementById('warmup-area').style.pointerEvents = 'none';
+        } else {
+            alert("Майже! Правильно було: " + sequence.join(' '));
+        }
+    }
+
+    function finishLesson() {
+        const modal = document.getElementById('modal');
+        const score = Math.round((solved / total) * 100);
+        document.getElementById('res-score').innerText = `${score}% (${solved}/${total})`;
+        const msg = document.getElementById('res-msg');
+        const emo = document.getElementById('res-emoji');
+
+        if (score > 85) { emo.innerText = "🏆"; msg.innerText = "Ти — володар алгебри! Твоя уважність вражає."; }
+        else if (score > 50) { emo.innerText = "⭐️"; msg.innerText = "Гарна робота! Ти впевнено крокуєш до успіху."; }
+        else { emo.innerText = "📖"; msg.innerText = "Початок покладено. Спробуй ще раз, щоб закріпити навички."; }
+
+        modal.classList.remove('hidden');
+    }
+
+    // --- WHITEBOARD ENGINE ---
+    const canvas = document.getElementById('board');
+    const ctx = canvas.getContext('2d');
+    let drawing = false;
+    let tool = 'pen';
+    let hasGrid = false;
+
+    function initBoard() {
+        const wrap = document.getElementById('canvas-wrap');
+        canvas.width = wrap.clientWidth;
+        canvas.height = wrap.clientHeight;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.lineWidth = 3;
+    }
+
+    function changeTool(t) {
+        tool = t;
+        document.getElementById('tool-pen').classList.toggle('tool-active', t === 'pen');
+        document.getElementById('tool-eraser').classList.toggle('tool-active', t === 'eraser');
+    }
+
+    function startDraw(e) {
+        drawing = true;
+        const pos = getMousePos(e);
+        ctx.beginPath();
+        ctx.moveTo(pos.x, pos.y);
+    }
+
+    function doDraw(e) {
+        if (!drawing) return;
+        e.preventDefault();
+        const pos = getMousePos(e);
+        ctx.strokeStyle = tool === 'eraser' ? '#ffffff' : '#1e293b';
+        ctx.lineWidth = tool === 'eraser' ? 40 : 3;
+        ctx.lineTo(pos.x, pos.y);
+        ctx.stroke();
+    }
+
+    function getMousePos(e) {
+        const rect = canvas.getBoundingClientRect();
+        const clientX = e.clientX || (e.touches ? e.touches[0].clientX : 0);
+        const clientY = e.clientY || (e.touches ? e.touches[0].clientY : 0);
+        return { x: clientX - rect.left, y: clientY - rect.top };
+    }
+
+    function stopDraw() { drawing = false; }
+    function clearBoard() { 
+        ctx.clearRect(0,0, canvas.width, canvas.height); 
+        if(hasGrid) drawGridLines();
+    }
+
+    function toggleBoardGrid() {
+        hasGrid = !hasGrid;
+        if(hasGrid) drawGridLines();
+        else clearBoard();
+    }
+
+    function drawGridLines() {
+        ctx.strokeStyle = '#f1f5f9';
+        ctx.lineWidth = 1;
+        for(let i=0; i<canvas.width; i+=40) { ctx.beginPath(); ctx.moveTo(i,0); ctx.lineTo(i, canvas.height); ctx.stroke(); }
+        for(let i=0; i<canvas.height; i+=40) { ctx.beginPath(); ctx.moveTo(0,i); ctx.lineTo(canvas.width, i); ctx.stroke(); }
+    }
+
+    canvas.addEventListener('mousedown', startDraw);
+    canvas.addEventListener('mousemove', doDraw);
+    window.addEventListener('mouseup', stopDraw);
+    canvas.addEventListener('touchstart', startDraw);
+    canvas.addEventListener('touchmove', doDraw);
+    canvas.addEventListener('touchend', stopDraw);
+
+    window.onload = () => { render(); initBoard(); };
+    window.onresize = initBoard;
+
+</script>
+</body>
+</html>
