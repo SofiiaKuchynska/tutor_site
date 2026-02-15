@@ -7,7 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #fcfaf8; /* Дуже ніжний теплий фон */
+            --bg-color: #fcfaf8;
             --text-main: #334155;
             --card-bg: #ffffff;
             --shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
@@ -37,7 +37,6 @@
             letter-spacing: -0.5px;
         }
 
-        /* Кнопки фільтрації */
         .filters {
             display: flex;
             flex-wrap: wrap;
@@ -52,7 +51,7 @@
             color: #475569;
             border: none;
             padding: 10px 20px;
-            border-radius: 99px; /* Овальні кнопочки */
+            border-radius: 99px;
             font-size: 0.95rem;
             font-weight: 700;
             font-family: 'Nunito', sans-serif;
@@ -71,7 +70,6 @@
             box-shadow: 0 4px 12px rgba(148, 163, 184, 0.4);
         }
 
-        /* Сітка карток */
         .grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
@@ -80,7 +78,6 @@
             max-width: 1000px;
         }
 
-        /* Стиль самої картки */
         .card {
             background-color: var(--card-bg);
             border-radius: 24px;
@@ -94,6 +91,7 @@
             flex-direction: column;
             justify-content: space-between;
             min-height: 110px;
+            animation: fadeIn 0.4s ease forwards;
         }
 
         .card:hover {
@@ -110,7 +108,6 @@
             color: #0f172a;
         }
 
-        /* Теги учнів */
         .tag {
             align-self: flex-start;
             font-size: 0.8rem;
@@ -121,16 +118,10 @@
             letter-spacing: 0.5px;
         }
 
-        /* Кольори для різних класів (ніжні пастельні) */
-        .grade-9 { background-color: #e0e7ff; color: #4338ca; } /* Блакитний для 9 класу */
-        .grade-8 { background-color: #fae8ff; color: #a21caf; } /* Фіолетовий для 8 класу */
-        .grade-7 { background-color: #ffe4e6; color: #be123c; } /* Рожевий для 7 класу */
-        .grade-6 { background-color: #dcfce7; color: #15803d; } /* Зелений для 6 класу */
-
-        /* Анімація для фільтрації */
-        .card {
-            animation: fadeIn 0.4s ease forwards;
-        }
+        .grade-9 { background-color: #e0e7ff; color: #4338ca; } 
+        .grade-8 { background-color: #fae8ff; color: #a21caf; } 
+        .grade-7 { background-color: #ffe4e6; color: #be123c; } 
+        .grade-6 { background-color: #dcfce7; color: #15803d; } 
 
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
@@ -159,39 +150,19 @@
 
     <div class="grid" id="cards-container">
         
-        <a href="#" class="card" data-student="artur">
-            <div class="topic">Системи нерівностей. Підготовка до ДПА</div>
-            <span class="tag grade-9">Артур • 9 клас</span>
-        </a>
-
-        <a href="#" class="card" data-student="nastya">
-            <div class="topic">Квадратична функція та її графік</div>
-            <span class="tag grade-9">Настя • 9 клас</span>
-        </a>
-
-        <a href="#" class="card" data-student="marynka">
-            <div class="topic">Теорема Піфагора: розв'язування задач</div>
-            <span class="tag grade-8">Маринка • 8 клас</span>
-        </a>
-
-        <a href="#" class="card" data-student="sofiyka">
-            <div class="topic">Формули скороченого множення</div>
-            <span class="tag grade-7">Софійка • 7 клас</span>
-        </a>
-
-        <a href="#" class="card" data-student="newboy">
-            <div class="topic">Лінійні рівняння з однією змінною</div>
-            <span class="tag grade-7">Новий хлопчик • 7 клас</span>
-        </a>
-
         <a href="geometry_progression.html" class="card" data-student="vsevolod">
-            <div class="topic">Геометрична прогресія (вступ)</div>
+            <div class="topic">Геометрична прогресія</div>
             <span class="tag grade-6">Всеволод • 6 клас</span>
         </a>
 
-        <a href="#" class="card" data-student="vadym">
-            <div class="topic">Додавання і віднімання дробів</div>
+        <a href="math_6_dii.html" class="card" data-student="vadym">
+            <div class="topic">Математика 6 клас (Дії)</div>
             <span class="tag grade-6">Вадим • 6 клас</span>
+        </a>
+
+        <a href="vsevolod" class="card" data-student="vsevolod">
+            <div class="topic">Окрема сторінка Всеволода</div>
+            <span class="tag grade-6">Всеволод • 6 клас</span>
         </a>
 
     </div>
@@ -202,14 +173,11 @@
 
         buttons.forEach(button => {
             button.addEventListener('click', () => {
-                // Забираємо клас active у всіх кнопок і додаємо натиснутій
                 buttons.forEach(btn => btn.classList.remove('active'));
                 button.classList.add('active');
 
-                // Отримуємо значення фільтру
                 const filterValue = button.getAttribute('data-filter');
 
-                // Фільтруємо картки
                 cards.forEach(card => {
                     if (filterValue === 'all' || card.getAttribute('data-student') === filterValue) {
                         card.classList.remove('hidden');
