@@ -4,71 +4,139 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>База Уроків</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f8f9fa;
-            padding: 20px;
-            color: #333;
-        }
-        
-        /* Стилі для кнопок фільтру */
-        .filter-container {
-            margin-bottom: 30px;
-            display: flex;
-            gap: 10px;
-        }
-        .filter-btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 20px;
-            background-color: #e9ecef;
-            cursor: pointer;
-            font-weight: bold;
-            transition: 0.3s;
-        }
-        .filter-btn:hover, .filter-btn.active {
-            background-color: #007bff;
-            color: white;
+        :root {
+            --bg-color: #fcfaf8; /* Дуже ніжний теплий фон */
+            --text-main: #334155;
+            --card-bg: #ffffff;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+            --shadow-hover: 0 10px 25px rgba(0, 0, 0, 0.08);
+            --btn-bg: #f1f5f9;
+            --btn-active: #94a3b8;
+            --btn-text: #ffffff;
         }
 
-        /* Стилі для карток */
-        .grid-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 20px;
-        }
-        .card {
-            background: white;
-            border-radius: 15px;
-            padding: 20px;
-            text-align: center;
-            text-decoration: none;
-            color: inherit;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            transition: transform 0.2s, box-shadow 0.2s;
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 50px 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #1e293b;
+            margin-bottom: 30px;
+            text-align: center;
+            letter-spacing: -0.5px;
+        }
+
+        /* Кнопки фільтрації */
+        .filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 40px;
+            max-width: 900px;
+        }
+
+        .filter-btn {
+            background-color: var(--btn-bg);
+            color: #475569;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 99px; /* Овальні кнопочки */
+            font-size: 0.95rem;
+            font-weight: 700;
+            font-family: 'Nunito', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn:hover {
+            background-color: #e2e8f0;
+            transform: translateY(-2px);
+        }
+
+        .filter-btn.active {
+            background-color: var(--btn-active);
+            color: var(--btn-text);
+            box-shadow: 0 4px 12px rgba(148, 163, 184, 0.4);
+        }
+
+        /* Сітка карток */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 20px;
+            width: 100%;
+            max-width: 1000px;
+        }
+
+        /* Стиль самої картки */
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 24px;
+            padding: 24px;
+            text-decoration: none;
+            color: inherit;
+            box-shadow: var(--shadow);
+            border: 1px solid #f8fafc;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 110px;
+        }
+
         .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: var(--shadow-hover);
+            border-color: #f1f5f9;
         }
-        .icon {
-            font-size: 50px; /* Можна замінити на картинки <img> */
+
+        .topic {
+            font-size: 1.2rem;
+            font-weight: 700;
             margin-bottom: 15px;
+            line-height: 1.4;
+            color: #0f172a;
         }
-        .student-tag {
-            font-size: 12px;
-            background: #e2e8f0;
-            padding: 4px 8px;
-            border-radius: 10px;
-            margin-top: 10px;
-            color: #64748b;
+
+        /* Теги учнів */
+        .tag {
+            align-self: flex-start;
+            font-size: 0.8rem;
+            padding: 6px 14px;
+            border-radius: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
-        
-        /* Клас для приховування карток при фільтрації */
+
+        /* Кольори для різних класів (ніжні пастельні) */
+        .grade-9 { background-color: #e0e7ff; color: #4338ca; } /* Блакитний для 9 класу */
+        .grade-8 { background-color: #fae8ff; color: #a21caf; } /* Фіолетовий для 8 класу */
+        .grade-7 { background-color: #ffe4e6; color: #be123c; } /* Рожевий для 7 класу */
+        .grade-6 { background-color: #dcfce7; color: #15803d; } /* Зелений для 6 класу */
+
+        /* Анімація для фільтрації */
+        .card {
+            animation: fadeIn 0.4s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         .hidden {
             display: none;
         }
@@ -76,46 +144,81 @@
 </head>
 <body>
 
-    <h1>📚 Мої матеріали</h1>
+    <h1>Матеріали до уроків</h1>
 
-    <div class="filter-container">
-        <button class="filter-btn active" onclick="filterCards('all')">Всі</button>
-        <button class="filter-btn" onclick="filterCards('vsevolod')">Всеволод</button>
-        <button class="filter-btn" onclick="filterCards('other')">Інші учні</button>
+    <div class="filters">
+        <button class="filter-btn active" data-filter="all">Усі уроки</button>
+        <button class="filter-btn" data-filter="artur">Артур</button>
+        <button class="filter-btn" data-filter="nastya">Настя</button>
+        <button class="filter-btn" data-filter="marynka">Маринка</button>
+        <button class="filter-btn" data-filter="sofiyka">Софійка</button>
+        <button class="filter-btn" data-filter="newboy">Хлопчик хз</button>
+        <button class="filter-btn" data-filter="vsevolod">Всеволод</button>
+        <button class="filter-btn" data-filter="vadym">Вадим</button>
     </div>
 
-    <div class="grid-container">
+    <div class="grid" id="cards-container">
         
-        <a href="geometry_progression.html" class="card" data-student="vsevolod">
-            <div class="icon">📈</div>
-            <h3>Геометрична прогресія</h3>
-            <span class="student-tag">Всеволод</span>
+        <a href="#" class="card" data-student="artur">
+            <div class="topic">Системи нерівностей. Підготовка до ДПА</div>
+            <span class="tag grade-9">Артур • 9 клас</span>
         </a>
 
-        <a href="math_6_dii.html" class="card" data-student="other">
-            <div class="icon">✖️</div>
-            <h3>Математика 6 клас (Дії)</h3>
-            <span class="student-tag">Інші учні</span>
+        <a href="#" class="card" data-student="nastya">
+            <div class="topic">Квадратична функція та її графік</div>
+            <span class="tag grade-9">Настя • 9 клас</span>
+        </a>
+
+        <a href="#" class="card" data-student="marynka">
+            <div class="topic">Теорема Піфагора: розв'язування задач</div>
+            <span class="tag grade-8">Маринка • 8 клас</span>
+        </a>
+
+        <a href="#" class="card" data-student="sofiyka">
+            <div class="topic">Формули скороченого множення</div>
+            <span class="tag grade-7">Софійка • 7 клас</span>
+        </a>
+
+        <a href="#" class="card" data-student="newboy">
+            <div class="topic">Лінійні рівняння з однією змінною</div>
+            <span class="tag grade-7">Новий хлопчик • 7 клас</span>
+        </a>
+
+        <a href="geometry_progression.html" class="card" data-student="vsevolod">
+            <div class="topic">Геометрична прогресія (вступ)</div>
+            <span class="tag grade-6">Всеволод • 6 клас</span>
+        </a>
+
+        <a href="#" class="card" data-student="vadym">
+            <div class="topic">Додавання і віднімання дробів</div>
+            <span class="tag grade-6">Вадим • 6 клас</span>
         </a>
 
     </div>
 
     <script>
-        function filterCards(studentId) {
-            const cards = document.querySelectorAll('.card');
-            
-            cards.forEach(card => {
-                if (studentId === 'all' || card.getAttribute('data-student') === studentId) {
-                    card.classList.remove('hidden');
-                } else {
-                    card.classList.add('hidden');
-                }
-            });
+        const buttons = document.querySelectorAll('.filter-btn');
+        const cards = document.querySelectorAll('.card');
 
-            // Зміна кольору активної кнопки (опціонально)
-            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-        }
+        buttons.forEach(button => {
+            button.addEventListener('click', () => {
+                // Забираємо клас active у всіх кнопок і додаємо натиснутій
+                buttons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+
+                // Отримуємо значення фільтру
+                const filterValue = button.getAttribute('data-filter');
+
+                // Фільтруємо картки
+                cards.forEach(card => {
+                    if (filterValue === 'all' || card.getAttribute('data-student') === filterValue) {
+                        card.classList.remove('hidden');
+                    } else {
+                        card.classList.add('hidden');
+                    }
+                });
+            });
+        });
     </script>
 
 </body>
