@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Методичний посібник: Квадратні корені та Дійсні числа</title>
+    <title>Методичний посібник: Radical Master</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         window.MathJax = {
@@ -25,6 +25,7 @@
         .whiteboard-container { background-image: radial-gradient(#e2e8f0 1px, transparent 1px); background-size: 20px 20px; }
         .tool-active { @apply bg-blue-600 text-white shadow-md; }
         .solved-card { border-color: #22c55e !important; background-color: #f0fdf4 !important; }
+        .final-test-section { background: #0f172a; color: white; border-radius: 3rem; padding: 2.5rem; }
     </style>
 </head>
 <body class="h-screen flex text-slate-900">
@@ -33,7 +34,7 @@
         <header class="p-6 border-b border-slate-100 flex justify-between items-center sticky top-0 bg-white/80 backdrop-blur-md z-50">
             <div>
                 <h1 class="text-2xl font-extrabold text-slate-800">Алгебра: Квадратні Корені</h1>
-                <p class="text-xs font-bold text-blue-500 uppercase tracking-widest mt-1">Клас: 8 • Рівень: Середній • 1 година</p>
+                <p class="text-xs font-bold text-blue-500 uppercase tracking-widest mt-1">Клас: 8 • Прогресія складності • 30 задач</p>
             </div>
             <div class="text-right">
                 <div class="text-xs font-black text-slate-400 mb-1" id="prog-label">Прогрес: 0/30</div>
@@ -44,29 +45,30 @@
         </header>
 
         <main class="flex-1 overflow-y-auto p-8 space-y-12 custom-scrollbar">
-            
             <section>
                 <details class="group bg-blue-50/50 rounded-3xl border border-blue-100 p-2">
                     <summary class="flex items-center justify-between p-4 cursor-pointer font-bold text-blue-900">
-                        <span>📖 Стисла теорія (Шпаргалка)</span>
+                        <span>📖 Шпаргалка: Властивості кореня</span>
                         <span class="transition-transform group-open:rotate-180">▼</span>
                     </summary>
                     <div class="p-4 pt-0 space-y-3 text-sm text-slate-700 leading-relaxed">
-                        <p><strong>Арифметичний квадратний корінь:</strong> \( \sqrt{a} = b \), де \( b^2 = a \) та \( b \ge 0 \).</p>
-                        <p><strong>Множини чисел:</strong></p>
-                        <ul class="list-disc pl-5">
-                            <li>\( \mathbb{N} \) — натуральні (1, 2, 3...)</li>
-                            <li>\( \mathbb{Z} \) — цілі (...-2, -1, 0, 1, 2...)</li>
-                            <li>\( \mathbb{Q} \) — раціональні (можна записати як \( \frac{m}{n} \))</li>
-                            <li>\( \mathbb{I} \) — ірраціональні (нескінченні неперіодичні дроби, як \( \pi \) або \( \sqrt{2} \))</li>
-                            <li>\( \mathbb{R} \) — дійсні (усі вищеперелічені)</li>
-                        </ul>
+                        <p>1. \( \sqrt{a^2} = |a| \)</p>
+                        <p>2. \( \sqrt{a} \cdot \sqrt{b} = \sqrt{ab} \)</p>
+                        <p>3. \( \sqrt{\frac{a}{b}} = \frac{\sqrt{a}}{\sqrt{b}} \)</p>
+                        <p>4. Вкладені корені: \( \sqrt{a + \sqrt{b}} \) розв’язуй з внутрішнього.</p>
                     </div>
                 </details>
             </section>
 
-            <div id="tasks-list" class="space-y-10">
+            <div id="tasks-list" class="space-y-10"></div>
+
+            <div id="test-zone" class="hidden py-10">
+                <div class="final-test-section shadow-2xl">
+                    <h2 class="text-3xl font-black mb-6 text-blue-400">🏆 ФІНАЛЬНИЙ ТЕСТ</h2>
+                    <div id="test-questions" class="space-y-8"></div>
+                    <button onclick="checkTest()" class="mt-10 w-full bg-blue-600 text-white py-4 rounded-2xl font-bold hover:bg-blue-500 transition">ПЕРЕВІРИТИ ТЕСТ</button>
                 </div>
+            </div>
 
             <div class="py-10">
                 <button onclick="finishLesson()" class="w-full bg-slate-900 text-white py-6 rounded-3xl font-black text-xl hover:bg-blue-600 transition shadow-xl active:scale-[0.98]">
@@ -83,21 +85,15 @@
             <div class="w-px h-6 bg-slate-200 mx-1"></div>
             <button onclick="clearCanvas()" class="px-4 py-2 text-[10px] font-black text-red-500 hover:bg-red-50 rounded-xl uppercase">Очистити</button>
         </div>
-
         <div class="flex-1 whiteboard-container bg-white rounded-[2.5rem] shadow-inner border border-slate-200 overflow-hidden relative" id="canvas-parent">
             <canvas id="whiteboard" class="cursor-crosshair"></canvas>
-        </div>
-        
-        <div class="mt-4 flex justify-between items-center px-4 opacity-40">
-            <span class="text-[10px] font-black uppercase tracking-widest">Interactive Sketchpad v4.0</span>
-            <span class="text-[10px] font-black">MATH_STUDIO_READY</span>
         </div>
     </div>
 
     <div id="modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] hidden flex items-center justify-center p-6">
         <div class="bg-white rounded-[3rem] p-12 max-w-sm w-full text-center shadow-2xl">
-            <div class="text-7xl mb-6">🏆</div>
-            <h2 class="text-3xl font-black text-slate-800 mb-2">Урок завершено!</h2>
+            <div class="text-7xl mb-6">🎯</div>
+            <h2 class="text-3xl font-black text-slate-800 mb-2">Результат</h2>
             <p id="res-score" class="text-blue-600 font-black text-2xl mb-4"></p>
             <p id="res-msg" class="text-slate-500 mb-10 italic"></p>
             <button onclick="location.reload()" class="w-full bg-slate-900 text-white py-5 rounded-2xl font-bold hover:bg-blue-600 transition">Почати знову</button>
@@ -105,199 +101,167 @@
     </div>
 
 <script>
-    // --- БАЗА ДАНИХ ЗАВДАНЬ (30 ПУНКТІВ) ---
+    // БАЗА ДАНИХ (Твої оригінальні + нові складні)
     const tasksData = [
-        // 14.9 Повністю
-        { n: "14.9(1)", q: "\\( \\sqrt{25} \\)", a: "5", h: "Яке число в квадраті дає 25?", s: "5^2 = 25" },
-        { n: "14.9(2)", q: "\\( \\sqrt{36} \\)", a: "6", h: "6 помножити на 6 буде...", s: "6^2 = 36" },
-        { n: "14.9(3)", q: "\\( \\sqrt{0,16} \\)", a: "0,4", h: "0,4 * 0,4 = 0,16", s: "0,4" },
-        { n: "14.9(4)", q: "\\( \\sqrt{4900} \\)", a: "70", h: "sqrt(49) * sqrt(100)", s: "7 * 10 = 70" },
-        { n: "14.9(5)", q: "\\( \\sqrt{0,04} \\)", a: "0,2", h: "0,2 * 0,2 = 0,04", s: "0,2" },
-        { n: "14.9(6)", q: "\\( \\sqrt{\\frac{1}{64}} \\)", a: "1/8", h: "sqrt(1) / sqrt(64)", s: "1/8" },
-        { n: "14.9(7)", q: "\\( \\sqrt{1 \\frac{11}{25}} \\)", a: "1,2", h: "Перетвори в неправильний дріб: 36/25", s: "sqrt(36/25) = 6/5 = 1,2" },
-        { n: "14.9(8)", q: "\\( \\sqrt{3 \\frac{1}{16}} \\)", a: "1,75", h: "Неправильний дріб: 49/16", s: "sqrt(49/16) = 7/4 = 1,75" },
-        
-        // 14.10 Повністю
-        { n: "14.10(1)", q: "Чи правильна рівність: \\( \\sqrt{900} = 30 \\)? (так/ні)", a: "так", h: "30 * 30 = 900", s: "Правильно." },
-        { n: "14.10(2)", q: "Чи правильна рівність: \\( \\sqrt{4} = -2 \\)? (так/ні)", a: "ні", h: "Корінь не може бути від'ємним за означенням!", s: "Ні, результат завжди >= 0." },
-        { n: "14.10(3)", q: "Чи правильна рівність: \\( \\sqrt{0,9} = 0,3 \\)? (так/ні)", a: "ні", h: "0,3 * 0,3 = 0,09, а не 0,9", s: "Ні, sqrt(0,09)=0,3." },
-        { n: "14.10(4)", q: "Чи правильна рівність: \\( \\sqrt{0,64} = 0,8 \\)? (так/ні)", a: "так", h: "0,8^2 = 0,64", s: "Так, правильно." },
-
+        // 14.9
+        { n: "14.9(1)", q: "\\( \\sqrt{25} \\)", a: "5", h: "5 * 5 = ?", s: "5" },
+        { n: "14.9(2)", q: "\\( \\sqrt{36} \\)", a: "6", h: "6^2 = ?", s: "6" },
+        { n: "14.9(3)", q: "\\( \\sqrt{0,16} \\)", a: "0,4", h: "Має бути один знак після коми", s: "0,4" },
+        { n: "14.9(4)", q: "\\( \\sqrt{4900} \\)", a: "70", h: "sqrt(49) * 10", s: "70" },
+        { n: "14.9(5)", q: "\\( \\sqrt{0,04} \\)", a: "0,2", h: "0,2 * 0,2", s: "0,2" },
+        { n: "14.9(6)", q: "\\( \\sqrt{1/64} \\)", a: "1/8", h: "sqrt(1)/sqrt(64)", s: "1/8" },
+        { n: "14.9(7)", q: "\\( \\sqrt{1\\frac{11}{25}} \\)", a: "1,2", h: "sqrt(36/25) = 6/5", s: "1,2" },
+        { n: "14.9(8)", q: "\\( \\sqrt{3\\frac{1}{16}} \\)", a: "1,75", h: "sqrt(49/16) = 7/4", s: "1,75" },
+        // 14.10
+        { n: "14.10(1)", q: "Чи правильно: \\( \\sqrt{900} = 30 \\)? (так/ні)", a: "так", h: "30*30=900", s: "так" },
+        { n: "14.10(2)", q: "Чи правильно: \\( \\sqrt{4} = -2 \\)? (так/ні)", a: "ні", h: "Корінь не буває від'ємним", s: "ні" },
+        { n: "14.10(3)", q: "Чи правильно: \\( \\sqrt{0,9} = 0,3 \\)? (так/ні)", a: "ні", h: "0,3*0,3=0,09", s: "ні" },
+        { n: "14.10(4)", q: "Чи правильно: \\( \\sqrt{0,64} = 0,8 \\)? (так/ні)", a: "так", h: "0,8^2=0,64", s: "так" },
         // 14.11
-        { n: "14.11(1)", q: "\\( \\sqrt{1296} \\) (використай таблицю)", a: "36", h: "Закінчується на 6, отже це 34 або 36.", s: "36" },
-        { n: "14.11(2)", q: "\\( \\sqrt{9409} \\)", a: "97", h: "Близько до 100^2=10000", s: "97" },
-        { n: "14.11(4)", q: "\\( \\sqrt{30,25} \\)", a: "5,5", h: "55^2 = 3025", s: "5,5" },
-
+        { n: "14.11(1)", q: "\\( \\sqrt{1296} \\)", a: "36", h: "30^2=900, 40^2=1600", s: "36" },
+        { n: "14.11(2)", q: "\\( \\sqrt{9409} \\)", a: "97", h: "Близько до 100^2", s: "97" },
+        { n: "14.11(4)", q: "\\( \\sqrt{30,25} \\)", a: "5,5", h: "50^2=2500, 60^2=3600", s: "5,5" },
         // 14.12
-        { n: "14.12(1)", q: "Значення виразу: \\( \\sqrt{64} + \\sqrt{25} \\)", a: "13", h: "8 + 5", s: "8 + 5 = 13" },
-        { n: "14.12(3)", q: "Значення: \\( 2\\sqrt{100} - \\sqrt{144} \\)", a: "8", h: "2 * 10 - 12", s: "20 - 12 = 8" },
-        { n: "14.12(6)", q: "Значення: \\( \\sqrt{5^2 - 25} \\)", a: "0", h: "25 - 25", s: "sqrt(0) = 0" },
-
+        { n: "14.12(1)", q: "\\( \\sqrt{64} + \\sqrt{25} \\)", a: "13", h: "8 + 5", s: "13" },
+        { n: "14.12(3)", q: "\\( 2\\sqrt{100} - \\sqrt{144} \\)", a: "8", h: "2*10 - 12", s: "8" },
+        { n: "14.12(6)", q: "\\( \\sqrt{5^2 - 25} \\)", a: "0", h: "sqrt(25-25)", s: "0" },
         // 14.16
-        { n: "14.16(1)", q: "Розв'яжіть: \\( \\sqrt{x} = 2 \\)", a: "4", h: "x = 2^2", s: "x = 4" },
-        { n: "14.16(3)", q: "Розв'яжіть: \\( \\sqrt{x} = -2 \\) (якщо немає, пиши 'немає')", a: "немає", h: "Корінь не буває від'ємним.", s: "Рішень немає." },
-        { n: "14.16(5)", q: "Розв'яжіть: \\( 2\\sqrt{x} = 8 \\)", a: "16", h: "Спочатку поділи на 2.", s: "sqrt(x)=4 => x=16" },
-
+        { n: "14.16(1)", q: "Рівняння: \\( \\sqrt{x} = 2 \\)", a: "4", h: "x = 2^2", s: "4" },
+        { n: "14.16(3)", q: "Рівняння: \\( \\sqrt{x} = -2 \\) (якщо немає, пиши 'немає')", a: "немає", h: "Корінь не може бути від'ємним", s: "немає" },
+        { n: "14.16(5)", q: "Рівняння: \\( 2\\sqrt{x} = 8 \\)", a: "16", h: "sqrt(x) = 4", s: "16" },
         // 14.18
-        { n: "14.18(1)", q: "Чи має зміст вираз: \\( \\sqrt{12 \\cdot 14 - 13^2} \\)? (так/ні)", a: "ні", h: "168 - 169 = -1", s: "Під коренем -1. Ні." },
+        { n: "14.18(1)", q: "Чи має зміст: \\( \\sqrt{12 \\cdot 14 - 13^2} \\)? (так/ні)", a: "ні", h: "168 - 169", s: "ні" },
         
-        // 15.10 (Класифікація)
-        { n: "15.10(1)", q: "Чи правда: \( 7 \notin \mathbb{N} \)? (так/ні)", a: "ні", h: "7 - натуральне число.", s: "Ні, бо 7 є натуральним." },
-        { n: "15.10(6)", q: "Чи правда: \( -9,2 \in \mathbb{Q} \)? (так/ні)", a: "так", h: "Раціональні - це і дроби.", s: "Так." },
-        { n: "15.10(8)", q: "Чи правда: \( \\sqrt{3} \in \mathbb{Q} \)? (так/ні)", a: "ні", h: "Це ірраціональне число.", s: "Ні." },
-        { n: "15.10(11)", q: "Чи правда: \( \\sqrt{\\frac{4}{9}} \notin \mathbb{Z} \)? (так/ні)", a: "так", h: "Це 2/3. А 2/3 - це ціле?", s: "Так, це не ціле число." },
-
-        // 15.11 (Порівняння)
-        { n: "15.11(3)", q: "Порівняйте \( -\\frac{1}{17} \) та 0. Що більше? (пиши число)", a: "0", h: "Нуль більше за будь-яке від'ємне.", s: "0" },
-        { n: "15.11(4)", q: "Порівняйте \( \pi \) та 3,2. Що менше?", a: "pi", h: "Пі приблизно 3,14", s: "pi < 3,2" },
-        { n: "15.11(5)", q: "Порівняйте \( -\pi \) та -3,1. Що більше?", a: "-3,1", h: "-3,14... менше ніж -3,1", s: "-3,1" },
-        { n: "15.11(8)", q: "Що менше: \( \\sqrt{3} \) чи 1,8?", a: "sqrt(3)", h: "sqrt(3) ≈ 1,73", s: "sqrt(3) < 1,8" }
+        // --- НОВІ СКЛАДНІ ЗАВДАННЯ (23-30) ---
+        { n: "BOSS-1", q: "Обчисли: \\( \\sqrt{1,6 \\cdot 14,4} \\)", a: "4,8", h: "sqrt(16 * 1,44) або sqrt(0,16 * 144)", s: "sqrt(23,04) = 4,8" },
+        { n: "BOSS-2", q: "Обчисли: \\( \\sqrt{2^{10} \\cdot 0,25} \\)", a: "16", h: "2^5 * 0,5", s: "32 * 0,5 = 16" },
+        { n: "BOSS-3", q: "Обчисли: \\( \\sqrt{13^2 - 12^2} \\)", a: "5", h: "Різниця квадратів: (13-12)(13+12)", s: "sqrt(1*25) = 5" },
+        { n: "BOSS-4", q: "Спрости: \\( \\sqrt{(\\sqrt{3}-2)^2} + \\sqrt{3} \\)", a: "2", h: "Пам'ятай: sqrt(a^2) = |a|. Оскільки sqrt(3) < 2, то |sqrt(3)-2| = 2-sqrt(3)", s: "2-sqrt(3)+sqrt(3) = 2" },
+        { n: "BOSS-5", q: "Обчисли: \\( \\sqrt{3 + \\sqrt{30 + \\sqrt{36}}} \\)", a: "3", h: "Рахуй зсередини: sqrt(36)=6, далі 30+6...", s: "sqrt(3+sqrt(36)) = sqrt(3+6) = 3" },
+        { n: "BOSS-6", q: "Знайди \( x \): \\( \\sqrt{\\sqrt{x}} = 3 \\)", a: "81", h: "Зведи до квадрату двічі", s: "sqrt(x)=9 => x=81" },
+        { n: "BOSS-7", q: "Обчисли: \\( \\frac{\\sqrt{72} \\cdot \\sqrt{2}}{\\sqrt{16}} \\)", a: "3", h: "sqrt(144)/4", s: "12/4 = 3" },
+        { n: "BOSS-8", q: "Знайди значення: \\( (2\\sqrt{3})^2 - (3\\sqrt{2})^2 \\)", a: "-6", h: "4*3 - 9*2", s: "12 - 18 = -6" }
     ];
 
-    let solved = 0;
+    const testData = [
+        { q: "Яке число більше: \\( 3\\sqrt{5} \\) чи \\( \\sqrt{46} \\)? (пиши число)", a: "46" },
+        { q: "Розв'яжи рівняння: \\( \\sqrt{x+2} = 0 \\)", a: "-2" },
+        { q: "Обчисли: \\( \\sqrt{0,4} \\cdot \\sqrt{1000} \\cdot \\sqrt{0,1} \\)", a: "2" }
+    ];
 
-    // ГЕНЕРАЦІЯ ІНТЕРФЕЙСУ ЗАВДАНЬ
+    let solvedCount = 0;
+
     function initTasks() {
         const container = document.getElementById('tasks-list');
-        let currentBlock = "";
-
-        tasksData.forEach((task, index) => {
-            const blockNum = task.n.split('(')[0];
-            
-            if (blockNum !== currentBlock) {
-                currentBlock = blockNum;
-                const h = document.createElement('h2');
-                h.className = "text-xl font-black text-slate-800 flex items-center gap-3 border-l-4 border-blue-600 pl-4 my-8";
-                h.innerHTML = `Блок завдання №${currentBlock}`;
-                container.appendChild(h);
-            }
-
+        tasksData.forEach((task, idx) => {
             const div = document.createElement('div');
-            div.id = `task-container-${index}`;
+            div.id = `task-${idx}`;
             div.className = "task-card bg-white p-6 rounded-3xl";
             div.innerHTML = `
-                <div class="flex justify-between items-start mb-4">
-                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">${task.n}</span>
-                    <div id="status-${index}" class="hidden text-green-500 font-bold text-xs flex items-center gap-1">
-                        Виконано <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"></path></svg>
-                    </div>
+                <div class="flex justify-between items-start mb-2">
+                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">${task.n}</span>
+                    <span id="check-${idx}" class="hidden text-green-500 font-bold text-xs">✔ ВИКОНАНО</span>
                 </div>
-                <div class="text-lg font-semibold text-slate-700 mb-6">${task.q}</div>
+                <div class="text-lg font-semibold text-slate-700 mb-4">${task.q}</div>
                 <div class="flex gap-2">
-                    <input type="text" id="ans-${index}" onkeypress="if(event.key==='Enter') checkAnswer(${index})" 
-                        class="flex-1 bg-slate-50 border-2 border-slate-50 rounded-2xl px-5 py-3 focus:outline-none focus:border-blue-500 transition-all" 
-                        placeholder="Твоя відповідь...">
-                    <button onclick="checkAnswer(${index})" class="bg-slate-900 text-white px-6 py-3 rounded-2xl font-bold hover:bg-blue-700 transition active:scale-95">Добре</button>
+                    <input type="text" id="input-${idx}" onkeypress="if(event.key==='Enter') checkTask(${idx})" class="flex-1 bg-slate-50 rounded-2xl px-4 py-3 border-2 border-transparent focus:border-blue-500 outline-none transition" placeholder="Відповідь">
+                    <button onclick="checkTask(${idx})" class="bg-slate-900 text-white px-5 rounded-2xl font-bold hover:bg-blue-600 transition">OK</button>
                 </div>
-                <div class="flex gap-4 mt-4">
-                    <button onclick="toggleHelp(${index}, 'h')" class="text-[10px] font-bold text-blue-500 uppercase">Підказка</button>
-                    <button onclick="toggleHelp(${index}, 's')" class="text-[10px] font-bold text-slate-300 uppercase ml-auto">Повний розв'язок</button>
+                <div class="mt-3 flex gap-4">
+                    <button onclick="toggleInfo(${idx}, 'hint')" class="text-[10px] font-bold text-blue-500">ПІДКАЗКА</button>
+                    <button onclick="toggleInfo(${idx}, 'sol')" class="text-[10px] font-bold text-slate-300 ml-auto">РОЗВ'ЯЗОК</button>
                 </div>
-                <div id="hint-${index}" class="hidden mt-3 p-4 bg-blue-50 text-blue-700 rounded-2xl text-xs border border-blue-100 italic">💡 ${task.h}</div>
-                <div id="sol-${index}" class="hidden mt-3 p-4 bg-slate-100 text-slate-600 rounded-2xl text-xs border border-slate-200 font-mono">${task.s}</div>
+                <div id="hint-${idx}" class="hidden mt-2 p-3 bg-blue-50 rounded-xl text-xs text-blue-700 italic">💡 ${task.h}</div>
+                <div id="sol-${idx}" class="hidden mt-2 p-3 bg-slate-100 rounded-xl text-xs font-mono">${task.s}</div>
             `;
             container.appendChild(div);
         });
         MathJax.typeset();
     }
 
-    function checkAnswer(idx) {
-        const input = document.getElementById(`ans-${idx}`);
-        const user = input.value.trim().toLowerCase().replace(',', '.');
-        const correct = tasksData[idx].a.toLowerCase().replace(',', '.');
-
-        if (user === correct || (user === "pi" && correct === "pi")) {
-            if (!document.getElementById(`task-container-${idx}`).classList.contains('solved-card')) {
-                solved++;
-                updateProg();
+    function checkTask(idx) {
+        const val = document.getElementById(`input-${idx}`).value.trim().toLowerCase().replace(',', '.');
+        if (val === tasksData[idx].a.toLowerCase().replace(',', '.')) {
+            if (!document.getElementById(`task-${idx}`).classList.contains('solved-card')) {
+                solvedCount++;
+                updateProgress();
             }
-            document.getElementById(`task-container-${idx}`).classList.add('solved-card');
-            document.getElementById(`status-${idx}`).classList.remove('hidden');
-            input.classList.remove('border-red-500');
+            document.getElementById(`task-${idx}`).classList.add('solved-card');
+            document.getElementById(`check-${idx}`).classList.remove('hidden');
         } else {
-            input.classList.add('border-red-500');
-            setTimeout(() => input.classList.remove('border-red-500'), 500);
+            const el = document.getElementById(`input-${idx}`);
+            el.classList.add('border-red-500');
+            setTimeout(() => el.classList.remove('border-red-500'), 500);
         }
     }
 
-    function updateProg() {
-        const p = Math.round((solved / tasksData.length) * 100);
+    function updateProgress() {
+        const p = (solvedCount / tasksData.length) * 100;
         document.getElementById('prog-bar').style.width = p + '%';
-        document.getElementById('prog-label').innerText = `Прогрес: ${solved}/${tasksData.length}`;
+        document.getElementById('prog-label').innerText = `Прогрес: ${solvedCount}/${tasksData.length}`;
+        if (solvedCount === tasksData.length) {
+            document.getElementById('test-zone').classList.remove('hidden');
+            initTest();
+        }
     }
 
-    function toggleHelp(idx, type) {
-        const el = document.getElementById(type === 'h' ? `hint-${idx}` : `sol-${idx}`);
+    function initTest() {
+        const cont = document.getElementById('test-questions');
+        if (cont.innerHTML !== "") return;
+        testData.forEach((t, i) => {
+            cont.innerHTML += `<div class="p-4 bg-white/5 rounded-2xl border border-white/10">
+                <p class="mb-3 text-lg">${i+1}. ${t.q}</p>
+                <input type="text" id="test-input-${i}" class="w-full bg-transparent border-b-2 border-white/20 outline-none focus:border-blue-400 py-2">
+            </div>`;
+        });
+        MathJax.typeset();
+    }
+
+    function checkTest() {
+        let correct = 0;
+        testData.forEach((t, i) => {
+            const v = document.getElementById(`test-input-${i}`).value.trim().replace(',', '.');
+            if (v === t.a) correct++;
+        });
+        alert(`Тест завершено! Правильних відповідей: ${correct} з ${testData.length}`);
+    }
+
+    function toggleInfo(idx, type) {
+        const el = document.getElementById(`${type}-${idx}`);
         el.classList.toggle('hidden');
     }
 
-    // --- ЛОГІКА ДОШКИ (CANVAS) ---
+    // Canvas Logic
     const canvas = document.getElementById('whiteboard');
     const ctx = canvas.getContext('2d');
-    let drawing = false;
-    let tool = 'pen';
-
+    let drawing = false, tool = 'pen';
     function initCanvas() {
-        const parent = document.getElementById('canvas-parent');
-        canvas.width = parent.clientWidth;
-        canvas.height = parent.clientHeight;
-        ctx.lineCap = 'round';
-        ctx.lineWidth = 3;
+        const p = document.getElementById('canvas-parent');
+        canvas.width = p.clientWidth; canvas.height = p.clientHeight;
+        ctx.lineCap = 'round'; ctx.lineWidth = 3;
     }
-
-    function setTool(t) {
-        tool = t;
-        document.getElementById('btn-pen').className = t === 'pen' ? 'p-3 rounded-xl tool-active' : 'p-3 rounded-xl hover:bg-slate-100';
-        document.getElementById('btn-eraser').className = t === 'eraser' ? 'p-3 rounded-xl tool-active' : 'p-3 rounded-xl hover:bg-slate-100';
+    function setTool(t) { tool = t; 
+        document.getElementById('btn-pen').className = t==='pen'?'p-3 rounded-xl tool-active':'p-3 rounded-xl hover:bg-slate-100';
+        document.getElementById('btn-eraser').className = t==='eraser'?'p-3 rounded-xl tool-active':'p-3 rounded-xl hover:bg-slate-100';
     }
-
-    function startDraw(e) {
-        drawing = true;
-        ctx.beginPath();
-        const pos = getPos(e);
-        ctx.moveTo(pos.x, pos.y);
-    }
-
-    function draw(e) {
-        if (!drawing) return;
-        const pos = getPos(e);
+    canvas.onmousedown = (e) => { drawing = true; ctx.beginPath(); const pos = getPos(e); ctx.moveTo(pos.x, pos.y); };
+    canvas.onmousemove = (e) => { if (!drawing) return; const pos = getPos(e); 
         ctx.strokeStyle = tool === 'eraser' ? '#ffffff' : '#1e293b';
         ctx.lineWidth = tool === 'eraser' ? 30 : 3;
-        ctx.lineTo(pos.x, pos.y);
-        ctx.stroke();
-    }
+        ctx.lineTo(pos.x, pos.y); ctx.stroke();
+    };
+    window.onmouseup = () => drawing = false;
+    function getPos(e) { const r = canvas.getBoundingClientRect(); return { x: e.clientX-r.left, y: e.clientY-r.top }; }
+    function clearCanvas() { ctx.clearRect(0,0,canvas.width,canvas.height); }
 
-    function getPos(e) {
-        const r = canvas.getBoundingClientRect();
-        const x = (e.clientX || (e.touches ? e.touches[0].clientX : 0)) - r.left;
-        const y = (e.clientY || (e.touches ? e.touches[0].clientY : 0)) - r.top;
-        return { x, y };
-    }
-
-    function clearCanvas() { ctx.clearRect(0, 0, canvas.width, canvas.height); }
-
-    canvas.addEventListener('mousedown', startDraw);
-    canvas.addEventListener('mousemove', draw);
-    window.addEventListener('mouseup', () => drawing = false);
-    canvas.addEventListener('touchstart', (e) => { e.preventDefault(); startDraw(e); });
-    canvas.addEventListener('touchmove', (e) => { e.preventDefault(); draw(e); });
-
-    // --- ФІНАЛ ---
     function finishLesson() {
-        const score = Math.round((solved / tasksData.length) * 100);
-        document.getElementById('res-score').innerText = `${score}% (${solved}/${tasksData.length})`;
-        const msg = document.getElementById('res-msg');
-        
-        if (score > 90) msg.innerText = "Ти — майстер радикалів! Ідеальна робота.";
-        else if (score > 60) msg.innerText = "Дуже добре! Ти впевнено володієш темою.";
-        else msg.innerText = "Непогано, але варто попрактикуватись ще. Математика любить терпіння!";
-        
+        const score = Math.round((solvedCount / tasksData.length) * 100);
+        document.getElementById('res-score').innerText = `${score}% (${solvedCount}/30)`;
+        document.getElementById('res-msg').innerText = score > 80 ? "Ти — володар радикалів!" : "Непогано, але потренуйся ще!";
         document.getElementById('modal').classList.remove('hidden');
     }
 
     window.onload = () => { initTasks(); initCanvas(); };
-    window.onresize = initCanvas;
-
 </script>
 </body>
 </html>
