@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Діагностика 7 клас: Вступ та Основи</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['\\(', '\\)']],
+                displayMath: [['\\[', '\\]']]
+            },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; overflow: hidden; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .task-card { border: 1px solid #e2e8f0; transition: all 0.3s ease; }
+        .task-card:hover { border-color: #3b82f6; box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.1); transform: translateY(-2px); }
+        .canvas-container { position: relative; background: #ffffff; cursor: crosshair; touch-action: none; }
+        .tool-active { background-color: #2563eb; color: #ffffff; box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.4); }
+        .option-btn { transition: all 0.2s; }
+        .option-btn:hover:not(:disabled) { background-color: #f1f5f9; border-color: #94a3b8; }
+        .option-correct { background-color: #dcfce7 !important; border-color: #22c55e !important; color: #166534 !important; }
+        .option-wrong { background-color: #fee2e2 !important; border-color: #ef4444 !important; color: #991b1b !important; }
+    </style>
+</head>
+<body class="h-screen flex text-slate-900">
+
+    <div class="w-full lg:w-1/2 flex flex-col bg-white border-r border-slate-200 shadow-xl z-10 relative">
+        <header class="p-5 border-b border-slate-100 flex justify-between items-center bg-white/95 backdrop-blur-md sticky top-0 z-30">
+            <div>
+                <h1 class="text-2xl font-extrabold tracking-tight text-slate-800">Діагностика: 7 клас</h1>
+                <p class="text-[11px] font-bold text-indigo-500 uppercase tracking-widest mt-1">Рівень: Ознайомчий • Алгебра та Геометрія</p>
+            </div>
+            <div class="flex flex-col items-end w-32">
+                <div class="flex items-center gap-2 mb-1">
+                    <span class="text-xs font-bold text-slate-500">Прогрес</span>
+                    <span id="prog-text" class="text-xs font-black text-indigo-600">0/20</span>
+                </div>
+                <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+                    <div id="prog-bar" class="h-full bg-gradient-to-r from-indigo-500 to-purple-500 transition-all duration-500" style="width: 0%"></div>
+                </div>
+            </div>
+        </header>
+
+        <main class="flex-1 overflow-y-auto p-6 lg:p-10 space-y-12 custom-scrollbar pb-32">
+            
+            <section class="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-3xl p-6 border border-indigo-100">
+                <div class="flex items-start gap-4">
+                    <div class="text-4xl">👋</div>
+                    <div>
+                        <h2 class="text-xl font-bold text-indigo-900 mb-2">Привіт! Це пробний урок.</h2>
+                        <p class="text-indigo-800/80 text-sm leading-relaxed mb-4">
+                            Тут зібрані завдання, щоб перевірити твою базу за 6 клас та основи 7 класу. Почнемо з легкого (дроби, периметр) і дійдемо до рівнянь та трикутників. Використовуй <b>Підказки</b>, якщо забув правило!
+                        </p>
+                        <details class="group bg-white rounded-2xl border border-indigo-200 overflow-hidden transition-all">
+                            <summary class="cursor-pointer p-4 font-bold text-indigo-700 text-sm flex justify-between items-center bg-indigo-50/50 hover:bg-indigo-100/50">
+                                📚 Шпаргалка: Основні правила
+                                <span class="transition group-open:rotate-180">▼</span>
+                            </summary>
+                            <div class="p-4 text-sm text-slate-600 space-y-3 bg-white border-t border-indigo-100">
+                                <p><b>Дроби:</b> Щоб додати дроби з різними знаменниками, знайди спільний знаменник.</p>
+                                <p><b>Степені:</b> При множенні степенів з однаковими основами показники додаються: \( a^m \cdot a^n = a^{m+n} \).</p>
+                                <p><b>Геометрія:</b> Периметр — це сума довжин усіх сторін. Суміжні кути в сумі дають \(180^\circ\).</p>
+                            </div>
+                        </details>
+                    </div>
+                </div>
+            </section>
+
+            <section class="space-y-6">
+                <div class="flex items-center gap-4 border-b border-slate-100 pb-4">
+                    <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center text-xl shadow-inner shadow-blue-200">🔢</div>
+                    <h2 class="text-3xl font-black text-slate-800">Блок 1. Алгебра та обчислення</h2>
+                </div>
+                <div id="algebra-tasks" class="space-y-5"></div>
+            </section>
+
+            <div class="w-full h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent my-10"></div>
+
+            <section class="space-y-6">
+                <div class="flex items-center gap-4 border-b border-slate-100 pb-4">
+                    <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center text-xl shadow-inner shadow-emerald-200">📐</div>
+                    <h2 class="text-3xl font-black text-slate-800">Блок 2. Геометрія та фігури</h2>
+                </div>
+                
+                <div class="bg-slate-900 rounded-3xl p-6 text-white text-center relative overflow-hidden group mb-6">
+                    <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCI+PGNpcmNsZSBjeD0iMiIgY3k9IjIiIHI9IjEiIGZpbGw9IiMzMzQxNTUiLz48L3N2Zz4=')] opacity-30"></div>
+                    <div class="relative z-10 flex flex-col items-center">
+                        <svg class="w-16 h-16 mb-2 text-emerald-400 transform group-hover:scale-110 transition duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5"></path>
+                        </svg>
+                        <h3 class="font-bold text-lg">Використовуй дошку праворуч!</h3>
+                        <p class="text-slate-400 text-xs">Малюй кути та трикутники, щоб краще уявити задачу.</p>
+                    </div>
+                </div>
+
+                <div id="geometry-tasks" class="space-y-5"></div>
+            </section>
+
+            <div class="pt-8 border-t border-slate-200 text-center">
+                <button onclick="finishLesson()" class="w-full md:w-2/3 mx-auto bg-slate-900 text-white py-5 rounded-3xl font-black text-lg hover:bg-indigo-600 transition-all shadow-lg shadow-indigo-200 transform hover:-translate-y-1 active:scale-95">
+                    ЗАВЕРШИТИ УРОК
+                </button>
+            </div>
+        </main>
+    </div>
+
+    <div class="hidden lg:flex w-1/2 flex-col bg-slate-50 relative p-6 h-screen">
+        <div class="absolute top-8 left-1/2 -translate-x-1/2 z-40 flex items-center gap-2 bg-white p-2 rounded-2xl shadow-xl shadow-slate-200/50 border border-slate-100">
+            <button onclick="setTool('pen')" id="tool-pen" class="p-3 rounded-xl tool-active transition" title="Олівець">✏️</button>
+            <button onclick="setTool('eraser')" id="tool-eraser" class="p-3 rounded-xl hover:bg-slate-100 transition" title="Гумка">🧽</button>
+            <div class="w-px h-8 bg-slate-200 mx-1"></div>
+            <button onclick="toggleGrid()" id="tool-grid" class="px-3 py-2 text-xs font-bold text-slate-500 hover:bg-slate-100 rounded-lg transition" title="Координатна сітка">🌐 Сітка</button>
+            <button onclick="drawShape('triangle')" class="px-3 py-2 text-xs font-bold text-emerald-600 hover:bg-emerald-50 rounded-lg transition" title="Намалювати трикутник">🔺 Трикутник</button>
+            <button onclick="drawShape('angle')" class="px-3 py-2 text-xs font-bold text-emerald-600 hover:bg-emerald-50 rounded-lg transition" title="Намалювати кут">📐 Кут</button>
+            <div class="w-px h-8 bg-slate-200 mx-1"></div>
+            <button onclick="clearCanvas()" class="p-3 text-red-500 hover:bg-red-50 rounded-xl transition" title="Очистити все">🗑️</button>
+        </div>
+
+        <div class="canvas-container flex-1 bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden mt-16" id="canvas-wrap">
+            <canvas id="whiteboard"></canvas>
+        </div>
+        
+        <div class="mt-4 flex justify-between items-center px-2">
+            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Розумна Чернетка • Малюй розв'язки тут</p>
+        </div>
+    </div>
+
+    <div id="result-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-[2rem] p-10 max-w-md w-full text-center shadow-2xl transform scale-95 transition-all" id="modal-content">
+            <div class="text-6xl mb-4" id="res-emoji">🎯</div>
+            <h2 class="text-3xl font-black text-slate-800 mb-2">Урок Завершено!</h2>
+            <div class="inline-block bg-indigo-50 border border-indigo-100 rounded-2xl px-6 py-3 mb-6">
+                <p class="text-sm font-bold text-indigo-400 uppercase tracking-wide mb-1">Твій результат</p>
+                <p id="res-score" class="text-indigo-600 font-black text-4xl">0 / 20</p>
+            </div>
+            <p id="res-message" class="text-slate-600 mb-8 font-medium leading-relaxed"></p>
+            <button onclick="location.reload()" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-bold hover:bg-indigo-600 transition shadow-lg active:scale-95">Спробувати ще раз</button>
+        </div>
+    </div>
+
+<script>
+    // --- ДАНІ ЗАВДАНЬ (20 шт: 10 Алгебра + 10 Геометрія) ---
+    const algebraTasks = [
+        { 
+            q: "Обчисліть: \\( \\frac{1}{2} + \\frac{1}{4} \\)", 
+            opts: ["\\( \\frac{3}{4} \\)", "\\( \\frac{2}{6} \\)", "\\( \\frac{1}{8} \\)"], a: 0, lvl: "Легкий",
+            h: "Зведи до спільного знаменника. Спільний знаменник для 2 і 4 — це 4. \\( \\frac{1}{2} = \\frac{2}{4} \\).", s: "\\( \\frac{2}{4} + \\frac{1}{4} = \\frac{3}{4} \\)" 
+        },
+        { 
+            q: "Знайдіть корінь простого рівняння: \\( 3x = 15 \\)", 
+            opts: ["\\( x = 12 \\)", "\\( x = 5 \\)", "\\( x = 45 \\)"], a: 1, lvl: "Легкий",
+            h: "Щоб знайти невідомий множник, треба добуток поділити на відомий множник.", s: "\\( x = 15 : 3 \\Rightarrow x = 5 \\)" 
+        },
+        { 
+            q: "Розв'яжіть лінійне рівняння: \\( 2x - 7 = 5 \\)", 
+            opts: ["\\( x = 6 \\)", "\\( x = -1 \\)", "\\( x = 12 \\)"], a: 0, lvl: "Середній",
+            h: "Перенеси -7 в праву частину зі знаком плюс.", s: "\\( 2x = 5 + 7 \\Rightarrow 2x = 12 \\Rightarrow x = 6 \\)" 
+        },
+        { 
+            q: "Подайте у вигляді степеня добуток: \\( a^3 \\cdot a^4 \\)", 
+            opts: ["\\( a^{12} \\)", "\\( a^7 \\)", "\\( a^1 \\)"], a: 1, lvl: "Легкий",
+            h: "При множенні степенів з однаковими основами показники додаються.", s: "\\( a^{3+4} = a^7 \\)" 
+        },
+        { 
+            q: "Піднесіть одночлен до степеня: \\( (2x^2)^3 \\)", 
+            opts: ["\\( 6x^5 \\)", "\\( 8x^6 \\)", "\\( 8x^5 \\)"], a: 1, lvl: "Середній",
+            h: "Піднеси до 3-го степеня число 2, а показник змінної x помнож на 3.", s: "\\( 2^3 \\cdot (x^2)^3 = 8x^6 \\)" 
+        },
+        { 
+            q: "Зведіть подібні доданки: \\( 5x - 3x + 2x \\)", 
+            opts: ["\\( 4x \\)", "\\( 10x \\)", "\\( 0 \\)"], a: 0, lvl: "Легкий",
+            h: "Просто виконай дії з числами перед x: 5 - 3 + 2.", s: "\\( (5 - 3 + 2)x = 4x \\)" 
+        },
+        { 
+            q: "Розкрийте дужки та спростіть вираз: \\( (3x + 2) - (x - 4) \\)", 
+            opts: ["\\( 2x - 2 \\)", "\\( 4x - 2 \\)", "\\( 2x + 6 \\)"], a: 2, lvl: "Середній",
+            h: "Перед другими дужками стоїть мінус, тому знаки всередині змінюються на протилежні.", s: "\\( 3x + 2 - x + 4 = 2x + 6 \\)" 
+        },
+        { 
+            q: "Винесіть спільний множник за дужки: \\( 6a^2 - 3a \\)", 
+            opts: ["\\( 3a(2a - 1) \\)", "\\( 3a(a - 1) \\)", "\\( 3(2a^2 - a) \\)"], a: 0, lvl: "Середній",
+            h: "Найбільше число, на яке діляться 6 і 3 — це 3. Спільна змінна — a.", s: "\\( 3a \\cdot 2a - 3a \\cdot 1 = 3a(2a - 1) \\)" 
+        },
+        { 
+            q: "Перемножте одночлен на многочлен: \\( 2x(x + 3) \\)", 
+            opts: ["\\( 2x^2 + 6x \\)", "\\( 2x^2 + 3 \\)", "\\( 2x + 6x \\)"], a: 0, lvl: "Середній",
+            h: "Множник 2x треба помножити на кожен елемент у дужках.", s: "\\( 2x \\cdot x + 2x \\cdot 3 = 2x^2 + 6x \\)" 
+        },
+        { 
+            q: "Розкладіть на множники способом групування: \\( ax + ay + 2x + 2y \\)", 
+            opts: ["\\( (a+2)(x+y) \\)", "\\( (a+x)(2+y) \\)", "\\( a(x+y)+2 \\)"], a: 0, lvl: "Складний",
+            h: "Згрупуй перші два доданки і останні два. З першої пари винеси 'a', з другої '2'.", s: "\\( a(x+y) + 2(x+y) = (a+2)(x+y) \\)" 
+        }
+    ];
+
+    const geometryTasks = [
+        { 
+            q: "Знайдіть периметр прямокутника зі сторонами 4 см і 6 см.", 
+            opts: ["\\( 24 \\text{ см} \\)", "\\( 10 \\text{ см} \\)", "\\( 20 \\text{ см} \\)"], a: 2, lvl: "Легкий",
+            h: "Периметр прямокутника — це сума всіх його чотирьох сторін.", s: "\\( P = 2 \\cdot (4 + 6) = 2 \\cdot 10 = 20 \\text{ см} \\)" 
+        },
+        { 
+            q: "Кут, градусна міра якого дорівнює \\( 90^\\circ \\), називається...", 
+            opts: ["Гострий", "Прямий", "Тупий"], a: 1, lvl: "Легкий",
+            h: "Уяви кут звичайного столу або аркуша паперу.", s: "За означенням, кут \\( 90^\\circ \\) є прямим." 
+        },
+        { 
+            q: "Суміжні кути разом утворюють розгорнутий кут. Яка їх сума?", 
+            opts: ["\\( 90^\\circ \\)", "\\( 180^\\circ \\)", "\\( 360^\\circ \\)"], a: 1, lvl: "Легкий",
+            h: "Розгорнутий кут виглядає як пряма лінія.", s: "Сума суміжних кутів завжди дорівнює \\( 180^\\circ \\)." 
+        },
+        { 
+            q: "Один із суміжних кутів дорівнює \\( 130^\\circ \\). Знайдіть інший.", 
+            opts: ["\\( 50^\\circ \\)", "\\( 130^\\circ \\)", "\\( 40^\\circ \\)"], a: 0, lvl: "Середній",
+            h: "Пам'ятаєш попереднє завдання? Їхня сума \\( 180^\\circ \\).", s: "\\( 180^\\circ - 130^\\circ = 50^\\circ \\)" 
+        },
+        { 
+            q: "Вертикальні кути...", 
+            opts: ["В сумі дають \\( 180^\\circ \\)", "Рівні між собою", "Завжди прямі"], a: 1, lvl: "Легкий",
+            h: "Вертикальні кути утворюються при перетині двох прямих і лежать один навпроти одного (як пісочний годинник).", s: "За теоремою про вертикальні кути, вони рівні." 
+        },
+        { 
+            q: "У трикутнику два кути дорівнюють \\( 40^\\circ \\) і \\( 60^\\circ \\). Знайдіть третій.", 
+            opts: ["\\( 80^\\circ \\)", "\\( 100^\\circ \\)", "\\( 90^\\circ \\)"], a: 0, lvl: "Середній",
+            h: "Сума всіх кутів БУДЬ-ЯКОГО трикутника дорівнює \\( 180^\\circ \\).", s: "\\( 180^\\circ - (40^\\circ + 60^\\circ) = 180^\\circ - 100^\\circ = 80^\\circ \\)" 
+        },
+        { 
+            q: "Периметр рівнобедреного трикутника 20 см. Основа дорівнює 6 см. Знайдіть бічну сторону.", 
+            opts: ["\\( 14 \\text{ см} \\)", "\\( 7 \\text{ см} \\)", "\\( 8 \\text{ см} \\)"], a: 1, lvl: "Середній",
+            h: "У рівнобедреного трикутника дві бічні сторони рівні. Відніми основу від периметра і поділи навпіл.", s: "\\( (20 - 6) : 2 = 14 : 2 = 7 \\text{ см} \\)" 
+        },
+        { 
+            q: "Чи існує трикутник зі сторонами 3 см, 4 см і 8 см?", 
+            opts: ["Так", "Ні", "Тільки прямокутний"], a: 1, lvl: "Складний",
+            h: "Нерівність трикутника: кожна сторона має бути меншою за суму двох інших. Перевір найбільшу сторону.", s: "Сума двох менших сторін: 3 + 4 = 7. Але 7 не більше за 8. Такого трикутника не існує." 
+        },
+        { 
+            q: "Перша ознака рівності трикутників - це рівність за...", 
+            opts: ["Двома сторонами і кутом між ними", "Стороною і двома прилеглими кутами", "Трьома сторонами"], a: 0, lvl: "Середній",
+            h: "Згадай аксіоми геометрії з 7 класу.", s: "Перша ознака: за двома сторонами і кутом між ними." 
+        },
+        { 
+            q: "У прямокутному трикутнику гіпотенуза дорівнює 10 см. Знайдіть катет, що лежить навпроти кута \\( 30^\\circ \\).", 
+            opts: ["\\( 5 \\text{ см} \\)", "\\( 10 \\text{ см} \\)", "\\( 20 \\text{ см} \\)"], a: 0, lvl: "Складний",
+            h: "Катет, що лежить навпроти кута \\( 30^\\circ \\), має особливу властивість по відношенню до гіпотенузи.", s: "Він дорівнює половині гіпотенузи: \\( 10 : 2 = 5 \\text{ см} \\)." 
+        }
+    ];
+
+    const allTasks = [...algebraTasks, ...geometryTasks];
+    let userAnswers = new Array(allTasks.length).fill(null);
+    let correctCount = 0;
+
+    // --- РЕНДЕР КОНТЕНТУ ---
+    function renderTasks() {
+        const algContainer = document.getElementById('algebra-tasks');
+        const geoContainer = document.getElementById('geometry-tasks');
+
+        algebraTasks.forEach((task, index) => {
+            algContainer.innerHTML += generateTaskHTML(task, index, 'blue');
+        });
+
+        geometryTasks.forEach((task, index) => {
+            geoContainer.innerHTML += generateTaskHTML(task, index + algebraTasks.length, 'emerald');
+        });
+
+        MathJax.typesetPromise();
+    }
+
+    function generateTaskHTML(task, id, color) {
+        let badgeColor = task.lvl === 'Легкий' ? 'bg-green-100 text-green-700' : task.lvl === 'Середній' ? 'bg-yellow-100 text-yellow-700' : 'bg-red-100 text-red-700';
+        
+        let optionsHTML = task.opts.map((opt, optIdx) => `
+            <button id="btn-${id}-${optIdx}" onclick="selectOption(${id}, ${optIdx})" class="option-btn w-full text-left p-4 rounded-2xl border-2 border-slate-100 bg-slate-50 font-medium text-slate-700 flex items-center gap-3">
+                <div class="w-5 h-5 rounded-full border-2 border-slate-300 flex-shrink-0 flex items-center justify-center" id="circle-${id}-${optIdx}"></div>
+                <span>${opt}</span>
+            </button>
+        `).join('');
+
+        return `
+            <div id="card-${id}" class="task-card bg-white p-6 rounded-[2rem]">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="flex items-center gap-3">
+                        <span class="w-8 h-8 rounded-full bg-${color}-100 text-${color}-600 font-black flex items-center justify-center text-sm">${id + 1}</span>
+                        <span class="px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wide ${badgeColor}">${task.lvl}</span>
+                    </div>
+                </div>
+                <h3 class="text-lg font-bold text-slate-800 mb-5 leading-relaxed">${task.q}</h3>
+                
+                <div class="grid grid-cols-1 gap-3 mb-5">
+                    ${optionsHTML}
+                </div>
+
+                <div class="flex justify-between items-center pt-4 border-t border-slate-50">
+                    <button onclick="toggleElement('hint-${id}')" class="text-xs font-bold text-slate-400 hover:text-indigo-500 uppercase flex items-center gap-1"><span class="text-base">💡</span> Підказка</button>
+                    <button onclick="toggleElement('sol-${id}')" class="text-xs font-bold text-slate-400 hover:text-indigo-500 uppercase">Рішення 👁️</button>
+                </div>
+                
+                <div id="hint-${id}" class="hidden mt-4 p-4 bg-yellow-50/80 rounded-2xl text-sm border border-yellow-100 text-yellow-800 font-medium">
+                    ${task.h}
+                </div>
+                <div id="sol-${id}" class="hidden mt-4 p-4 bg-indigo-50/80 rounded-2xl text-sm border border-indigo-100 text-indigo-800 italic">
+                    Розв'язання: ${task.s}
+                </div>
+            </div>
+        `;
+    }
+
+    // --- ЛОГІКА ТЕСТУВАННЯ ---
+    function selectOption(taskId, optIdx) {
+        if (userAnswers[taskId] !== null) return;
+
+        const task = allTasks[taskId];
+        userAnswers[taskId] = optIdx;
+        const isCorrect = optIdx === task.a;
+
+        const selectedBtn = document.getElementById(`btn-${taskId}-${optIdx}`);
+        const selectedCircle = document.getElementById(`circle-${taskId}-${optIdx}`);
+        const correctBtn = document.getElementById(`btn-${taskId}-${task.a}`);
+        const correctCircle = document.getElementById(`circle-${taskId}-${task.a}`);
+
+        task.opts.forEach((_, i) => {
+            const btn = document.getElementById(`btn-${taskId}-${i}`);
+            btn.disabled = true;
+            btn.classList.add('opacity-70', 'cursor-not-allowed');
+        });
+
+        if (isCorrect) {
+            selectedBtn.classList.remove('bg-slate-50', 'border-slate-100', 'opacity-70');
+            selectedBtn.classList.add('option-correct');
+            selectedCircle.innerHTML = '<div class="w-2.5 h-2.5 bg-green-600 rounded-full"></div>';
+            selectedCircle.classList.replace('border-slate-300', 'border-green-600');
+            correctCount++;
+        } else {
+            selectedBtn.classList.remove('bg-slate-50', 'border-slate-100', 'opacity-70');
+            selectedBtn.classList.add('option-wrong');
+            selectedCircle.innerHTML = '<div class="w-2.5 h-2.5 bg-red-600 rounded-full"></div>';
+            selectedCircle.classList.replace('border-slate-300', 'border-red-600');
+            
+            correctBtn.classList.remove('bg-slate-50', 'border-slate-100', 'opacity-70');
+            correctBtn.classList.add('option-correct', 'opacity-100');
+            correctCircle.innerHTML = '<div class="w-2.5 h-2.5 bg-green-600 rounded-full"></div>';
+            correctCircle.classList.replace('border-slate-300', 'border-green-600');
+        }
+
+        updateProgress();
+    }
+
+    function updateProgress() {
+        const answeredCount = userAnswers.filter(a => a !== null).length;
+        const total = allTasks.length;
+        document.getElementById('prog-text').innerText = `${answeredCount}/${total}`;
+        document.getElementById('prog-bar').style.width = `${(answeredCount / total) * 100}%`;
+    }
+
+    function toggleElement(id) {
+        const el = document.getElementById(id);
+        el.classList.toggle('hidden');
+    }
+
+    function finishLesson() {
+        const modal = document.getElementById('result-modal');
+        const modalContent = document.getElementById('modal-content');
+        const scoreEl = document.getElementById('res-score');
+        const msgEl = document.getElementById('res-message');
+        const emojiEl = document.getElementById('res-emoji');
+
+        const total = allTasks.length;
+        scoreEl.innerText = `${correctCount} / ${total}`;
+
+        let percent = correctCount / total;
+        if (percent >= 0.85) {
+            emojiEl.innerText = "🏆";
+            msgEl.innerHTML = "Блискучий результат! Ти чудово пам'ятаєш матеріал 6-го класу і вже готовий підкорювати складні теми 7-го. Так тримати!";
+        } else if (percent >= 0.5) {
+            emojiEl.innerText = "👍";
+            msgEl.innerHTML = "Гарна робота! Ти добре орієнтуєшся в основах, хоча деякі теми варто повторити. У тебе чудовий потенціал для навчання!";
+        } else {
+            emojiEl.innerText = "💪";
+            msgEl.innerHTML = "Це була хороша розминка! Ми побачили, над чим варто попрацювати. Не хвилюйся, на уроках ми все це детально розберемо. Все вийде!";
+        }
+
+        modal.classList.remove('hidden');
+        setTimeout(() => modalContent.classList.remove('scale-95'), 10);
+    }
+
+
+    // --- ЛОГІКА ДОШКИ (WHITEBOARD) ---
+    const canvas = document.getElementById('whiteboard');
+    const ctx = canvas.getContext('2d');
+    const container = document.getElementById('canvas-wrap');
+    
+    let isDrawing = false;
+    let currentTool = 'pen';
+    let showGrid = false;
+
+    function resizeCanvas() {
+        canvas.width = container.clientWidth;
+        canvas.height = container.clientHeight;
+        redrawCanvas();
+    }
+
+    function redrawCanvas() {
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        if (showGrid) drawGrid();
+    }
+
+    function setTool(tool) {
+        currentTool = tool;
+        document.getElementById('tool-pen').classList.toggle('tool-active', tool === 'pen');
+        document.getElementById('tool-eraser').classList.toggle('tool-active', tool === 'eraser');
+    }
+
+    function getMousePos(e) {
+        const rect = canvas.getBoundingClientRect();
+        const clientX = e.clientX || (e.touches && e.touches.length > 0 ? e.touches[0].clientX : 0);
+        const clientY = e.clientY || (e.touches && e.touches.length > 0 ? e.touches[0].clientY : 0);
+        return {
+            x: clientX - rect.left,
+            y: clientY - rect.top
+        };
+    }
+
+    function startPosition(e) {
+        isDrawing = true;
+        draw(e);
+    }
+
+    function endPosition() {
+        isDrawing = false;
+        ctx.beginPath();
+    }
+
+    function draw(e) {
+        if (!isDrawing) return;
+        e.preventDefault();
+
+        const pos = getMousePos(e);
+
+        ctx.lineWidth = currentTool === 'eraser' ? 30 : 3;
+        ctx.strokeStyle = currentTool === 'eraser' ? '#ffffff' : '#1e293b';
+
+        ctx.lineTo(pos.x, pos.y);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(pos.x, pos.y);
+    }
+
+    function clearCanvas() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        if (showGrid) drawGrid();
+    }
+
+    function toggleGrid() {
+        showGrid = !showGrid;
+        const btn = document.getElementById('tool-grid');
+        if (showGrid) {
+            btn.classList.add('bg-slate-200', 'text-indigo-600');
+            drawGrid();
+        } else {
+            btn.classList.remove('bg-slate-200', 'text-indigo-600');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+    }
+
+    function drawGrid() {
+        ctx.save();
+        ctx.strokeStyle = '#f1f5f9';
+        ctx.lineWidth = 1;
+        const step = 40;
+        
+        ctx.beginPath();
+        for (let x = 0; x <= canvas.width; x += step) {
+            ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height);
+        }
+        for (let y = 0; y <= canvas.height; y += step) {
+            ctx.moveTo(0, y); ctx.lineTo(canvas.width, y);
+        }
+        ctx.stroke();
+        
+        ctx.strokeStyle = '#cbd5e1';
+        ctx.lineWidth = 2;
+        const midX = Math.floor(canvas.width / 2 / step) * step;
+        const midY = Math.floor(canvas.height / 2 / step) * step;
+        
+        ctx.beginPath();
+        ctx.moveTo(midX, 0); ctx.lineTo(midX, canvas.height);
+        ctx.moveTo(0, midY); ctx.lineTo(canvas.width, midY);
+        ctx.stroke();
+        ctx.restore();
+    }
+
+    function drawShape(type) {
+        const cx = canvas.width / 2;
+        const cy = canvas.height / 2;
+        ctx.strokeStyle = '#059669'; 
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+
+        if (type === 'triangle') {
+            ctx.moveTo(cx, cy - 80);
+            ctx.lineTo(cx + 80, cy + 60);
+            ctx.lineTo(cx - 80, cy + 60);
+            ctx.closePath();
+        } else if (type === 'angle') {
+            ctx.moveTo(cx - 80, cy - 50);
+            ctx.lineTo(cx, cy + 50);
+            ctx.lineTo(cx + 80, cy + 50);
+        }
+        ctx.stroke();
+        ctx.beginPath();
+        setTool('pen');
+    }
+
+    canvas.addEventListener('mousedown', startPosition);
+    canvas.addEventListener('mouseup', endPosition);
+    canvas.addEventListener('mousemove', draw);
+    canvas.addEventListener('mouseout', endPosition);
+
+    canvas.addEventListener('touchstart', startPosition, { passive: false });
+    canvas.addEventListener('touchend', endPosition);
+    canvas.addEventListener('touchmove', draw, { passive: false });
+
+    window.addEventListener('resize', resizeCanvas);
+
+    window.onload = () => {
+        renderTasks();
+        setTimeout(resizeCanvas, 100);
+    };
+
+</script>
+</body>
+</html>
