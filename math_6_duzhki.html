@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>7 клас: Розкриття дужок (50 завдань)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; overflow: hidden; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .task-card { border: 1px solid #e2e8f0; transition: all 0.3s ease; }
+        .task-card:hover { border-color: #3b82f6; box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.1); transform: translateY(-2px); }
+        
+        .input-base {
+            width: 100%; padding: 0.75rem 1rem; border-radius: 0.75rem; border: 2px solid #e2e8f0; 
+            background-color: #f8fafc; font-weight: 600; color: #1e293b; outline: none; transition: all 0.2s;
+        }
+        .input-base:focus { border-color: #6366f1; background-color: #ffffff; box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1); }
+        .input-correct { border-color: #22c55e !important; background-color: #dcfce7 !important; color: #166534 !important; }
+        .input-wrong { border-color: #ef4444 !important; background-color: #fee2e2 !important; color: #991b1b !important; }
+        
+        .canvas-container { position: relative; background: #ffffff; cursor: crosshair; touch-action: none; }
+        .tool-active { background-color: #4f46e5; color: #ffffff; box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.4); }
+        
+        .option-btn { transition: all 0.2s; }
+        .option-btn:hover:not(:disabled) { background-color: #f1f5f9; border-color: #94a3b8; }
+        .option-correct { background-color: #dcfce7 !important; border-color: #22c55e !important; color: #166534 !important; }
+        .option-wrong { background-color: #fee2e2 !important; border-color: #ef4444 !important; color: #991b1b !important; }
+
+        /* Гра на відповідність */
+        .match-btn { padding: 1rem; border: 2px solid #e2e8f0; border-radius: 1rem; cursor: pointer; transition: all 0.2s; text-align: center; font-weight: 600; background: #f8fafc; }
+        .match-btn:hover:not(:disabled) { border-color: #818cf8; background: #e0e7ff; }
+        .match-selected { border-color: #4f46e5 !important; background: #e0e7ff !important; box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2); transform: scale(1.02); }
+        .match-wrong { border-color: #ef4444 !important; background: #fee2e2 !important; animation: shake 0.4s; }
+        
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+    </style>
+</head>
+<body class="h-screen flex text-slate-900">
+
+    <div class="w-full lg:w-1/2 flex flex-col bg-white border-r border-slate-200 shadow-xl z-10 relative">
+        <header class="p-5 border-b border-slate-100 flex justify-between items-center bg-white/95 backdrop-blur-md sticky top-0 z-30">
+            <div>
+                <h1 class="text-2xl font-extrabold tracking-tight text-slate-800">Розкриття дужок</h1>
+                <p class="text-[11px] font-bold text-indigo-500 uppercase tracking-widest mt-1">7 Клас • Мега-Інтенсив • 50 Завдань</p>
+            </div>
+            <div class="flex flex-col items-end w-32">
+                <div class="flex items-center gap-2 mb-1">
+                    <span class="text-xs font-bold text-slate-500">Прогрес</span>
+                    <span id="prog-text" class="text-xs font-black text-indigo-600">0/50</span>
+                </div>
+                <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+                    <div id="prog-bar" class="h-full bg-gradient-to-r from-indigo-500 to-purple-500 transition-all duration-500" style="width: 0%"></div>
+                </div>
+            </div>
+        </header>
+
+        <main class="flex-1 overflow-y-auto p-6 lg:p-10 space-y-12 custom-scrollbar pb-32">
+            
+            <section class="bg-gradient-to-br from-amber-50 to-orange-50 rounded-3xl p-6 border border-amber-100">
+                <div class="flex items-start gap-4">
+                    <div class="text-4xl">🕵️‍♂️</div>
+                    <div class="flex-1">
+                        <h2 class="text-xl font-bold text-amber-900 mb-2">Розминка на увагу!</h2>
+                        <p class="text-amber-800/80 text-sm leading-relaxed mb-4">
+                            Знайди «зайве» число у цьому ряду: <b>14, 21, 28, 34, 42, 49</b>.
+                        </p>
+                        <div class="flex gap-3">
+                            <input type="number" id="logic-input" placeholder="Число..." class="input-base !w-32">
+                            <button onclick="checkLogicPuzzle()" class="px-6 py-2 bg-amber-500 text-white rounded-xl font-bold hover:bg-amber-600 transition shadow-md active:scale-95">Перевірити</button>
+                        </div>
+                        <p id="logic-msg" class="text-sm font-bold mt-3 hidden"></p>
+                        <details class="mt-3 group">
+                            <summary class="cursor-pointer text-xs text-amber-600 font-semibold opacity-70 hover:opacity-100">Підказка</summary>
+                            <p class="text-xs text-amber-800 mt-2 bg-amber-100/50 p-3 rounded-lg">Згадай табличку множення на 7. Одне з чисел туди не вписується! 😉</p>
+                        </details>
+                    </div>
+                </div>
+            </section>
+
+            <section class="space-y-6">
+                <div class="flex items-center gap-4 border-b border-slate-100 pb-4">
+                    <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center text-xl shadow-inner shadow-blue-200">1️⃣</div>
+                    <h2 class="text-2xl font-black text-slate-800">Правило знаків</h2>
+                </div>
+                
+                <details class="bg-blue-50/60 rounded-2xl border border-blue-100 text-slate-700 overflow-hidden" open>
+                    <summary class="cursor-pointer font-bold text-blue-900 p-4 bg-blue-100/50 hover:bg-blue-200/50 transition">
+                        📖 Шпаргалка: Як розкривати дужки?
+                    </summary>
+                    <div class="p-5 text-sm space-y-3">
+                        <p>🔹 Якщо перед дужками стоїть знак <b>«+»</b> (або нічого не стоїть), то дужки просто прибираємо, а знаки всередині <b>зберігаємо</b>.</p>
+                        <div class="bg-white p-2 rounded-lg text-center font-bold text-blue-700">+(a - b) = a - b</div>
+                        <p>🔸 Якщо перед дужками стоїть знак <b>«−»</b>, то дужки прибираємо, а знаки всіх доданків всередині <b>змінюємо на протилежні</b>!</p>
+                        <div class="bg-white p-2 rounded-lg text-center font-bold text-red-600">-(a - b) = -a + b</div>
+                    </div>
+                </details>
+
+                <div id="block1-tasks" class="space-y-5"></div>
+            </section>
+
+            <section class="space-y-6">
+                <div class="flex items-center gap-4 border-b border-slate-100 pb-4 mt-8">
+                    <div class="w-12 h-12 bg-purple-100 text-purple-600 rounded-2xl flex items-center justify-center text-xl shadow-inner shadow-purple-200">2️⃣</div>
+                    <h2 class="text-2xl font-black text-slate-800">Числові вирази</h2>
+                </div>
+                <div class="p-4 bg-purple-50 border border-purple-100 rounded-2xl">
+                    <p class="text-sm text-purple-800">Застосуємо правила знаків до звичайних чисел. Увага: іноді простіше спочатку порахувати в дужках, а іноді — розкрити їх! (Всі десяткові дроби вводь через крапку: <b>1.5</b>)</p>
+                </div>
+                <div id="block2-tasks" class="space-y-5"></div>
+            </section>
+
+            <section class="space-y-6">
+                <div class="flex items-center gap-4 border-b border-slate-100 pb-4 mt-8">
+                    <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center text-xl shadow-inner shadow-emerald-200">3️⃣</div>
+                    <h2 class="text-2xl font-black text-slate-800">Алгебраїчні вирази</h2>
+                </div>
+                <div class="p-4 bg-emerald-50 border border-emerald-100 rounded-2xl">
+                    <p class="text-sm text-emerald-800 mb-2">Тепер букви! Щоб я міг автоматично перевірити твою відповідь, у цих завданнях я буду просити знайти <b>вільний член</b> (число без букви) або коефіцієнт після розкриття дужок та зведення подібних.</p>
+                    <p class="text-xs bg-white p-2 rounded font-bold text-slate-600">Приклад: у виразі \( a - 34 \), вільний член дорівнює -34.</p>
+                </div>
+                <div id="block3-tasks" class="space-y-5"></div>
+            </section>
+
+            <section class="space-y-6">
+                <div class="flex items-center gap-4 border-b border-slate-100 pb-4 mt-8">
+                    <div class="w-12 h-12 bg-pink-100 text-pink-600 rounded-2xl flex items-center justify-center text-xl shadow-inner shadow-pink-200">🎮</div>
+                    <h2 class="text-2xl font-black text-slate-800">Гра: З'єднай пари</h2>
+                </div>
+                <div class="bg-white p-6 rounded-[2rem] border border-slate-200 shadow-sm" id="matching-game">
+                    <p class="text-sm text-slate-500 mb-6">Натисни на вираз з дужками ліворуч, а потім знайди його розкритий варіант праворуч. Збери 5 кольорових пар!</p>
+                    <div class="flex gap-4" id="matching-container"></div>
+                </div>
+            </section>
+
+            <section class="space-y-6">
+                <div class="flex items-center gap-4 border-b border-slate-100 pb-4 mt-8">
+                    <div class="w-12 h-12 bg-rose-100 text-rose-600 rounded-2xl flex items-center justify-center text-xl shadow-inner shadow-rose-200">4️⃣</div>
+                    <h2 class="text-2xl font-black text-slate-800">Рівняння з дужками</h2>
+                </div>
+                <div class="p-4 bg-rose-50 border border-rose-100 rounded-2xl">
+                    <p class="text-sm text-rose-800">Щоб розв'язати рівняння, спочатку розкрий дужки, потім збери ікси зліва, а числа справа. Малюй хід розв'язання на дошці праворуч!</p>
+                </div>
+                <div id="block4-tasks" class="space-y-5"></div>
+            </section>
+
+            <div class="w-full h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent my-10"></div>
+
+            <section class="space-y-6">
+                <div class="flex items-center gap-4 border-b border-slate-100 pb-4">
+                    <div class="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-2xl flex items-center justify-center text-xl shadow-inner shadow-indigo-200">🏆</div>
+                    <h2 class="text-3xl font-black text-slate-800">Фінальний тест</h2>
+                </div>
+                <div id="final-test" class="space-y-5"></div>
+            </section>
+
+            <div class="pt-8 text-center">
+                <button onclick="finishLesson()" class="w-full md:w-2/3 mx-auto bg-slate-900 text-white py-5 rounded-3xl font-black text-lg hover:bg-indigo-600 transition-all shadow-lg shadow-indigo-200 transform hover:-translate-y-1 active:scale-95">
+                    ЗАВЕРШИТИ УРОК
+                </button>
+            </div>
+        </main>
+    </div>
+
+    <div class="hidden lg:flex w-1/2 flex-col bg-slate-50 relative p-6 h-screen">
+        <div class="absolute top-8 left-1/2 -translate-x-1/2 z-40 flex items-center gap-2 bg-white p-2 rounded-2xl shadow-xl shadow-slate-200/50 border border-slate-100">
+            <button onclick="setTool('pen')" id="tool-pen" class="p-4 rounded-xl tool-active transition" title="Олівець">✏️</button>
+            <button onclick="setTool('eraser')" id="tool-eraser" class="p-4 rounded-xl hover:bg-slate-100 transition" title="Гумка">🧽</button>
+            <div class="w-px h-10 bg-slate-200 mx-2"></div>
+            <button onclick="toggleGrid()" id="tool-grid" class="px-4 py-3 text-sm font-bold text-slate-500 hover:bg-slate-100 rounded-xl transition">🌐 Сітка</button>
+            <div class="w-px h-10 bg-slate-200 mx-2"></div>
+            <button onclick="clearCanvas()" class="p-4 text-red-500 hover:bg-red-50 rounded-xl transition" title="Очистити">🗑️</button>
+        </div>
+
+        <div class="canvas-container flex-1 bg-white rounded-[2rem] shadow-sm border border-slate-200 overflow-hidden mt-20" id="canvas-wrap">
+            <canvas id="whiteboard"></canvas>
+        </div>
+        <div class="mt-4 flex justify-between items-center px-4">
+            <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Розумна Чернетка • Розписуй рівняння тут</p>
+        </div>
+    </div>
+
+    <div id="result-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-[2rem] p-10 max-w-md w-full text-center shadow-2xl transform scale-95 transition-all" id="modal-content">
+            <div class="text-7xl mb-4" id="res-emoji">🎯</div>
+            <h2 class="text-3xl font-black text-slate-800 mb-2">Інтенсив Завершено!</h2>
+            <div class="inline-block bg-indigo-50 border border-indigo-100 rounded-2xl px-6 py-3 mb-6">
+                <p class="text-sm font-bold text-indigo-400 uppercase tracking-wide mb-1">Твій результат</p>
+                <p id="res-score" class="text-indigo-600 font-black text-5xl">0 / 50</p>
+            </div>
+            <p id="res-message" class="text-slate-600 mb-8 font-medium leading-relaxed"></p>
+            <button onclick="location.reload()" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-bold hover:bg-indigo-600 transition shadow-lg active:scale-95 text-lg">Спробувати ще раз</button>
+        </div>
+    </div>
+
+<script>
+    // --- ЗАГАЛЬНИЙ ПРОГРЕС ---
+    let totalScore = 0;
+    let answeredTasks = 0;
+    const TOTAL_TASKS = 50; 
+
+    function updateProgress() {
+        answeredTasks++;
+        document.getElementById('prog-text').innerText = `${answeredTasks}/${TOTAL_TASKS}`;
+        document.getElementById('prog-bar').style.width = `${(answeredTasks / TOTAL_TASKS) * 100}%`;
+    }
+
+    // Логічна розминка (Не йде в загальний рахунок)
+    function checkLogicPuzzle() {
+        const inp = document.getElementById('logic-input');
+        const msg = document.getElementById('logic-msg');
+        const val = parseInt(inp.value.trim());
+        
+        if (val === 34) {
+            msg.innerText = "Правильно! 34 не ділиться на 7 без остачі 🎉";
+            msg.className = "text-sm font-bold mt-3 text-green-600 block";
+            inp.classList.add('input-correct'); inp.disabled = true;
+        } else {
+            msg.innerText = "Спробуй ще! Подивись на підказку.";
+            msg.className = "text-sm font-bold mt-3 text-red-500 block";
+            inp.classList.add('input-wrong');
+            setTimeout(() => inp.classList.remove('input-wrong'), 1500);
+        }
+    }
+
+    // --- БАЗА ДАНИХ ЗАВДАНЬ (Разом 45 + 5 гра = 50 завдань) ---
+    
+    // БЛОК 1: Правила знаків (10 завдань)
+    const block1Data = [
+        { type: 'mcq', q: "Розкрий дужки: \\( +(x + y) \\)", opts: ["\\( -x - y \\)", "\\( x + y \\)", "\\( x - y \\)"], a: 1, h: "Перед дужками плюс, знаки не змінюються.", s: "\\( x + y \\)", lvl: "Легкий" },
+        { type: 'mcq', q: "Розкрий дужки: \\( -(a + b) \\)", opts: ["\\( -a - b \\)", "\\( -a + b \\)", "\\( a + b \\)"], a: 0, h: "Мінус перед дужками змінює всі знаки на протилежні.", s: "Було +a і +b, стало -a і -b.", lvl: "Легкий" },
+        { type: 'mcq', q: "Розкрий дужки: \\( -(m - n) \\)", opts: ["\\( -m - n \\)", "\\( -m + n \\)", "\\( m - n \\)"], a: 1, h: "Мінус на мінус дає плюс! Знак перед n зміниться на +.", s: "\\( -m + n \\)", lvl: "Легкий" },
+        { type: 'mcq', q: "Розкрий дужки: \\( -(-x - y) \\)", opts: ["\\( x + y \\)", "\\( -x - y \\)", "\\( x - y \\)"], a: 0, h: "Зміни знаки обох доданків на протилежні.", s: "Були мінуси, стануть плюси: \\( x + y \\).", lvl: "Легкий" },
+        { type: 'input', q: "Чому дорівнює \\( -(-5) \\)? Введи число.", a: 5, h: "Мінус на мінус дає плюс.", s: "Відповідь: 5", lvl: "Легкий" },
+        { type: 'input', q: "Чому дорівнює \\( -(+8) \\)?", a: -8, h: "Мінус на плюс дає мінус.", s: "Відповідь: -8", lvl: "Легкий" },
+        { type: 'mcq', q: "Спростіть: \\( x - (x + 2) \\)", opts: ["\\( 2 \\)", "\\( -2 \\)", "\\( 2x - 2 \\)"], a: 1, h: "Розкрий дужки: x - x - 2.", s: "Ікси взаємознищаться, залишиться -2.", lvl: "Середній" },
+        { type: 'mcq', q: "Спростіть: \\( y + (3 - y) \\)", opts: ["\\( 3 \\)", "\\( 2y + 3 \\)", "\\( -3 \\)"], a: 0, h: "Перед дужками плюс, просто прибери їх.", s: "y + 3 - y = 3", lvl: "Середній" },
+        { type: 'input', q: "Знайди значення виразу \\( -(a - 5) \\), якщо \\( a = 5 \\).", a: 0, h: "Підстав 5 замість a: -(5 - 5).", s: "-(0) = 0", lvl: "Середній" },
+        { type: 'mcq', q: "Який вираз тотожно рівний \\( a - b \\)?", opts: ["\\( -(a + b) \\)", "\\( -(b - a) \\)", "\\( +(b - a) \\)"], a: 1, h: "Спробуй розкрити дужки у кожному варіанті.", s: "-(b - a) = -b + a = a - b.", lvl: "Складний" }
+    ];
+
+    // БЛОК 2: Числові вирази (№1111, 1112 та подібні) (10 завдань)
+    const block2Data = [
+        { type: 'input', q: "Знайдіть значення (№1111): \\( -(59 - 75) - (35 - 49) \\)", a: 30, h: "Порахуй в дужках: -( -16 ) - ( -14 ).", s: "16 + 14 = 30", lvl: "Середній" },
+        { type: 'input', q: "Знайдіть значення (№1111): \\( (82 - 9) - (8 + 32) \\)", a: 33, h: "Порахуй в дужках: 73 - 40.", s: "73 - 40 = 33", lvl: "Середній" },
+        { type: 'input', q: "Знайдіть значення (№1111): \\( (4.9 - 5) - (2.9 - 4) \\)", a: 1, h: "Порахуй в дужках: -0.1 - (-1.1).", s: "-0.1 + 1.1 = 1", lvl: "Середній" },
+        { type: 'input', q: "Знайдіть значення (№1111): \\( -(0.8 - 3.2) - (-5.8 + 1.2) \\)", a: 7, h: "В перших дужках -2.4, в других -4.6.", s: "-(-2.4) - (-4.6) = 2.4 + 4.6 = 7", lvl: "Складний" },
+        { type: 'input', q: "Спростіть (№1112): \\( -(45 - 64) + (75 - 14) \\)", a: 80, h: "-(-19) + (61).", s: "19 + 61 = 80", lvl: "Середній" },
+        { type: 'input', q: "Спростіть (№1112): \\( -(4.2 - 9.7) - (2.7 - 9) \\)", a: 11.8, h: "-(-5.5) - (-6.3).", s: "5.5 + 6.3 = 11.8", lvl: "Складний" },
+        { type: 'input', q: "Обчисли: \\( 10 - (7 - 5) \\)", a: 8, h: "10 - 2", s: "Відповідь 8", lvl: "Легкий" },
+        { type: 'input', q: "Обчисли: \\( - (10 - 15) + 5 \\)", a: 10, h: "-(-5) + 5", s: "5 + 5 = 10", lvl: "Легкий" },
+        { type: 'input', q: "Обчисли модуль (з №1126): \\( |-7.2| - (4.8 - 5.4) \\)", a: 7.8, h: "Модуль -7.2 дорівнює 7.2. В дужках -0.6.", s: "7.2 - (-0.6) = 7.2 + 0.6 = 7.8", lvl: "Складний" },
+        { type: 'input', q: "Обчисли: \\( 1 - (1 - (1 - 2)) \\)", a: 1, h: "Йди зсередини: 1 - 
