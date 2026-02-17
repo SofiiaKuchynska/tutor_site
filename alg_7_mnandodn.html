@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>7 клас: Алгебра — Степені, Одночлени та Многочлени</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['\\(', '\\)']],
+                displayMath: [['\\[', '\\]']]
+            },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; overflow: hidden; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .task-card { border: 1px solid #e2e8f0; transition: all 0.3s ease; }
+        .task-card:hover { border-color: #3b82f6; box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.1); transform: translateY(-2px); }
+        
+        .input-base {
+            width: 100%; padding: 0.75rem 1rem; border-radius: 0.75rem; border: 2px solid #e2e8f0; 
+            background-color: #f8fafc; font-weight: 600; color: #1e293b; outline: none; transition: all 0.2s;
+        }
+        .input-base:focus { border-color: #6366f1; background-color: #ffffff; box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1); }
+        .input-correct { border-color: #22c55e !important; background-color: #dcfce7 !important; color: #166534 !important; }
+        .input-wrong { border-color: #ef4444 !important; background-color: #fee2e2 !important; color: #991b1b !important; }
+        
+        .canvas-container { position: relative; background: #ffffff; cursor: crosshair; touch-action: none; }
+        .tool-active { background-color: #4f46e5; color: #ffffff; box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.4); }
+        
+        .option-btn { transition: all 0.2s; }
+        .option-btn:hover:not(:disabled) { background-color: #f1f5f9; border-color: #94a3b8; }
+        .option-correct { background-color: #dcfce7 !important; border-color: #22c55e !important; color: #166534 !important; }
+        .option-wrong { background-color: #fee2e2 !important; border-color: #ef4444 !important; color: #991b1b !important; }
+
+        /* Стилі для гри на відповідність */
+        .match-btn { padding: 1rem; border: 2px solid #e2e8f0; border-radius: 1rem; cursor: pointer; transition: all 0.2s; text-align: center; font-weight: 600; background: #f8fafc; }
+        .match-btn:hover:not(:disabled) { border-color: #818cf8; background: #e0e7ff; }
+        .match-selected { border-color: #4f46e5 !important; background: #e0e7ff !important; box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2); transform: scale(1.02); }
+        .match-wrong { border-color: #ef4444 !important; background: #fee2e2 !important; }
+    </style>
+</head>
+<body class="h-screen flex text-slate-900">
+
+    <div class="w-full lg:w-1/2 flex flex-col bg-white border-r border-slate-200 shadow-xl z-10 relative">
+        <header class="p-5 border-b border-slate-100 flex justify-between items-center bg-white/95 backdrop-blur-md sticky top-0 z-30">
+            <div>
+                <h1 class="text-2xl font-extrabold tracking-tight text-slate-800">Вирази, Степені, Многочлени</h1>
+                <p class="text-[11px] font-bold text-indigo-500 uppercase tracking-widest mt-1">7 Клас • Базовий рівень • Крок за кроком</p>
+            </div>
+            <div class="flex flex-col items-end w-32">
+                <div class="flex items-center gap-2 mb-1">
+                    <span class="text-xs font-bold text-slate-500">Прогрес</span>
+                    <span id="prog-text" class="text-xs font-black text-indigo-600">0/31</span>
+                </div>
+                <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+                    <div id="prog-bar" class="h-full bg-gradient-to-r from-indigo-500 to-purple-500 transition-all duration-500" style="width: 0%"></div>
+                </div>
+            </div>
+        </header>
+
+        <main class="flex-1 overflow-y-auto p-6 lg:p-10 space-y-12 custom-scrollbar pb-32">
+            
+            <section class="bg-gradient-to-br from-amber-50 to-orange-50 rounded-3xl p-6 border border-amber-100">
+                <div class="flex items-start gap-4">
+                    <div class="text-4xl">👋</div>
+                    <div class="flex-1">
+                        <h2 class="text-xl font-bold text-amber-900 mb-2">Привіт! Розпочнемо з легкого.</h2>
+                        <p class="text-amber-800/80 text-sm leading-relaxed">
+                            Алгебра — це як конструктор Lego. Ми беремо прості детальки (числа та букви) і за правилами будуємо з них вирази. Давай розбиратися поступово!
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="space-y-6">
+                <div class="flex items-center gap-4 border-b border-slate-100 pb-4">
+                    <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center text-xl shadow-inner shadow-blue-200">1️⃣</div>
+                    <h2 class="text-2xl font-black text-slate-800">Степінь з натуральним показником</h2>
+                </div>
+                
+                <div class="bg-blue-50/60 p-6 rounded-[2rem] border border-blue-100 text-slate-700">
+                    <h3 class="font-bold text-blue-900 text-lg mb-3">📚 Міні-підручник: Властивості степенів</h3>
+                    <p class="mb-4 text-sm">Степінь показує, скільки разів число помножили саме на себе. Наприклад: \( a^3 = a \cdot a \cdot a \).</p>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="bg-white p-4 rounded-xl shadow-sm border border-blue-100">
+                            <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Множення</p>
+                            <p class="font-black text-lg text-blue-600 mb-1">\( a^m \cdot a^n = a^{m+n} \)</p>
+                            <p class="text-xs text-slate-500">Показники додаємо.<br><em>Приклад: \( x^2 \cdot x^3 = x^5 \)</em></p>
+                        </div>
+                        <div class="bg-white p-4 rounded-xl shadow-sm border border-blue-100">
+                            <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Ділення</p>
+                            <p class="font-black text-lg text-blue-600 mb-1">\( a^m : a^n = a^{m-n} \)</p>
+                            <p class="text-xs text-slate-500">Показники віднімаємо.<br><em>Приклад: \( y^7 : y^4 = y^3 \)</em></p>
+                        </div>
+                        <div class="bg-white p-4 rounded-xl shadow-sm border border-blue-100">
+                            <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Степінь до степеня</p>
+                            <p class="font-black text-lg text-blue-600 mb-1">\( (a^m)^n = a^{m \cdot n} \)</p>
+                            <p class="text-xs text-slate-500">Показники множаться!<br><em>Приклад: \( (x^3)^2 = x^6 \)</em></p>
+                        </div>
+                        <div class="bg-white p-4 rounded-xl shadow-sm border border-indigo-200 bg-indigo-50/50 relative overflow-hidden">
+                            <div class="absolute -right-2 -top-2 text-3xl opacity-20">⭐</div>
+                            <p class="text-xs font-bold text-indigo-500 uppercase tracking-wider mb-1">Множення в дужках</p>
+                            <p class="font-black text-lg text-indigo-600 mb-1">\( (ab)^n = a^n \cdot b^n \)</p>
+                            <p class="text-xs text-slate-600">Степінь падає на <b>КОЖЕН</b> множник.<br><em>Приклад: \( (2x)^3 = 2^3 \cdot x^3 = 8x^3 \)</em></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="block1-tasks" class="space-y-5"></div>
+            </section>
+
+            <section class="space-y-6">
+                <div class="flex items-center gap-4 border-b border-slate-100 pb-4 mt-8">
+                    <div class="w-12 h-12 bg-purple-100 text-purple-600 rounded-2xl flex items-center justify-center text-xl shadow-inner shadow-purple-200">2️⃣</div>
+                    <h2 class="text-2xl font-black text-slate-800">Одночлени та множення</h2>
+                </div>
+
+                <div class="bg-purple-50/60 p-6 rounded-[2rem] border border-purple-100 text-slate-700">
+                    <p class="mb-3 text-sm"><b>Одночлен</b> — це вираз, де є тільки множення чисел і букв. Немає плюсів і мінусів між ними!</p>
+                    <p class="mb-3 text-sm">Щоб перемножити одночлени: спочатку перемнож <b>числа</b>, а потім додай степені однакових <b>букв</b>.</p>
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-purple-200 text-center">
+                        <p class="font-medium">Приклад: \( 2x^2 \cdot 4x^3 = (2 \cdot 4) \cdot (x^2 \cdot x^3) = \mathbf{8x^5} \)</p>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-[2rem] border border-slate-200 shadow-sm" id="matching-game">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-bold text-slate-800">🎮 Гра: З'єднай пари</h3>
+                        <span class="px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wide bg-blue-100 text-blue-700">Практика</span>
+                    </div>
+                    <p class="text-sm text-slate-500 mb-6">Натисни на вираз ліворуч, а потім знайди його правильний результат праворуч. Правильні пари отримають однаковий колір!</p>
+                    
+                    <div class="flex gap-4" id="matching-container">
+                        </div>
+                </div>
+
+                <div id="block2-tasks" class="space-y-5"></div>
+            </section>
+
+            <section class="space-y-6">
+                <div class="flex items-center gap-4 border-b border-slate-100 pb-4 mt-8">
+                    <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center text-xl shadow-inner shadow-emerald-200">3️⃣</div>
+                    <h2 class="text-2xl font-black text-slate-800">Многочлени: Подібні доданки</h2>
+                </div>
+
+                <div class="bg-emerald-50/60 p-6 rounded-[2rem] border border-emerald-100 text-slate-700">
+                    <p class="mb-3 text-sm"><b>Многочлен</b> — це сума або різниця одночленів.</p>
+                    <p class="text-sm">Ми можемо додавати і віднімати тільки <b>ПОДІБНІ</b> доданки (де букви і їх степені абсолютно однакові). Це як додавати яблука до яблук!</p>
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-emerald-200 text-center mt-3">
+                        <p class="font-medium text-emerald-700">\( 5x + 3x = 8x \) ✅ (Можна!)</p>
+                        <p class="font-medium text-red-500 mt-2">\( 5x^2 + 3x \) ❌ (Не можна, різні степені!)</p>
+                    </div>
+                    
+                    <h4 class="font-bold text-emerald-900 mt-5 mb-2">Як розкривати дужки?</h4>
+                    <ul class="text-sm space-y-2 list-disc pl-5">
+                        <li>Якщо перед дужками <b>ПЛЮС</b> — просто прибираємо дужки: \( +(x - 2) = x - 2 \)</li>
+                        <li>Якщо перед дужками <b>МІНУС</b> — змінюємо <b>ВСІ знаки</b> всередині на протилежні: \( -(x - 2) = -x + 2 \)</li>
+                    </ul>
+                </div>
+
+                <div id="block3-tasks" class="space-y-5"></div>
+            </section>
+
+            <section class="space-y-6">
+                <div class="flex items-center gap-4 border-b border-slate-100 pb-4 mt-8">
+                    <div class="w-12 h-12 bg-rose-100 text-rose-600 rounded-2xl flex items-center justify-center text-xl shadow-inner shadow-rose-200">4️⃣</div>
+                    <h2 class="text-2xl font-black text-slate-800">Множення та спільний множник</h2>
+                </div>
+
+                <div class="bg-rose-50/60 p-6 rounded-[2rem] border border-rose-100 text-slate-700">
+                    <h4 class="font-bold text-rose-900 mb-2">Правило "Фонтанчика" ⛲</h4>
+                    <p class="text-sm mb-3">Щоб помножити одночлен на дужки, треба помножити його на <b>КОЖЕН</b> елемент у дужках.</p>
+                    <p class="text-sm text-center bg-white py-2 rounded-lg border border-rose-200 font-bold mb-4">\( 2a(x + y) = 2ax + 2ay \)</p>
+                    
+                    <h4 class="font-bold text-rose-900 mb-2">Винесення за дужки (Зворотна дія) ↩️</h4>
+                    <p class="text-sm">Шукаємо те, що є спільним у кожного доданка, і виносимо за дужки. Це як знайти спільний інгредієнт.</p>
+                    <p class="text-sm text-center bg-white py-2 rounded-lg border border-rose-200 font-bold">\( \mathbf{5}x + \mathbf{5}y = \mathbf{5}(x + y) \)</p>
+                </div>
+
+                <div id="block4-tasks" class="space-y-5"></div>
+            </section>
+
+            <div class="w-full h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent my-10"></div>
+
+            <section class="space-y-6">
+                <div class="flex items-center gap-4 border-b border-slate-100 pb-4">
+                    <div class="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-2xl flex items-center justify-center text-xl shadow-inner shadow-indigo-200">🎯</div>
+                    <h2 class="text-3xl font-black text-slate-800">Фінальний тест</h2>
+                </div>
+                <div id="final-test" class="space-y-5"></div>
+            </section>
+
+            <div class="pt-8 text-center">
+                <button onclick="finishLesson()" class="w-full md:w-2/3 mx-auto bg-slate-900 text-white py-5 rounded-3xl font-black text-lg hover:bg-indigo-600 transition-all shadow-lg shadow-indigo-200 transform hover:-translate-y-1 active:scale-95">
+                    ЗАВЕРШИТИ УРОК
+                </button>
+            </div>
+        </main>
+    </div>
+
+    <div class="hidden lg:flex w-1/2 flex-col bg-slate-50 relative p-6 h-screen">
+        <div class="absolute top-8 left-1/2 -translate-x-1/2 z-40 flex items-center gap-2 bg-white p-2 rounded-2xl shadow-xl shadow-slate-200/50 border border-slate-100">
+            <button onclick="setTool('pen')" id="tool-pen" class="p-3 rounded-xl tool-active transition" title="Олівець">✏️</button>
+            <button onclick="setTool('eraser')" id="tool-eraser" class="p-3 rounded-xl hover:bg-slate-100 transition" title="Гумка">🧽</button>
+            <div class="w-px h-8 bg-slate-200 mx-1"></div>
+            <button onclick="toggleGrid()" id="tool-grid" class="px-3 py-2 text-xs font-bold text-slate-500 hover:bg-slate-100 rounded-lg transition" title="Координатна сітка">🌐 Сітка</button>
+            <button onclick="clearCanvas()" class="p-3 text-red-500 hover:bg-red-50 rounded-xl transition" title="Очистити все">🗑️</button>
+        </div>
+
+        <div class="canvas-container flex-1 bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden mt-16" id="canvas-wrap">
+            <canvas id="whiteboard"></canvas>
+        </div>
+        <div class="mt-4 flex justify-between items-center px-2">
+            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Розумна Чернетка • Розписуй довгі вирази тут</p>
+        </div>
+    </div>
+
+    <div id="result-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-[2rem] p-10 max-w-md w-full text-center shadow-2xl transform scale-95 transition-all" id="modal-content">
+            <div class="text-6xl mb-4" id="res-emoji">🎯</div>
+            <h2 class="text-3xl font-black text-slate-800 mb-2">Урок Пройдено!</h2>
+            <div class="inline-block bg-indigo-50 border border-indigo-100 rounded-2xl px-6 py-3 mb-6">
+                <p class="text-sm font-bold text-indigo-400 uppercase tracking-wide mb-1">Твій результат</p>
+                <p id="res-score" class="text-indigo-600 font-black text-4xl">0 / 31</p>
+            </div>
+            <p id="res-message" class="text-slate-600 mb-8 font-medium leading-relaxed"></p>
+            <button onclick="location.reload()" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-bold hover:bg-indigo-600 transition shadow-lg active:scale-95">Спробувати ще раз</button>
+        </div>
+    </div>
+
+<script>
+    let totalScore = 0;
+    let answeredTasks = 0;
+    const TOTAL_TASKS = 31; // 21 Mixed + 5 Matching + 5 Final Test
+
+    function updateProgress() {
+        answeredTasks++;
+        document.getElementById('prog-text').innerText = `${answeredTasks}/${TOTAL_TASKS}`;
+        document.getElementById('prog-bar').style.width = `${(answeredTasks / TOTAL_TASKS) * 100}%`;
+    }
+
+    // --- ДАНІ ЗАВДАНЬ ПО БЛОКАХ (Змішані: input та mcq) ---
+    const block1Data = [
+        { type: 'input', q: "Помнож: \\( x^2 \\cdot x^3 = x^? \\). Введіть число.", a: 5, h: "При множенні показники додаються: 2 + 3.", s: "2 + 3 = 5", lvl: "Легкий" },
+        { type: 'input', q: "Поділи: \\( a^7 : a^4 = a^? \\).", a: 3, h: "При діленні відніми показники: 7 - 4.", s: "7 - 4 = 3", lvl: "Легкий" },
+        { type: 'input', q: "Розкрий дужки: \\( (y^4)^2 = y^? \\).", a: 8, h: "Степінь до степеня — показники множаться: 4 * 2.", s: "4 * 2 = 8", lvl: "Легкий" },
+        { type: 'mcq', q: "Як правильно піднести до степеня вираз в дужках: \\( (ab)^3 \\)?", opts: ["\\( ab^3 \\)", "\\( a^3b \\)", "\\( a^3b^3 \\)"], a: 2, h: "Степінь 3 падає і на a, і на b.", s: "Правило \\( (ab)^n = a^n b^n \\)", lvl: "Легкий" },
+        { type: 'input', q: "Складніше: розкрий дужки \\( (2x)^3 \\). Який буде числовий коефіцієнт біля \\( x^3 \\)?", a: 8, h: "Тобі треба піднести число 2 до третього степеня: \\( 2^3 \\).", s: "\\( 2^3 = 2 \\cdot 2 \\cdot 2 = 8 \\)", lvl: "Середній" },
+        { type: 'mcq', q: "Спрости вираз: \\( (m^3 n^2)^4 \\)", opts: ["\\( m^7 n^6 \\)", "\\( m^{12} n^8 \\)", "\\( m^3 n^8 \\)"], a: 1, h: "Помнож кожен показник всередині на зовнішню 4.", s: "\\( 3 \\cdot 4 = 12 \\), \\( 2 \\cdot 4 = 8 \\). Отже \\( m^{12} n^8 \\).", lvl: "Середній" }
+    ];
+
+    const block2Data = [
+        { type: 'input', q: "Який числовий коефіцієнт має одночлен \\( -7x^2y \\)?", a: -7, h: "Коефіцієнт — це просто число, яке стоїть попереду.", s: "Число перед буквами дорівнює -7.", lvl: "Легкий" },
+        { type: 'input', q: "Перемнож одночлени: \\( 3a \\cdot 4b \\). Який буде коефіцієнт?", a: 12, h: "Перемнож числа 3 та 4.", s: "3 * 4 = 12", lvl: "Легкий" },
+        { type: 'mcq', q: "Який степінь має одночлен \\( 5x^2y^3 \\)?", opts: ["2", "3", "5", "6"], a: 2, h: "Додай показники ВСІХ букв у ньому: 2 + 3.", s: "Степінь = 2 + 3 = 5.", lvl: "Середній" }
+    ];
+
+    const block3Data = [
+        { type: 'input', q: "Додай подібні: \\( 4x + 6x = ?x \\). Введи число.", a: 10, h: "4 яблука + 6 яблук = ?", s: "4 + 6 = 10", lvl: "Легкий" },
+        { type: 'input', q: "Спрости: \\( 8a^2 - 3a^2 = ?a^2 \\). Введи число.", a: 5, h: "Літери однакові, тому просто відніми числа: 8 - 3.", s: "8 - 3 = 5", lvl: "Легкий" },
+        { type: 'mcq', q: "Як правильно розкрити дужки з мінусом попереду: \\( -(x - 5) \\)?", opts: ["\\( -x - 5 \\)", "\\( -x + 5 \\)", "\\( x - 5 \\)"], a: 1, h: "Мінус змінює ВСІ знаки в дужках на протилежні.", s: "Був +x став -x. Був -5 став +5. Відповідь: \\( -x + 5 \\).", lvl: "Легкий" },
+        { type: 'input', q: "Спрости вираз: \\( (2x + 4) - (x + 1) \\). Який вільний член (число без ікса) залишиться?", a: 3, h: "Розкрий дужки: \\( 2x + 4 - x - 1 \\). Порахуй 4 - 1.", s: "4 - 1 = 3", lvl: "Середній" },
+        { type: 'mcq', q: "Знайди значення многочлена \\( x^2 - x \\) при \\( x = 3 \\).", opts: ["3", "6", "9"], a: 1, h: "Підстав трійку замість іксів: \\( 3^2 - 3 \\).", s: "9 - 3 = 6", lvl: "Середній" }
+    ];
+
+    const block4Data = [
+        { type: 'input', q: "Помнож фонтанчиком: \\( 2(x + 4) = 2x + ? \\).", a: 8, h: "Тобі треба помножити 2 на 4.", s: "2 * 4 = 8", lvl: "Легкий" },
+        { type: 'input', q: "Розкрий дужки: \\( 3x(x - 2) = 3x^2 - ?x \\). Введи число без мінуса.", a: 6, h: "Помнож 3x на 2.", s: "3 * 2 = 6", lvl: "Легкий" },
+        { type: 'mcq', q: "Винеси спільний множник за дужки: \\( 5a + 10b \\).", opts: ["\\( 5(a + 10b) \\)", "\\( 5(a + 2b) \\)", "\\( 10(a + b) \\)"], a: 1, h: "Винеси 5. Поділи обидва числа на 5: 5/5=1, 10/5=2.", s: "\\( 5(a + 2b) \\)", lvl: "Легкий" },
+        { type: 'input', q: "Винеси \\( x \\) за дужки: \\( x^2 - 4x = x(x - ?) \\). Введи число.", a: 4, h: "Якщо забрати один x, що залишиться від 4x?", s: "Залишиться просто 4.", lvl: "Середній" },
+        { type: 'mcq', q: "Що вийде, якщо перемножити два двочлени: \\( (x + 1)(x + 2) \\)?", opts: ["\\( x^2 + 2 \\)", "\\( x^2 + 3x + 2 \\)", "\\( 2x + 3 \\)"], a: 1, h: "Кожен на кожен: x*x + x*2 + 1*x + 1*2.", s: "\\( x^2 + 2x + x + 2 = x^2 + 3x + 2 \\)", lvl: "Середній" }
+    ];
+
+    const finalTest = [
+        { q: "Яка властивість є правильною?", opts: ["\\( a^2 \\cdot a^3 = a^6 \\)", "\\( a^5 : a^2 = a^3 \\)", "\\( (a^2)^3 = a^5 \\)"], a: 1, lvl: "Легкий" },
+        { q: "Який вираз НЕ є одночленом?", opts: ["\\( 4a^2b \\)", "\\( -x \\)", "\\( a + b \\)"], a: 2, lvl: "Легкий" },
+        { q: "Яке перетворення є тотожним?", opts: ["\\( -(x-y) = -x+y \\)", "\\( 2(x-y) = 2x-y \\)", "\\( x^2+x^2 = x^4 \\)"], a: 0, lvl: "Середній" },
+        { q: "Який спільний множник у виразі \\( 6x^2 + 9x \\)?", opts: ["\\( 3x \\)", "\\( 3 \\)", "\\( x \\)"], a: 0, lvl: "Середній" },
+        { q: "Якщо \\( (x-3)(x+3) \\) розкрити дужки, який буде результат?", opts: ["\\( x^2 + 9 \\)", "\\( x^2 - 9 \\)", "\\( 2x \\)"], a: 1, lvl: "Середній" }
+    ];
+
+    let taskStates = new Array(100).fill(false); // Запас для ID
+    let currentGlobalId = 0;
+
+    // --- ГРА "З'ЄДНАЙ ПАРИ" ---
+    const matchPairs = [
+        { id: 0, l: "\\( x \\cdot x^3 \\)", r: "\\( x^4 \\)" },
+        { id: 1, l: "\\( 2a \\cdot 3b \\)", r: "\\( 6ab \\)" },
+        { id: 2, l: "\\( (2m)^3 \\)", r: "\\( 8m^3 \\)" },
+        { id: 3, l: "\\( -x \\cdot (-x) \\)", r: "\\( x^2 \\)" },
+        { id: 4, l: "\\( 5y^2 \\cdot 2y \\)", r: "\\( 10y^3 \\)" }
+    ];
+    let selectedLeft = null;
+    let matchesFound = 0;
+    const matchColors = ['bg-green-300 border-green-400', 'bg-yellow-300 border-yellow-400', 'bg-blue-300 border-blue-400', 'bg-pink-300 border-pink-400', 'bg-cyan-300 border-cyan-400'];
+
+    window.onload = () => {
+        renderMixedTasks('block1-tasks', block1Data);
+        
+        // Рендер гри в Блоці 2
+        renderMatchingGame();
+        renderMixedTasks('block2-tasks', block2Data);
+        
+        renderMixedTasks('block3-tasks', block3Data);
+        renderMixedTasks('block4-tasks', block4Data);
+        
+        renderFinalTest();
+        MathJax.typesetPromise();
+        setTimeout(resizeCanvas, 100);
+    };
+
+    function renderMixedTasks(containerId, dataArr) {
+        const container = document.getElementById(containerId);
+        let html = '';
+        
+        dataArr.forEach(task => {
+            let id = currentGlobalId++;
+            let badgeColor = task.lvl === 'Легкий' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700';
+            
+            html += `
+            <div class="task-card bg-white p-6 rounded-[2rem]" id="task-${id}">
+                <div class="flex items-start justify-between mb-4">
+                    <div class="flex items-center gap-3">
+                        <span class="w-8 h-8 rounded-full bg-slate-100 text-slate-600 font-black flex items-center justify-center shrink-0 text-sm">💡</span>
+                        <span class="px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wide ${badgeColor}">${task.lvl}</span>
+                    </div>
+                </div>
+                <h3 class="text-base font-bold text-slate-800 leading-relaxed mb-4">${task.q}</h3>
+            `;
+
+            if(task.type === 'input') {
+                html += `
+                <div class="flex flex-col sm:flex-row gap-3 mt-2">
+                    <div class="relative flex-1">
+                        <input type="number" id="input-${id}" class="input-base w-full" placeholder="Введіть число...">
+                    </div>
+                    <button onclick="checkInputTask(${id}, ${task.a})" id="btn-${id}" class="px-6 py-3 bg-slate-900 text-white rounded-xl font-bold hover:bg-indigo-600 transition shadow-md active:scale-95 whitespace-nowrap">
+                        Перевірити
+                    </button>
+                </div>`;
+            } else if (task.type === 'mcq') {
+                let optsHTML = task.opts.map((opt, oIdx) => `
+                    <button id="mcqbtn-${id}-${oIdx}" onclick="checkMCQTask(${id}, ${oIdx}, ${task.a})" class="option-btn w-full text-left p-3 rounded-xl border-2 border-slate-100 bg-slate-50 font-medium text-slate-700 flex items-center gap-3 mb-2">
+                        <div class="w-5 h-5 rounded-full border-2 border-slate-300 flex-shrink-0 flex items-center justify-center" id="mcqcircle-${id}-${oIdx}"></div>
+                        <span>${opt}</span>
+                    </button>
+                `).join('');
+                html += `<div>${optsHTML}</div>`;
+            }
+
+            html += `
+                <div class="flex justify-between items-center mt-5 pt-4 border-t border-slate-50">
+                    <button onclick="toggleElement('hint-${id}')" class="text-xs font-bold text-slate-400 hover:text-indigo-500 uppercase flex items-center gap-1">💡 Підказка</button>
+                    <button onclick="toggleElement('sol-${id}')" class="text-xs font-bold text-slate-400 hover:text-indigo-500 uppercase flex items-center gap-1">Рішення 👁️</button>
+                </div>
+                <div id="hint-${id}" class="hidden mt-4 p-4 bg-yellow-50/80 rounded-2xl text-sm border border-yellow-100 text-yellow-800 font-medium">${task.h}</div>
+                <div id="sol-${id}" class="hidden mt-4 p-4 bg-indigo-50/80 rounded-2xl text-sm border border-indigo-100 text-indigo-800 italic"><b>Пояснення:</b> ${task.s}</div>
+            </div>`;
+        });
+        container.innerHTML = html;
+    }
+
+    function renderFinalTest() {
+        const container = document.getElementById('final-test');
+        let html = '';
+        finalTest.forEach((task) => {
+            let id = currentGlobalId++;
+            let badgeColor = task.lvl === 'Легкий' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700';
+
+            let optsHTML = task.opts.map((opt, oIdx) => `
+                <button id="mcqbtn-${id}-${oIdx}" onclick="checkMCQTask(${id}, ${oIdx}, ${task.a})" class="option-btn w-full text-left p-4 rounded-2xl border-2 border-slate-100 bg-slate-50 font-medium text-slate-700 flex items-center gap-3">
+                    <div class="w-5 h-5 rounded-full border-2 border-slate-300 flex-shrink-0 flex items-center justify-center" id="mcqcircle-${id}-${oIdx}"></div>
+                    <span>${opt}</span>
+                </button>
+            `).join('');
+
+            html += `
+            <div class="task-card bg-white p-6 rounded-[2rem]">
+                <div class="flex items-start justify-between mb-4">
+                    <span class="px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wide ${badgeColor}">${task.lvl}</span>
+                </div>
+                <h3 class="text-base font-bold text-slate-800 leading-relaxed mb-4">${task.q}</h3>
+                <div class="grid grid-cols-1 gap-3">${optsHTML}</div>
+            </div>`;
+        });
+        container.innerHTML = html;
+    }
+
+    // --- ЛОГІКА ПЕРЕВІРОК ---
+    function checkInputTask(id, correctAns) {
+        if(taskStates[id]) return;
+        const inp = document.getElementById(`input-${id}`);
+        const btn = document.getElementById(`btn-${id}`);
+        const userVal = parseFloat(inp.value.trim());
+
+        if(isNaN(userVal)) { alert("Будь ласка, введіть число!"); return; }
+
+        if(userVal === correctAns) {
+            inp.classList.add('input-correct'); inp.disabled = true;
+            btn.innerHTML = "Вірно! ✓"; btn.classList.replace('bg-slate-900', 'bg-green-600'); btn.disabled = true;
+            totalScore++; taskStates[id] = true; updateProgress();
+        } else {
+            inp.classList.add('input-wrong');
+            setTimeout(() => inp.classList.remove('input-wrong'), 1000);
+        }
+    }
+
+    function checkMCQTask(id, userOpt, correctOpt) {
+        if(taskStates[id]) return;
+        
+        const selectedBtn = document.getElementById(`mcqbtn-${id}-${userOpt}`);
+        const selectedCircle = document.getElementById(`mcqcircle-${id}-${userOpt}`);
+        const correctBtn = document.getElementById(`mcqbtn-${id}-${correctOpt}`);
+        const correctCircle = document.getElementById(`mcqcircle-${id}-${correctOpt}`);
+
+        // Disable all options in this group
+        let i = 0;
+        while(document.getElementById(`mcqbtn-${id}-${i}`)) {
+            let btn = document.getElementById(`mcqbtn-${id}-${i}`);
+            btn.disabled = true;
+            btn.classList.add('opacity-70', 'cursor-not-allowed');
+            i++;
+        }
+
+        if(userOpt === correctOpt) {
+            selectedBtn.classList.remove('bg-slate-50', 'border-slate-100', 'opacity-70');
+            selectedBtn.classList.add('option-correct');
+            selectedCircle.innerHTML = '<div class="w-2.5 h-2.5 bg-green-600 rounded-full"></div>';
+            selectedCircle.classList.replace('border-slate-300', 'border-green-600');
+            totalScore++;
+        } else {
+            selectedBtn.classList.remove('bg-slate-50', 'border-slate-100', 'opacity-70');
+            selectedBtn.classList.add('option-wrong');
+            selectedCircle.innerHTML = '<div class="w-2.5 h-2.5 bg-red-600 rounded-full"></div>';
+            selectedCircle.classList.replace('border-slate-300', 'border-red-600');
+            
+            correctBtn.classList.remove('bg-slate-50', 'border-slate-100', 'opacity-70');
+            correctBtn.classList.add('option-correct', 'opacity-100');
+            correctCircle.innerHTML = '<div class="w-2.5 h-2.5 bg-green-600 rounded-full"></div>';
+            correctCircle.classList.replace('border-slate-300', 'border-green-600');
+        }
+        taskStates[id] = true; updateProgress();
+    }
+
+    // --- ЛОГІКА ГРИ "З'ЄДНАЙ ПАРИ" ---
+    function renderMatchingGame() {
+        const container = document.getElementById('matching-container');
+        
+        // Перемішуємо праву колонку
+        let lefts = [...matchPairs];
+        let rights = [...matchPairs].sort(() => Math.random() - 0.5);
+
+        let leftHTML = lefts.map(p => `<button id="m-left-${p.id}" onclick="selectMatchLeft(${p.id})" class="match-btn w-full mb-3">${p.l}</button>`).join('');
+        let rightHTML = rights.map(p => `<button id="m-right-${p.id}" onclick="selectMatchRight(${p.id})" class="match-btn w-full mb-3">${p.r}</button>`).join('');
+
+        container.innerHTML = `
+            <div class="w-1/2 flex flex-col">${leftHTML}</div>
+            <div class="w-1/2 flex flex-col">${rightHTML}</div>
+        `;
+    }
+
+    function selectMatchLeft(id) {
+        if(document.getElementById(`m-left-${id}`).disabled) return;
+        
+        // Скидаємо попередній вибір
+        matchPairs.forEach(p => {
+            let el = document.getElementById(`m-left-${p.id}`);
+            if(!el.disabled) el.classList.remove('match-selected');
+        });
+
+        selectedLeft = id;
+        document.getElementById(`m-left-${id}`).classList.add('match-selected');
+    }
+
+    function selectMatchRight(id) {
+        if(selectedLeft === null || document.getElementById(`m-right-${id}`).disabled) return;
+
+        const leftEl = document.getElementById(`m-left-${selectedLeft}`);
+        const rightEl = document.getElementById(`m-right-${id}`);
+
+        if(selectedLeft === id) {
+            // Успіх!
+            leftEl.classList.remove('match-selected');
+            
+            // Застосовуємо колір
+            let cClass = matchColors[matchesFound % matchColors.length];
+            // Розбиваємо класи кольору для додавання
+            cClass.split(' ').forEach(cls => { leftEl.classList.add(cls); rightEl.classList.add(cls); });
+            
+            leftEl.classList.add('text-slate-800', 'shadow-md');
+            rightEl.classList.add('text-slate-800', 'shadow-md');
+            
+            leftEl.disabled = true; rightEl.disabled = true;
+            
+            matchesFound++;
+            totalScore++; updateProgress(); // Кожна пара - 1 бал
+            selectedLeft = null;
+        } else {
+            // Помилка
+            rightEl.classList.add('match-wrong');
+            setTimeout(() => { rightEl.classList.remove('match-wrong'); }, 800);
+        }
+    }
+
+    function toggleElement(id) { document.getElementById(id).classList.toggle('hidden'); }
+
+    function finishLesson() {
+        const modal = document.getElementById('result-modal');
+        const scoreEl = document.getElementById('res-score');
+        const msgEl = document.getElementById('res-message');
+        const emojiEl = document.getElementById('res-emoji');
+
+        scoreEl.innerText = `${totalScore} / ${TOTAL_TASKS}`;
+        let percent = totalScore / TOTAL_TASKS;
+
+        if (percent >= 0.85) {
+            emojiEl.innerText = "🌟"; msgEl.innerHTML = "Блискуче! Ти чудово засвоїв базові правила алгебри. Можеш переходити до складніших завдань!";
+        } else if (percent >= 0.5) {
+            emojiEl.innerText = "👍"; msgEl.innerHTML = "Дуже добре! Основи закладено, просто будь уважнішим з мінусами та степенями.";
+        } else {
+            emojiEl.innerText = "💪"; msgEl.innerHTML = "Математика потребує тренувань. Перечитай теорію ще раз і обов'язково спробуй знову!";
+        }
+
+        modal.classList.remove('hidden');
+        setTimeout(() => document.getElementById('modal-content').classList.remove('scale-95'), 10);
+    }
+
+    // --- WHITEBOARD ЛОГІКА ---
+    const canvas = document.getElementById('whiteboard');
+    const ctx = canvas.getContext('2d');
+    const containerWrap = document.getElementById('canvas-wrap');
+    
+    let isDrawing = false; let currentTool = 'pen'; let showGrid = false;
+
+    function resizeCanvas() {
+        canvas.width = containerWrap.clientWidth;
+        canvas.height = containerWrap.clientHeight;
+        redrawCanvas();
+    }
+    function redrawCanvas() {
+        ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+        if (showGrid) drawGrid();
+    }
+    function setTool(tool) {
+        currentTool = tool;
+        document.getElementById('tool-pen').classList.toggle('tool-active', tool === 'pen');
+        document.getElementById('tool-eraser').classList.toggle('tool-active', tool === 'eraser');
+    }
+    function getMousePos(e) {
+        const rect = canvas.getBoundingClientRect();
+        const clientX = e.clientX || (e.touches && e.touches.length > 0 ? e.touches[0].clientX : 0);
+        const clientY = e.clientY || (e.touches && e.touches.length > 0 ? e.touches[0].clientY : 0);
+        return { x: clientX - rect.left, y: clientY - rect.top };
+    }
+    function startPosition(e) { isDrawing = true; draw(e); }
+    function endPosition() { isDrawing = false; ctx.beginPath(); }
+    function draw(e) {
+        if (!isDrawing) return;
+        e.preventDefault();
+        const pos = getMousePos(e);
+        ctx.lineWidth = currentTool === 'eraser' ? 30 : 3;
+        ctx.strokeStyle = currentTool === 'eraser' ? '#ffffff' : '#1e293b';
+        ctx.lineTo(pos.x, pos.y); ctx.stroke(); ctx.beginPath(); ctx.moveTo(pos.x, pos.y);
+    }
+    function clearCanvas() { ctx.clearRect(0, 0, canvas.width, canvas.height); if (showGrid) drawGrid(); }
+    function toggleGrid() {
+        showGrid = !showGrid;
+        const btn = document.getElementById('tool-grid');
+        if (showGrid) { btn.classList.add('bg-slate-200', 'text-indigo-600'); drawGrid(); } 
+        else { btn.classList.remove('bg-slate-200', 'text-indigo-600'); ctx.clearRect(0, 0, canvas.width, canvas.height); }
+    }
+    function drawGrid() {
+        ctx.save(); ctx.strokeStyle = '#f1f5f9'; ctx.lineWidth = 1; const step = 40;
+        ctx.beginPath();
+        for(let x=0; x<=canvas.width; x+=step) { ctx.moveTo(x,0); ctx.lineTo(x,canvas.height); }
+        for(let y=0; y<=canvas.height; y+=step) { ctx.moveTo(0,y); ctx.lineTo(canvas.width,y); }
+        ctx.stroke(); ctx.restore();
+    }
+
+    canvas.addEventListener('mousedown', startPosition); canvas.addEventListener('mouseup', endPosition);
+    canvas.addEventListener('mousemove', draw); canvas.addEventListener('mouseout', endPosition);
+    canvas.addEventListener('touchstart', startPosition, { passive: false });
+    canvas.addEventListener('touchend', endPosition); canvas.addEventListener('touchmove', draw, { passive: false });
+    window.addEventListener('resize', resizeCanvas);
+
+</script>
+</body>
+</html>
