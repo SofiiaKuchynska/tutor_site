@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>7 клас: Алгебра — Формули скороченого множення</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['\\(', '\\)']],
+                displayMath: [['\\[', '\\]']]
+            },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; overflow: hidden; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .task-card { border: 1px solid #e2e8f0; transition: all 0.3s ease; border-radius: 2rem; background: white; padding: 1.5rem; }
+        .task-card:hover { border-color: #6366f1; box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.1); transform: translateY(-2px); }
+        
+        .input-base {
+            width: 100%; padding: 0.75rem 1rem; border-radius: 0.75rem; border: 2px solid #e2e8f0; 
+            background-color: #f8fafc; font-weight: 600; color: #1e293b; outline: none; transition: all 0.2s;
+        }
+        .input-base:focus { border-color: #6366f1; background-color: #ffffff; box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1); }
+        .input-correct { border-color: #22c55e !important; background-color: #dcfce7 !important; color: #166534 !important; }
+        .input-wrong { border-color: #ef4444 !important; background-color: #fee2e2 !important; color: #991b1b !important; }
+        
+        .canvas-container { position: relative; background: #ffffff; cursor: crosshair; touch-action: none; }
+        .tool-active { background-color: #4f46e5; color: #ffffff; box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.4); }
+        
+        .option-btn { transition: all 0.2s; border-radius: 0.75rem; border: 2px solid #e2e8f0; margin-bottom: 0.5rem; width: 100%; text-align: left; padding: 0.75rem; font-weight: 500; }
+        .option-correct { background-color: #dcfce7 !important; border-color: #22c55e !important; color: #166534 !important; }
+        .option-wrong { background-color: #fee2e2 !important; border-color: #ef4444 !important; color: #991b1b !important; }
+
+        .match-btn { padding: 0.75rem; border: 2px solid #e2e8f0; border-radius: 1rem; cursor: pointer; transition: all 0.2s; text-align: center; font-weight: 600; background: #f8fafc; font-size: 0.875rem; }
+        .match-selected { border-color: #4f46e5 !important; background: #e0e7ff !important; transform: scale(1.02); }
+    </style>
+</head>
+<body class="h-screen flex text-slate-900">
+
+    <div class="w-full lg:w-1/2 flex flex-col bg-white border-r border-slate-200 shadow-xl z-10 relative">
+        <header class="p-5 border-b border-slate-100 flex justify-between items-center bg-white/95 backdrop-blur-md sticky top-0 z-30">
+            <div>
+                <h1 class="text-2xl font-extrabold tracking-tight text-slate-800">Формули скороченого множення</h1>
+                <p class="text-[11px] font-bold text-indigo-500 uppercase tracking-widest mt-1">7 Клас • Повний курс • §16-21</p>
+            </div>
+            <div class="flex flex-col items-end w-32">
+                <div class="flex items-center gap-2 mb-1">
+                    <span class="text-xs font-bold text-slate-500">Прогрес</span>
+                    <span id="prog-text" class="text-xs font-black text-indigo-600">0/40</span>
+                </div>
+                <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+                    <div id="prog-bar" class="h-full bg-gradient-to-r from-indigo-500 to-purple-500 transition-all duration-500" style="width: 0%"></div>
+                </div>
+            </div>
+        </header>
+
+        <main class="flex-1 overflow-y-auto p-6 lg:p-10 space-y-12 custom-scrollbar pb-32">
+            
+            <section class="bg-gradient-to-br from-indigo-50 to-blue-50 rounded-3xl p-6 border border-indigo-100">
+                <div class="flex items-start gap-4">
+                    <div class="text-4xl">🚀</div>
+                    <div class="flex-1">
+                        <h2 class="text-xl font-bold text-indigo-900 mb-2">Час стати майстром виразів!</h2>
+                        <p class="text-indigo-800/80 text-sm leading-relaxed">
+                            Сьогодні ми вивчимо "магічні скорочення". Замість того, щоб множити довгі дужки, ми будемо використовувати формули, які роблять це миттєво.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="space-y-6">
+                <div class="flex items-center gap-4 border-b border-slate-100 pb-4">
+                    <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center text-xl shadow-inner shadow-blue-200">1️⃣</div>
+                    <h2 class="text-2xl font-black text-slate-800">Квадрат суми та різниці</h2>
+                </div>
+                
+                <div class="bg-blue-50/60 p-6 rounded-[2rem] border border-blue-100">
+                    <h3 class="font-bold text-blue-900 text-lg mb-3">📚 Правило "Трьох доданків"</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                        <div class="bg-white p-4 rounded-xl shadow-sm border border-blue-100">
+                            <p class="font-black text-lg text-blue-600">\( (a + b)^2 = a^2 + 2ab + b^2 \)</p>
+                            <p class="text-xs text-slate-500 mt-2">Квадрат першого + подвоєний добуток + квадрат другого.</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-xl shadow-sm border border-blue-100">
+                            <p class="font-black text-lg text-blue-600">\( (a - b)^2 = a^2 - 2ab + b^2 \)</p>
+                            <p class="text-xs text-slate-500 mt-2">Тільки перед "2ab" ставимо мінус!</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="block-squares" class="space-y-5"></div>
+            </section>
+
+            <section class="space-y-6">
+                <div class="flex items-center gap-4 border-b border-slate-100 pb-4 mt-8">
+                    <div class="w-12 h-12 bg-purple-100 text-purple-600 rounded-2xl flex items-center justify-center text-xl shadow-inner shadow-purple-200">2️⃣</div>
+                    <h2 class="text-2xl font-black text-slate-800">Різниця квадратів</h2>
+                </div>
+
+                <div class="bg-purple-50/60 p-6 rounded-[2rem] border border-purple-100">
+                    <p class="text-sm mb-4">Це найшвидша формула: множимо "мінус" на "плюс" і отримуємо два квадрати.</p>
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-purple-200 text-center">
+                        <p class="font-black text-xl text-purple-600">\( (a - b)(a + b) = a^2 - b^2 \)</p>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-[2rem] border border-slate-200 shadow-sm">
+                    <h3 class="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">🎮 Міні-гра: Знайди пару</h3>
+                    <div class="flex gap-4" id="matching-container"></div>
+                </div>
+
+                <div id="block-diff-squares" class="space-y-5"></div>
+            </section>
+
+            <section class="space-y-6">
+                <div class="flex items-center gap-4 border-b border-slate-100 pb-4 mt-8">
+                    <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center text-xl shadow-inner shadow-emerald-200">3️⃣</div>
+                    <h2 class="text-2xl font-black text-slate-800">Сума та різниця кубів</h2>
+                </div>
+
+                <div class="bg-emerald-50/60 p-6 rounded-[2rem] border border-emerald-100">
+                    <p class="text-sm mb-3">Тут з'являється "неповний квадрат". Він схожий на звичайний, але без двійки посередині!</p>
+                    <ul class="text-sm space-y-2">
+                        <li>🔵 \( a^3 + b^3 = (a + b)(a^2 - ab + b^2) \)</li>
+                        <li>🔴 \( a^3 - b^3 = (a - b)(a^2 + ab + b^2) \)</li>
+                    </ul>
+                </div>
+
+                <div id="block-cubes" class="space-y-5"></div>
+            </section>
+
+            <section class="space-y-6">
+                <div class="flex items-center gap-4 border-b border-slate-100 pb-4 mt-8">
+                    <div class="w-12 h-12 bg-rose-100 text-rose-600 rounded-2xl flex items-center justify-center text-xl shadow-inner shadow-rose-200">4️⃣</div>
+                    <h2 class="text-2xl font-black text-slate-800">Складні випадки</h2>
+                </div>
+                <div class="bg-rose-50/60 p-6 rounded-[2rem] border border-rose-100 text-sm">
+                    <b>Алгоритм:</b> 1. Винеси спільний множник. 2. Застосуй формулу.
+                    <p class="mt-2 text-center font-bold italic">Приклад: \( 3x^2 - 3 = 3(x^2 - 1) = 3(x-1)(x+1) \)</p>
+                </div>
+                <div id="block-advanced" class="space-y-5"></div>
+            </section>
+
+            <section class="space-y-6 pt-10">
+                <div class="flex items-center gap-4 border-b border-slate-100 pb-4">
+                    <div class="w-12 h-12 bg-slate-900 text-white rounded-2xl flex items-center justify-center text-xl">🎯</div>
+                    <h2 class="text-2xl font-black text-slate-800">Підсумкова перевірка</h2>
+                </div>
+                <div id="final-test" class="space-y-5"></div>
+                <button onclick="finishLesson()" class="w-full bg-slate-900 text-white py-5 rounded-3xl font-black text-lg hover:bg-indigo-600 transition-all shadow-xl active:scale-95">
+                    ЗАВЕРШИТИ УРОК
+                </button>
+            </section>
+        </main>
+    </div>
+
+    <div class="hidden lg:flex w-1/2 flex-col bg-slate-50 relative p-6 h-screen">
+        <div class="absolute top-8 left-1/2 -translate-x-1/2 z-40 flex items-center gap-2 bg-white p-2 rounded-2xl shadow-xl border border-slate-100">
+            <button onclick="setTool('pen')" id="tool-pen" class="p-3 rounded-xl tool-active transition">✏️</button>
+            <button onclick="setTool('eraser')" id="tool-eraser" class="p-3 rounded-xl hover:bg-slate-100 transition">🧽</button>
+            <div class="w-px h-8 bg-slate-200 mx-1"></div>
+            <button onclick="toggleGrid()" id="tool-grid" class="px-3 py-2 text-xs font-bold text-slate-500 hover:bg-slate-100 rounded-lg transition">🌐 Сітка</button>
+            <button onclick="clearCanvas()" class="p-3 text-red-500 hover:bg-red-50 rounded-xl transition">🗑️</button>
+        </div>
+
+        <div class="canvas-container flex-1 bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden mt-16" id="canvas-wrap">
+            <canvas id="whiteboard"></canvas>
+        </div>
+        <p class="mt-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest text-center">Інтерактивна чернетка для розрахунків</p>
+    </div>
+
+    <div id="result-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-[2rem] p-10 max-w-md w-full text-center shadow-2xl transform scale-95 transition-all">
+            <div class="text-6xl mb-4" id="res-emoji">🏆</div>
+            <h2 class="text-3xl font-black text-slate-800 mb-2">Чудовий результат!</h2>
+            <p id="res-score" class="text-indigo-600 font-black text-4xl mb-4">0 / 40</p>
+            <p id="res-message" class="text-slate-600 mb-8 font-medium"></p>
+            <button onclick="location.reload()" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-bold">На головну</button>
+        </div>
+    </div>
+
+<script>
+    let score = 0;
+    let answered = 0;
+    const TOTAL = 40;
+    let globalId = 0;
+    const states = {};
+
+    function updateProg() {
+        document.getElementById('prog-text').innerText = `${answered}/${TOTAL}`;
+        document.getElementById('prog-bar').style.width = `${(answered / TOTAL) * 100}%`;
+    }
+
+    // --- Data Sections ---
+    const sqData = [
+        { type: 'input', q: "Розкрий: \\( (x + 3)^2 = x^2 + ?x + 9 \\)", a: 6, h: "Подвоєний добуток: 2 * x * 3", s: "2 * 3 = 6" },
+        { type: 'input', q: "Розкрий: \\( (a - 5)^2 = a^2 - 10a + ? \\)", a: 25, h: "Квадрат другого числа: 5^2", s: "5 * 5 = 25" },
+        { type: 'mcq', q: "Який вираз є квадратом суми \\( (2x + 1)^2 \\)?", opts: ["\\( 4x^2 + 1 \\)", "\\( 4x^2 + 4x + 1 \\)", "\\( 2x^2 + 4x + 1 \\)"], a: 1, h: "Не забудь піднести 2 до квадрату і знайти подвоєний добуток.", s: "\\( (2x)^2 + 2(2x)(1) + 1^2 = 4x^2 + 4x + 1 \\)" }
+    ];
+    // Generating more for volume
+    for(let i=1; i<=7; i++) sqData.push({ type: 'input', q: `Коефіцієнт при x: \\( (x + ${i+5})^2 \\)`, a: (i+5)*2, h: "Множ число на 2", s: "Це подвоєний добуток" });
+
+    const dsData = [
+        { type: 'input', q: "Спрости: \\( (x - 4)(x + 4) = x^2 - ? \\)", a: 16, h: "4 у квадраті", s: "4 * 4 = 16" },
+        { type: 'mcq', q: "Розклади на множники: \\( 25 - y^2 \\)", opts: ["\\( (25-y)(25+y) \\)", "\\( (5-y)(5+y) \\)", "\\( (y-5)(y+5) \\)"], a: 1, h: "25 - це 5 у квадраті", s: "\\( 5^2 - y^2 = (5-y)(5+y) \\)" }
+    ];
+    for(let i=1; i<=8; i++) dsData.push({ type: 'input', q: `Результат: \\( (a - ${i+1})(a + ${i+1}) = a^2 - ? \\)`, a: (i+1)**2, h: "Знайди квадрат числа", s: "Різниця квадратів" });
+
+    const cubeData = [
+        { type: 'mcq', q: "Розклади \\( x^3 + 8 \\)", opts: ["\\( (x+2)(x^2-2x+4) \\)", "\\( (x+2)(x^2-4x+4) \\)", "\\( (x-2)(x^2+2x+4) \\)"], a: 0, h: "8 = 2^3. Використовуй неповний квадрат з мінусом.", s: "Формула суми кубів." }
+    ];
+    for(let i=2; i<=6; i++) cubeData.push({ type: 'input', q: `Знайди b, якщо \\( x^3 - ${i**3} = (x - ${i})(x^2 + ?x + ${i**2}) \\)`, a: i, h: "Це середній доданок неповного квадрата", s: "Він дорівнює ab" });
+
+    const advData = [];
+    for(let i=2; i<=6; i++) advData.push({ type: 'input', q: `Винеси множник: \\( ${i}x^2 - ${i}y^2 = ${i}(x-y)(x+?) \\). Що замість ?`, a: "y", h: "Літера", s: "Спільний множник винесено" });
+    advData.push({ type: 'mcq', q: "Спрости: \\( (x-1)^2 + 2x \\)", opts: ["\\( x^2 + 1 \\)", "\\( x^2 + 4x + 1 \\)", "\\( x^2 - 1 \\)"], a: 0, h: "Розкрий квадрат і звести подібні", s: "\\( x^2 - 2x + 1 + 2x = x^2 + 1 \\)" });
+
+    // --- Rendering ---
+    function render(contId, data) {
+        const c = document.getElementById(contId);
+        data.forEach(t => {
+            const id = globalId++;
+            let html = `<div class="task-card" id="t-${id}">
+                <p class="font-bold text-slate-800 mb-3">${t.q}</p>`;
+            
+            if(t.type === 'input') {
+                html += `<div class="flex gap-2">
+                    <input type="text" id="in-${id}" class="input-base" placeholder="?">
+                    <button onclick="checkIn(${id}, '${t.a}')" id="btn-${id}" class="bg-slate-900 text-white px-4 rounded-xl font-bold">ОК</button>
+                </div>`;
+            } else {
+                html += t.opts.map((o, i) => `
+                    <button onclick="checkMcq(${id}, ${i}, ${t.a})" id="opt-${id}-${i}" class="option-btn">${o}</button>
+                `).join('');
+            }
+            html += `<div class="flex gap-4 mt-3 text-[10px] font-bold text-slate-400">
+                <button onclick="toggle('h-${id}')">ПІДКАЗКА</button>
+                <button onclick="toggle('s-${id}')">РІШЕННЯ</button>
+            </div>
+            <p id="h-${id}" class="hidden text-xs text-amber-600 mt-2 bg-amber-50 p-2 rounded-lg italic">${t.h}</p>
+            <p id="s-${id}" class="hidden text-xs text-indigo-600 mt-2 bg-indigo-50 p-2 rounded-lg font-medium">${t.s}</p>
+            </div>`;
+            c.innerHTML += html;
+        });
+    }
+
+    window.checkIn = (id, ans) => {
+        if(states[id]) return;
+        const v = document.getElementById(`in-${id}`).value.trim().toLowerCase();
+        if(v == ans.toString().toLowerCase()) {
+            document.getElementById(`in-${id}`).classList.add('input-correct');
+            score++; answered++; updateProg(); states[id]=true;
+        } else {
+            document.getElementById(`in-${id}`).classList.add('input-wrong');
+            setTimeout(()=>document.getElementById(`in-${id}`).classList.remove('input-wrong'), 800);
+        }
+    };
+
+    window.checkMcq = (id, user, corr) => {
+        if(states[id]) return;
+        const btn = document.getElementById(`opt-${id}-${user}`);
+        if(user === corr) {
+            btn.classList.add('option-correct');
+            score++; answered++; updateProg(); states[id]=true;
+        } else {
+            btn.classList.add('option-wrong');
+            document.getElementById(`opt-${id}-${corr}`).classList.add('option-correct');
+            answered++; updateProg(); states[id]=true;
+        }
+    };
+
+    window.toggle = (id) => document.getElementById(id).classList.toggle('hidden');
+
+    // --- Matching Game ---
+    const pairs = [
+        {l: "\\( (x-1)(x+1) \\)", r: "\\( x^2-1 \\)", id: 101},
+        {l: "\\( (a+b)^2 \\)", r: "\\( a^2+2ab+b^2 \\)", id: 102},
+        {l: "\\( (m-n)^2 \\)", r: "\\( m^2-2mn+n^2 \\)", id: 103},
+        {l: "\\( a^2-b^2 \\)", r: "\\( (a-b)(a+b) \\)", id: 104}
+    ];
+    let selL = null;
+    function renderMatch() {
+        const cont = document.getElementById('matching-container');
+        const left = [...pairs].sort(()=>Math.random()-0.5);
+        const right = [...pairs].sort(()=>Math.random()-0.5);
+        let lHtml = '<div class="flex-1 space-y-2">';
+        left.forEach(p => lHtml += `<button id="ml-${p.id}" onclick="selMatchL(${p.id})" class="match-btn w-full">${p.l}</button>`);
+        lHtml += '</div>';
+        let rHtml = '<div class="flex-1 space-y-2">';
+        right.forEach(p => rHtml += `<button id="mr-${p.id}" onclick="selMatchR(${p.id})" class="match-btn w-full">${p.r}</button>`);
+        rHtml += '</div>';
+        cont.innerHTML = lHtml + rHtml;
+    }
+    window.selMatchL = (id) => {
+        if(document.getElementById(`ml-${id}`).disabled) return;
+        if(selL) document.getElementById(`ml-${selL}`).classList.remove('match-selected');
+        selL = id;
+        document.getElementById(`ml-${id}`).classList.add('match-selected');
+    };
+    window.selMatchR = (id) => {
+        if(!selL || document.getElementById(`mr-${id}`).disabled) return;
+        if(selL === id) {
+            document.getElementById(`ml-${id}`).classList.replace('match-selected', 'bg-green-100');
+            document.getElementById(`mr-${id}`).classList.add('bg-green-100');
+            document.getElementById(`ml-${id}`).disabled = true;
+            document.getElementById(`mr-${id}`).disabled = true;
+            score++; answered++; updateProg(); selL = null;
+        } else {
+            const r = document.getElementById(`mr-${id}`);
+            r.classList.add('border-red-500');
+            setTimeout(()=>r.classList.remove('border-red-500'), 500);
+        }
+    };
+
+    // --- Canvas ---
+    const canvas = document.getElementById('whiteboard');
+    const ctx = canvas.getContext('2d');
+    let drawing = false, tool = 'pen', grid = false;
+    function resize() { canvas.width = canvas.parentElement.clientWidth; canvas.height = canvas.parentElement.clientHeight; if(grid) drawGrid(); }
+    window.addEventListener('resize', resize);
+    setTimeout(resize, 100);
+
+    canvas.addEventListener('mousedown', (e) => { drawing = true; ctx.beginPath(); });
+    canvas.addEventListener('mousemove', (e) => {
+        if(!drawing) return;
+        const rect = canvas.getBoundingClientRect();
+        ctx.lineWidth = tool === 'pen' ? 2 : 20;
+        ctx.strokeStyle = tool === 'pen' ? '#1e293b' : '#ffffff';
+        ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+        ctx.stroke();
+    });
+    window.addEventListener('mouseup', () => drawing = false);
+
+    window.setTool = (t) => {
+        tool = t;
+        document.getElementById('tool-pen').classList.toggle('tool-active', t==='pen');
+        document.getElementById('tool-eraser').classList.toggle('tool-active', t==='eraser');
+    };
+    window.clearCanvas = () => { ctx.clearRect(0,0,canvas.width,canvas.height); if(grid) drawGrid(); };
+    window.toggleGrid = () => {
+        grid = !grid;
+        if(grid) drawGrid(); else clearCanvas();
+        document.getElementById('tool-grid').classList.toggle('bg-slate-200');
+    };
+    function drawGrid() {
+        ctx.strokeStyle = '#f1f5f9'; ctx.lineWidth = 1;
+        for(let i=0; i<canvas.width; i+=40) { ctx.moveTo(i,0); ctx.lineTo(i,canvas.height); }
+        for(let i=0; i<canvas.height; i+=40) { ctx.moveTo(0,i); ctx.lineTo(canvas.width,i); }
+        ctx.stroke();
+    }
+
+    window.finishLesson = () => {
+        const m = document.getElementById('result-modal');
+        document.getElementById('res-score').innerText = `${score} / ${TOTAL}`;
+        const msg = score > 35 ? "Ти геній алгебри! Професор тобою пишається! ✨" : "Гарна робота! Але повтори куби для ідеального результату. 💪";
+        document.getElementById('res-message').innerText = msg;
+        m.classList.remove('hidden');
+    };
+
+    window.onload = () => {
+        render('block-squares', sqData);
+        render('block-diff-squares', dsData);
+        render('block-cubes', cubeData);
+        render('block-advanced', advData);
+        renderMatch();
+        render('final-test', [
+            {type:'mcq', q:"Що вийде: \\( (x-y)^2 - (x+y)^2 \\)?", opts:["\\( 0 \\)", "\\( -4xy \\)", "\\( 2x^2+2y^2 \\)"], a: 1, h:"Розкрий обидва квадрати", s:"\\( x^2-2xy+y^2 - (x^2+2xy+y^2) = -4xy \\)"},
+            {type:'mcq', q:"Розклади \\( 5x^2 - 20 \\)", opts:["\\( 5(x-2)(x+2) \\)", "\\( (5x-10)(x+2) \\)", "\\( 5(x^2-20) \\)"], a: 0, h:"Винеси 5", s:"\\( 5(x^2-4) = 5(x-2)(x+2) \\)"}
+        ]);
+        MathJax.typeset();
+    };
+</script>
+</body>
+</html>
