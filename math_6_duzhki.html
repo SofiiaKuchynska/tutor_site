@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>7 клас: Розкриття дужок (Інтенсив)</title>
+    <title>7 клас: Розкриття дужок (50 завдань)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         window.MathJax = {
@@ -22,7 +22,7 @@
         .input-base {
             width: 100%; padding: 0.875rem 1rem; border-radius: 1rem; border: 2px solid #e2e8f0; 
             background-color: #f8fafc; font-weight: 600; color: #1e293b; outline: none; transition: all 0.2s;
-            font-size: 16px; /* Запобігає зуму на iOS */
+            font-size: 16px; /* Запобігає авто-зуму на iPhone */
         }
         .input-base:focus { border-color: #6366f1; background-color: #ffffff; }
         .input-correct { border-color: #22c55e !important; background-color: #dcfce7 !important; color: #166534 !important; }
@@ -40,17 +40,16 @@
         .match-selected { border-color: #4f46e5 !important; background: #e0e7ff !important; transform: scale(1.02); }
         .match-wrong { border-color: #ef4444 !important; background: #fee2e2 !important; }
         
-        /* Для мобільної навігації */
         .mobile-tab-active { color: #4f46e5; border-top-color: #4f46e5; background-color: #e0e7ff; }
     </style>
 </head>
 <body class="h-screen flex flex-col lg:flex-row text-slate-900">
 
-    <div id="panel-tasks" class="w-full lg:w-1/2 flex flex-col bg-white border-r border-slate-200 shadow-xl z-10 h-full">
-        <header class="p-4 sm:p-5 border-b border-slate-100 flex justify-between items-center bg-white/95 backdrop-blur-md shrink-0">
+    <div id="panel-tasks" class="w-full lg:w-1/2 flex flex-col bg-white border-r border-slate-200 shadow-xl z-10 h-full relative">
+        <header class="p-4 sm:p-5 border-b border-slate-100 flex justify-between items-center bg-white/95 backdrop-blur-md shrink-0 z-20">
             <div>
                 <h1 class="text-xl sm:text-2xl font-extrabold tracking-tight text-slate-800">Розкриття дужок</h1>
-                <p class="text-[10px] sm:text-[11px] font-bold text-indigo-500 uppercase tracking-widest mt-1">7 Клас • 50 Завдань</p>
+                <p class="text-[10px] sm:text-[11px] font-bold text-indigo-500 uppercase tracking-widest mt-1">7 Клас • Мега-Інтенсив • 50 Завдань</p>
             </div>
             <div class="flex flex-col items-end w-24 sm:w-32">
                 <div class="flex items-center gap-2 mb-1">
@@ -93,9 +92,9 @@
                         📖 Шпаргалка: Як розкривати дужки?
                     </summary>
                     <div class="p-5 text-sm space-y-3">
-                        <p>🔹 Якщо перед дужками <b>«+»</b> (або нічого), дужки прибираємо, знаки <b>зберігаємо</b>.</p>
+                        <p>🔹 Якщо перед дужками <b>«+»</b> (або нічого), дужки прибираємо, знаки всередині <b>зберігаємо</b>.</p>
                         <div class="bg-white p-2 rounded-lg text-center font-bold text-blue-700">+(a - b) = a - b</div>
-                        <p>🔸 Якщо перед дужками <b>«−»</b>, дужки прибираємо, а знаки всіх доданків всередині <b>змінюємо на протилежні</b>!</p>
+                        <p>🔸 Якщо перед дужками <b>«−»</b>, дужки прибираємо, а знаки ВСІХ доданків всередині <b>змінюємо на протилежні</b>!</p>
                         <div class="bg-white p-2 rounded-lg text-center font-bold text-red-600">-(a - b) = -a + b</div>
                     </div>
                 </details>
@@ -108,7 +107,7 @@
                     <div class="w-10 h-10 bg-purple-100 text-purple-600 rounded-xl flex items-center justify-center text-lg font-black">2</div>
                     <h2 class="text-xl font-black text-slate-800">Числові вирази (№1111)</h2>
                 </div>
-                <p class="text-sm text-slate-500 px-2">Увага: десяткові дроби вводь через крапку (наприклад: <b>1.5</b>).</p>
+                <p class="text-sm text-slate-500 px-2">Десяткові дроби вводь через крапку (наприклад: <b>1.5</b>).</p>
                 <div id="block2-tasks" class="space-y-4"></div>
             </section>
 
@@ -126,7 +125,7 @@
                     <h2 class="text-xl font-black text-slate-800">З'єднай пари</h2>
                 </div>
                 <div class="bg-white p-4 sm:p-6 rounded-[2rem] border border-slate-200 shadow-sm" id="matching-game">
-                    <p class="text-sm text-slate-500 mb-6">Натисни на вираз ліворуч, а потім знайди його розкритий варіант праворуч.</p>
+                    <p class="text-sm text-slate-500 mb-6">Натисни на вираз ліворуч, а потім на його розкритий варіант праворуч.</p>
                     <div class="flex gap-2 sm:gap-4" id="matching-container"></div>
                 </div>
             </section>
@@ -136,7 +135,6 @@
                     <div class="w-10 h-10 bg-rose-100 text-rose-600 rounded-xl flex items-center justify-center text-lg font-black">4</div>
                     <h2 class="text-xl font-black text-slate-800">Рівняння (№1122, 1123)</h2>
                 </div>
-                <p class="text-sm text-slate-500 px-2">Розкрий дужки, збери ікси зліва, числа справа. Використовуй дошку!</p>
                 <div id="block4-tasks" class="space-y-4"></div>
             </section>
 
@@ -151,7 +149,7 @@
             </section>
 
             <div class="pt-8 text-center">
-                <button onclick="finishLesson()" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-black text-lg hover:bg-indigo-600 transition-all active:scale-95">
+                <button onclick="finishLesson()" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-black text-lg hover:bg-indigo-600 transition-all active:scale-95 shadow-lg">
                     ЗАВЕРШИТИ УРОК
                 </button>
             </div>
@@ -167,8 +165,7 @@
             <div class="w-px h-8 bg-slate-200 mx-1 hidden sm:block"></div>
             <button onclick="clearCanvas()" class="p-3 text-red-500 hover:bg-red-50 rounded-xl transition" title="Очистити">🗑️</button>
         </div>
-
-        <div class="canvas-container flex-1 bg-white sm:rounded-[2rem] sm:m-4 shadow-sm sm:border border-slate-200 overflow-hidden" id="canvas-wrap">
+        <div class="canvas-container flex-1 bg-white lg:rounded-[2rem] lg:m-4 shadow-sm lg:border border-slate-200 overflow-hidden" id="canvas-wrap">
             <canvas id="whiteboard"></canvas>
         </div>
     </div>
@@ -185,7 +182,7 @@
     <div id="result-modal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-[100] hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-[2rem] p-8 max-w-sm w-full text-center shadow-2xl transform scale-95 transition-all" id="modal-content">
             <div class="text-6xl mb-4" id="res-emoji">🎯</div>
-            <h2 class="text-2xl font-black text-slate-800 mb-2">Урок Завершено!</h2>
+            <h2 class="text-2xl font-black text-slate-800 mb-2">Інтенсив Завершено!</h2>
             <div class="inline-block bg-indigo-50 border border-indigo-100 rounded-2xl px-6 py-3 mb-6">
                 <p class="text-xs font-bold text-indigo-400 uppercase tracking-wide mb-1">Результат</p>
                 <p id="res-score" class="text-indigo-600 font-black text-4xl">0 / 50</p>
@@ -196,8 +193,29 @@
     </div>
 
 <script>
-    // --- ДАНІ ЗАВДАНЬ (50 ШТ) ---
-    // Блок 1: Знаки (10 шт)
+    let totalScore = 0; let answeredTasks = 0; const TOTAL_TASKS = 50; 
+
+    function updateProgress() {
+        answeredTasks++;
+        document.getElementById('prog-text').innerText = `${answeredTasks}/${TOTAL_TASKS}`;
+        document.getElementById('prog-bar').style.width = `${(answeredTasks / TOTAL_TASKS) * 100}%`;
+    }
+
+    function checkLogicPuzzle() {
+        const inp = document.getElementById('logic-input');
+        const msg = document.getElementById('logic-msg');
+        if (parseInt(inp.value.trim()) === 34) {
+            msg.innerText = "Правильно! 34 не ділиться на 7 без остачі 🎉";
+            msg.className = "text-sm font-bold mt-3 text-green-600 block";
+            inp.classList.add('input-correct'); inp.disabled = true;
+        } else {
+            msg.innerText = "Спробуй ще! Подивись на підказку.";
+            msg.className = "text-sm font-bold mt-3 text-red-500 block";
+            inp.classList.add('input-wrong'); setTimeout(() => inp.classList.remove('input-wrong'), 1000);
+        }
+    }
+
+    // --- БАЗА ДАНИХ (50 завдань) ---
     const b1 = [
         { t: 'mcq', q: "Розкрий: \\( +(a - b) \\)", opts: ["\\( -a + b \\)", "\\( a - b \\)", "\\( -a - b \\)"], a: 1, h: "Плюс дужки зберігає.", s: "\\( a - b \\)", l: "Легкий" },
         { t: 'mcq', q: "Розкрий: \\( -(x + y) \\)", opts: ["\\( -x - y \\)", "\\( x - y \\)", "\\( -x + y \\)"], a: 0, h: "Мінус змінює всі знаки.", s: "\\( -x - y \\)", l: "Легкий" },
@@ -211,7 +229,6 @@
         { t: 'mcq', q: "Розкрий: \\( -( -(-x) ) \\)", opts: ["\\( -x \\)", "\\( x \\)"], a: 0, h: "Три мінуси = мінус.", s: "\\( -x \\)", l: "Складний" }
     ];
 
-    // Блок 2: Числа (10 шт)
     const b2 = [
         { t: 'input', q: "Обчисли (№1111): \\( -(59 - 75) - (35 - 49) \\)", a: 30, h: "-(-16) - (-14)", s: "16 + 14 = 30", l: "Середній" },
         { t: 'input', q: "Обчисли: \\( (82 - 9) - (8 + 32) \\)", a: 33, h: "73 - 40", s: "33", l: "Середній" },
@@ -225,7 +242,6 @@
         { t: 'input', q: "Обчисли: \\( 1 - (1 - (1 - 2)) \\)", a: 1, h: "1 - 2 = -1; 1 - (-1) = 2; 1 - 2 = -1", s: "-1", l: "Складний" }
     ];
 
-    // Блок 3: Букви (10 шт)
     const b3 = [
         { t: 'input', q: "Спрости \\( 19 - (a + 7) \\). Який ВІЛЬНИЙ ЧЛЕН (число)?", a: 12, h: "19 - 7", s: "12", l: "Середній" },
         { t: 'input', q: "Спрости \\( -(4 - a + 2) - 28 \\). Знайди ВІЛЬНИЙ ЧЛЕН.", a: -34, h: "-4 - 2 - 28", s: "-34", l: "Середній" },
@@ -239,21 +255,19 @@
         { t: 'mcq', q: "Візьми в дужки з мінусом попереду: \\( -5 + 2 \\)", opts: ["\\( -(5 - 2) \\)", "\\( -(5 + 2) \\)"], a: 0, h: "Знаки міняються: -5 стає 5, +2 стає -2.", s: "\\( -(5 - 2) \\)", l: "Складний" }
     ];
 
-    // Блок 4: Рівняння (10 шт)
     const b4 = [
-        { t: 'input', q: "Розв'яжи: \\( 4.8 - (5.8 + x) = 1.2 \\)", a: -2.2, h: "4.8 - 5.8 - x = 1.2", s: "-1 - x = 1.2 → x = -2.2", l: "Складний" },
+        { t: 'input', q: "Розв'яжи: \\( 4.8 - (5.8 + x) = 1.2 \\)", a: -2.2, h: "4.8 - 5.8 - x = 1.2", s: "-1 - x = 1.2", l: "Складний" },
         { t: 'input', q: "Розв'яжи: \\( (x + 7.2) - 14 = -2.3 \\)", a: 4.5, h: "x - 6.8 = -2.3", s: "x = 4.5", l: "Середній" },
         { t: 'input', q: "Розв'яжи: \\( -9 + (14.7 - x) = 1.3 \\)", a: 4.4, h: "5.7 - x = 1.3", s: "x = 4.4", l: "Складний" },
-        { t: 'input', q: "Розв'яжи: \\( -(x - 1.9) - 1.5 = 0.15 \\)", a: 0.25, h: "-x + 1.9 - 1.5 = 0.15", s: "-x + 0.4 = 0.15 → x = 0.25", l: "Складний" },
-        { t: 'input', q: "Розв'яжи: \\( 8.3 - (-3.2 + x) = 12 \\)", a: -0.5, h: "8.3 + 3.2 - x = 12", s: "11.5 - x = 12 → x = -0.5", l: "Складний" },
-        { t: 'input', q: "Розв'яжи: \\( x - (2 - x) = 8 \\)", a: 5, h: "x - 2 + x = 8 → 2x = 10", s: "x = 5", l: "Середній" },
-        { t: 'input', q: "Розв'яжи: \\( 10 - (x + 3) = 5 \\)", a: 2, h: "10 - x - 3 = 5 → 7 - x = 5", s: "x = 2", l: "Легкий" },
-        { t: 'input', q: "Розв'яжи: \\( (2x + 1) - (x - 4) = 10 \\)", a: 5, h: "2x + 1 - x + 4 = 10 → x + 5 = 10", s: "x = 5", l: "Середній" },
+        { t: 'input', q: "Розв'яжи: \\( -(x - 1.9) - 1.5 = 0.15 \\)", a: 0.25, h: "-x + 1.9 - 1.5 = 0.15", s: "-x + 0.4 = 0.15", l: "Складний" },
+        { t: 'input', q: "Розв'яжи: \\( 8.3 - (-3.2 + x) = 12 \\)", a: -0.5, h: "8.3 + 3.2 - x = 12", s: "11.5 - x = 12", l: "Складний" },
+        { t: 'input', q: "Розв'яжи: \\( x - (2 - x) = 8 \\)", a: 5, h: "x - 2 + x = 8", s: "2x = 10", l: "Середній" },
+        { t: 'input', q: "Розв'яжи: \\( 10 - (x + 3) = 5 \\)", a: 2, h: "10 - x - 3 = 5", s: "x = 2", l: "Легкий" },
+        { t: 'input', q: "Розв'яжи: \\( (2x + 1) - (x - 4) = 10 \\)", a: 5, h: "2x + 1 - x + 4 = 10", s: "x = 5", l: "Середній" },
         { t: 'input', q: "Розв'яжи: \\( -(x - 5) = -2 \\)", a: 7, h: "-x + 5 = -2", s: "x = 7", l: "Середній" },
-        { t: 'input', q: "Розв'яжи: \\( 5x - (4x + 1) = 9 \\)", a: 10, h: "5x - 4x - 1 = 9", s: "x - 1 = 9 → x = 10", l: "Середній" }
+        { t: 'input', q: "Розв'яжи: \\( 5x - (4x + 1) = 9 \\)", a: 10, h: "5x - 4x - 1 = 9", s: "x - 1 = 9", l: "Середній" }
     ];
 
-    // Тест (5 шт)
     const testData = [
         { q: "Якщо перед дужками мінус, то...", opts: ["Знаки не міняються", "Знаки міняються на протилежні"], a: 1, l: "Легкий" },
         { q: "Спрости: \\( -a - (b - a) \\)", opts: ["\\( -b \\)", "\\( -2a - b \\)"], a: 0, l: "Середній" },
@@ -265,8 +279,193 @@
     let taskStates = new Array(60).fill(false);
     let currentGlobalId = 0;
 
-    // Гра (5 пар)
     const matchPairs = [
         { id: 0, l: "\\( -(x - 5) \\)", r: "\\( -x + 5 \\)" },
         { id: 1, l: "\\( +(x - 5) \\)", r: "\\( x - 5 \\)" },
-        { id: 2, l: "\\( -(-x - 5) \\)", r: "\
+        { id: 2, l: "\\( -(-x - 5) \\)", r: "\\( x + 5 \\)" },
+        { id: 3, l: "\\( -x - (5 - x) \\)", r: "\\( -5 \\)" },
+        { id: 4, l: "\\( x - (x - 5) \\)", r: "\\( 5 \\)" }
+    ];
+    let selectedLeft = null; let matchesFound = 0;
+    const matchColors = ['bg-green-100 border-green-400 text-green-800', 'bg-yellow-100 border-yellow-400 text-yellow-800', 'bg-blue-100 border-blue-400 text-blue-800', 'bg-pink-100 border-pink-400 text-pink-800', 'bg-purple-100 border-purple-400 text-purple-800'];
+
+    // --- ФУНКЦІЇ РЕНДЕРУ ---
+    window.onload = () => {
+        renderTasks('block1-tasks', b1); renderTasks('block2-tasks', b2);
+        renderTasks('block3-tasks', b3); renderGame();
+        renderTasks('block4-tasks', b4); renderTest();
+        
+        // Безпечний виклик MathJax
+        if (window.MathJax && MathJax.typesetPromise) {
+            MathJax.typesetPromise().catch(err => console.log(err));
+        }
+        setTimeout(resizeCanvas, 300);
+    };
+
+    function renderTasks(containerId, dataArr) {
+        const container = document.getElementById(containerId); let html = '';
+        dataArr.forEach(task => {
+            let id = currentGlobalId++;
+            let badgeColor = task.l === 'Легкий' ? 'bg-green-100 text-green-700' : task.l === 'Середній' ? 'bg-amber-100 text-amber-700' : 'bg-red-100 text-red-700';
+            
+            html += `<div class="task-card bg-white p-4 sm:p-6 rounded-3xl" id="task-${id}">
+                <div class="flex justify-between mb-3"><span class="px-2 py-1 rounded-lg text-[10px] font-bold uppercase ${badgeColor}">${task.l}</span></div>
+                <h3 class="text-sm sm:text-base font-bold text-slate-800 mb-4">${task.q}</h3>`;
+
+            if(task.t === 'input') {
+                html += `<div class="flex flex-col sm:flex-row gap-2">
+                    <input type="text" id="input-${id}" class="input-base" placeholder="Відповідь...">
+                    <button onclick="checkInput(${id}, ${task.a})" id="btn-${id}" class="px-6 py-3 bg-slate-900 text-white rounded-xl font-bold hover:bg-indigo-600 transition active:scale-95">Перевірити</button>
+                </div>`;
+            } else {
+                let optsHTML = task.opts.map((opt, oIdx) => `<button id="mcqbtn-${id}-${oIdx}" onclick="checkMCQ(${id}, ${oIdx}, ${task.a})" class="option-btn w-full text-left p-3 rounded-xl border-2 border-slate-100 bg-slate-50 font-medium text-slate-700 flex items-center gap-3 mb-2"><div class="w-5 h-5 rounded-full border-2 border-slate-300 shrink-0" id="mcqcircle-${id}-${oIdx}"></div><span class="text-sm sm:text-base">${opt}</span></button>`).join('');
+                html += `<div>${optsHTML}</div>`;
+            }
+
+            html += `<div class="flex justify-between items-center mt-4 pt-3 border-t border-slate-50">
+                <button onclick="document.getElementById('hint-${id}').classList.toggle('hidden')" class="text-xs font-bold text-slate-400 hover:text-indigo-500 uppercase">💡 Підказка</button>
+                <button onclick="document.getElementById('sol-${id}').classList.toggle('hidden')" class="text-xs font-bold text-slate-400 hover:text-indigo-500 uppercase">Рішення 👁️</button>
+            </div>
+            <div id="hint-${id}" class="hidden mt-3 p-3 bg-yellow-50 rounded-xl text-xs sm:text-sm text-yellow-800">${task.h}</div>
+            <div id="sol-${id}" class="hidden mt-3 p-3 bg-indigo-50 rounded-xl text-xs sm:text-sm text-indigo-800">${task.s}</div></div>`;
+        });
+        container.innerHTML = html;
+    }
+
+    function renderTest() {
+        const container = document.getElementById('final-test'); let html = '';
+        testData.forEach((task) => {
+            let id = currentGlobalId++;
+            let optsHTML = task.opts.map((opt, oIdx) => `<button id="mcqbtn-${id}-${oIdx}" onclick="checkMCQ(${id}, ${oIdx}, ${task.a})" class="option-btn w-full text-left p-4 rounded-2xl border-2 border-slate-100 bg-slate-50 font-medium flex items-center gap-3 mb-2"><div class="w-5 h-5 rounded-full border-2 border-slate-300 shrink-0" id="mcqcircle-${id}-${oIdx}"></div><span class="text-sm sm:text-base">${opt}</span></button>`).join('');
+            html += `<div class="task-card bg-white p-5 rounded-3xl"><h3 class="font-bold mb-4">${task.q}</h3><div>${optsHTML}</div></div>`;
+        });
+        container.innerHTML = html;
+    }
+
+    function checkInput(id, correctAns) {
+        if(taskStates[id]) return;
+        const inp = document.getElementById(`input-${id}`); const btn = document.getElementById(`btn-${id}`);
+        const userVal = parseFloat(inp.value.replace(',', '.'));
+        if(isNaN(userVal)) { alert("Введи число!"); return; }
+        if(userVal === correctAns) {
+            inp.classList.add('input-correct'); inp.disabled = true;
+            btn.innerHTML = "✓"; btn.classList.replace('bg-slate-900', 'bg-green-600'); btn.disabled = true;
+            totalScore++; taskStates[id] = true; updateProgress();
+        } else {
+            inp.classList.add('input-wrong'); setTimeout(() => inp.classList.remove('input-wrong'), 1000);
+        }
+    }
+
+    function checkMCQ(id, userOpt, correctOpt) {
+        if(taskStates[id]) return;
+        const selectedBtn = document.getElementById(`mcqbtn-${id}-${userOpt}`); const selectedCircle = document.getElementById(`mcqcircle-${id}-${userOpt}`);
+        const correctBtn = document.getElementById(`mcqbtn-${id}-${correctOpt}`); const correctCircle = document.getElementById(`mcqcircle-${id}-${correctOpt}`);
+        let i = 0; while(document.getElementById(`mcqbtn-${id}-${i}`)) { document.getElementById(`mcqbtn-${id}-${i}`).disabled = true; document.getElementById(`mcqbtn-${id}-${i}`).classList.add('opacity-50'); i++; }
+        if(userOpt === correctOpt) {
+            selectedBtn.classList.add('option-correct', 'opacity-100'); selectedCircle.innerHTML = '<div class="w-2 h-2 bg-green-600 rounded-full m-auto mt-1"></div>'; selectedCircle.classList.add('border-green-600');
+            totalScore++;
+        } else {
+            selectedBtn.classList.add('option-wrong', 'opacity-100'); selectedCircle.innerHTML = '<div class="w-2 h-2 bg-red-600 rounded-full m-auto mt-1"></div>';
+            correctBtn.classList.add('option-correct', 'opacity-100'); correctCircle.innerHTML = '<div class="w-2 h-2 bg-green-600 rounded-full m-auto mt-1"></div>';
+        }
+        taskStates[id] = true; updateProgress();
+    }
+
+    function renderGame() {
+        const container = document.getElementById('matching-container');
+        let lefts = [...matchPairs]; let rights = [...matchPairs].sort(() => Math.random() - 0.5);
+        let leftHTML = lefts.map(p => `<button id="m-left-${p.id}" onclick="selectL(${p.id})" class="match-btn w-full mb-2">${p.l}</button>`).join('');
+        let rightHTML = rights.map(p => `<button id="m-right-${p.id}" onclick="selectR(${p.id})" class="match-btn w-full mb-2">${p.r}</button>`).join('');
+        container.innerHTML = `<div class="w-1/2">${leftHTML}</div><div class="w-1/2">${rightHTML}</div>`;
+    }
+
+    function selectL(id) {
+        if(document.getElementById(`m-left-${id}`).disabled) return;
+        matchPairs.forEach(p => { let el = document.getElementById(`m-left-${p.id}`); if(!el.disabled) el.classList.remove('match-selected'); });
+        selectedLeft = id; document.getElementById(`m-left-${id}`).classList.add('match-selected');
+    }
+
+    function selectR(id) {
+        if(selectedLeft === null || document.getElementById(`m-right-${id}`).disabled) return;
+        const lEl = document.getElementById(`m-left-${selectedLeft}`); const rEl = document.getElementById(`m-right-${id}`);
+        if(selectedLeft === id) {
+            lEl.classList.remove('match-selected');
+            let cClass = matchColors[matchesFound % matchColors.length];
+            cClass.split(' ').forEach(cls => { lEl.classList.add(cls); rEl.classList.add(cls); });
+            lEl.disabled = true; rEl.disabled = true;
+            matchesFound++; totalScore++; updateProgress(); selectedLeft = null;
+        } else {
+            rEl.classList.add('match-wrong'); setTimeout(() => rEl.classList.remove('match-wrong'), 400);
+        }
+    }
+
+    function finishLesson() {
+        const modal = document.getElementById('result-modal'); document.getElementById('res-score').innerText = `${totalScore} / ${TOTAL_TASKS}`;
+        const msg = document.getElementById('res-message'); const emoji = document.getElementById('res-emoji');
+        let p = totalScore / TOTAL_TASKS;
+        if (p >= 0.85) { emoji.innerText = "🏆"; msg.innerText = "Ідеально! Ти майстер розкриття дужок."; } 
+        else if (p >= 0.5) { emoji.innerText = "👍"; msg.innerText = "Добре! Треба ще трохи уважності зі знаками."; } 
+        else { emoji.innerText = "💪"; msg.innerText = "Не здавайся! Математика любить практику."; }
+        modal.classList.remove('hidden'); setTimeout(() => document.getElementById('modal-content').classList.remove('scale-95'), 10);
+    }
+
+    // --- МОБІЛЬНЕ МЕНЮ ---
+    function switchMobileTab(tab) {
+        const pTasks = document.getElementById('panel-tasks'); const pBoard = document.getElementById('panel-board');
+        const tTasks = document.getElementById('tab-tasks'); const tBoard = document.getElementById('tab-board');
+        if(tab === 'tasks') {
+            pTasks.classList.remove('hidden'); pTasks.classList.add('flex'); pBoard.classList.add('hidden'); pBoard.classList.remove('flex');
+            tTasks.classList.add('mobile-tab-active'); tTasks.classList.remove('border-transparent', 'text-slate-500');
+            tBoard.classList.remove('mobile-tab-active'); tBoard.classList.add('border-transparent', 'text-slate-500');
+        } else {
+            pTasks.classList.add('hidden'); pTasks.classList.remove('flex'); pBoard.classList.remove('hidden'); pBoard.classList.add('flex');
+            tBoard.classList.add('mobile-tab-active'); tBoard.classList.remove('border-transparent', 'text-slate-500');
+            tTasks.classList.remove('mobile-tab-active'); tTasks.classList.add('border-transparent', 'text-slate-500');
+            setTimeout(resizeCanvas, 50);
+        }
+    }
+
+    // --- WHITEBOARD ---
+    const canvas = document.getElementById('whiteboard'); const ctx = canvas.getContext('2d'); const containerWrap = document.getElementById('canvas-wrap');
+    let isDrawing = false; let currentTool = 'pen'; let showGrid = false;
+
+    function resizeCanvas() {
+        if(containerWrap.clientWidth === 0) return;
+        canvas.width = containerWrap.clientWidth; canvas.height = containerWrap.clientHeight; redrawCanvas();
+    }
+    function redrawCanvas() { ctx.lineCap = 'round'; ctx.lineJoin = 'round'; if (showGrid) drawGrid(); }
+    function setTool(tool) {
+        currentTool = tool; document.getElementById('tool-pen').classList.toggle('tool-active', tool === 'pen'); document.getElementById('tool-eraser').classList.toggle('tool-active', tool === 'eraser');
+    }
+    function getMousePos(e) {
+        const rect = canvas.getBoundingClientRect();
+        const clientX = e.clientX || (e.touches && e.touches.length > 0 ? e.touches[0].clientX : 0);
+        const clientY = e.clientY || (e.touches && e.touches.length > 0 ? e.touches[0].clientY : 0);
+        return { x: clientX - rect.left, y: clientY - rect.top };
+    }
+    function startPosition(e) { isDrawing = true; draw(e); }
+    function endPosition() { isDrawing = false; ctx.beginPath(); }
+    function draw(e) {
+        if (!isDrawing) return; e.preventDefault();
+        const pos = getMousePos(e); ctx.lineWidth = currentTool === 'eraser' ? 30 : 3; ctx.strokeStyle = currentTool === 'eraser' ? '#ffffff' : '#1e293b';
+        ctx.lineTo(pos.x, pos.y); ctx.stroke(); ctx.beginPath(); ctx.moveTo(pos.x, pos.y);
+    }
+    function clearCanvas() { ctx.clearRect(0, 0, canvas.width, canvas.height); if (showGrid) drawGrid(); }
+    function toggleGrid() {
+        showGrid = !showGrid; const btn = document.getElementById('tool-grid');
+        if (showGrid) { btn.classList.add('bg-slate-200', 'text-indigo-600'); drawGrid(); } else { btn.classList.remove('bg-slate-200', 'text-indigo-600'); ctx.clearRect(0, 0, canvas.width, canvas.height); }
+    }
+    function drawGrid() {
+        ctx.save(); ctx.strokeStyle = '#f1f5f9'; ctx.lineWidth = 1; const step = 40; ctx.beginPath();
+        for(let x=0; x<=canvas.width; x+=step) { ctx.moveTo(x,0); ctx.lineTo(x,canvas.height); }
+        for(let y=0; y<=canvas.height; y+=step) { ctx.moveTo(0,y); ctx.lineTo(canvas.width,y); }
+        ctx.stroke(); ctx.restore();
+    }
+    canvas.addEventListener('mousedown', startPosition); canvas.addEventListener('mouseup', endPosition);
+    canvas.addEventListener('mousemove', draw); canvas.addEventListener('mouseout', endPosition);
+    canvas.addEventListener('touchstart', startPosition, { passive: false }); canvas.addEventListener('touchend', endPosition); canvas.addEventListener('touchmove', draw, { passive: false });
+    window.addEventListener('resize', resizeCanvas);
+
+</script>
+</body>
+</html>
