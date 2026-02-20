@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>6 клас: Розкриття дужок та спрощення виразів</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['\\(', '\\)']],
+                displayMath: [['\\[', '\\]']]
+            },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; overflow: hidden; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        
+        .task-card { border: 1px solid #e2e8f0; transition: all 0.3s ease; border-radius: 2rem; background: white; padding: 1.5rem; }
+        .task-card:hover { border-color: #6366f1; box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.1); transform: translateY(-2px); }
+        
+        .input-base {
+            width: 100%; padding: 0.75rem 1rem; border-radius: 1rem; border: 2px solid #e2e8f0; 
+            background-color: #f8fafc; font-weight: 600; color: #1e293b; outline: none; transition: all 0.2s;
+        }
+        .input-base:focus { border-color: #6366f1; background-color: #ffffff; box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1); }
+        .input-correct { border-color: #22c55e !important; background-color: #dcfce7 !important; color: #166534 !important; }
+        .input-wrong { border-color: #ef4444 !important; background-color: #fee2e2 !important; color: #991b1b !important; }
+
+        .canvas-container { position: relative; background: #ffffff; cursor: crosshair; touch-action: none; border-radius: 2rem; }
+        .tool-active { background-color: #4f46e5; color: #ffffff; box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.4); }
+
+        .hint-box { display: none; margin-top: 1rem; padding: 1rem; border-radius: 1rem; font-size: 0.875rem; line-height: 1.25rem; }
+    </style>
+</head>
+<body class="h-screen flex text-slate-900">
+
+    <div class="w-full lg:w-1/2 flex flex-col bg-white border-r border-slate-200 shadow-xl z-10 relative">
+        <header class="p-5 border-b border-slate-100 flex justify-between items-center bg-white/95 backdrop-blur-md sticky top-0 z-30">
+            <div>
+                <h1 class="text-2xl font-extrabold tracking-tight text-slate-800">Розкриття дужок</h1>
+                <p class="text-[11px] font-bold text-indigo-500 uppercase tracking-widest mt-1">6 Клас • Раціональні числа • Урок 1</p>
+            </div>
+            <div class="flex flex-col items-end w-32">
+                <div class="flex items-center gap-2 mb-1">
+                    <span class="text-xs font-bold text-slate-500">Прогрес</span>
+                    <span id="prog-text" class="text-xs font-black text-indigo-600">0/30</span>
+                </div>
+                <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+                    <div id="prog-bar" class="h-full bg-gradient-to-r from-indigo-500 to-purple-500 transition-all duration-500" style="width: 0%"></div>
+                </div>
+            </div>
+        </header>
+
+        <main class="flex-1 overflow-y-auto p-6 lg:p-10 space-y-12 custom-scrollbar pb-32">
+            
+            <section class="bg-gradient-to-br from-amber-50 to-orange-50 rounded-[2rem] p-8 border border-amber-100">
+                <div class="flex items-start gap-4">
+                    <div class="text-4xl">🧩</div>
+                    <div class="flex-1">
+                        <h2 class="text-xl font-bold text-amber-900 mb-2">Логічна розминка</h2>
+                        <p class="text-amber-800/80 text-sm mb-4">Яке число має бути замість знака питання, щоб зберегти логіку?</p>
+                        <div class="bg-white/50 p-4 rounded-2xl border border-amber-200 text-center font-bold text-lg mb-4">
+                            \( -2 \to -4 \to -8 \to ? \)
+                        </div>
+                        <div class="flex gap-2">
+                            <input type="number" id="puzzle-ans" class="input-base" placeholder="Твоя відповідь...">
+                            <button onclick="checkPuzzle()" class="px-6 bg-amber-600 text-white rounded-xl font-bold">OK</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="space-y-6">
+                <div class="flex items-center gap-4 border-b border-slate-100 pb-4">
+                    <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center text-xl shadow-inner shadow-blue-200">1️⃣</div>
+                    <h2 class="text-2xl font-black text-slate-800">Пригадаймо дроби</h2>
+                </div>
+                <div class="bg-blue-50/60 p-6 rounded-[2rem] border border-blue-100">
+                    <p class="text-sm text-blue-800 font-medium">Перетвори мішані числа у десяткові та обчисли. Будь уважним зі знаком!</p>
+                </div>
+                <div id="review-tasks" class="space-y-4"></div>
+            </section>
+
+            <section class="space-y-6">
+                <div class="flex items-center gap-4 border-b border-slate-100 pb-4">
+                    <div class="w-12 h-12 bg-purple-100 text-purple-600 rounded-2xl flex items-center justify-center text-xl shadow-inner shadow-purple-200">2️⃣</div>
+                    <h2 class="text-2xl font-black text-slate-800">Теорія: Розкриття дужок</h2>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-white p-6 rounded-[2rem] border-2 border-green-100 shadow-sm">
+                        <p class="text-xs font-bold text-green-500 uppercase mb-2">Плюс перед дужками</p>
+                        <p class="text-lg font-bold">\( +(a - b) = a - b \)</p>
+                        <p class="text-xs text-slate-500 mt-2">Знаки доданків у дужках НЕ змінюються.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-[2rem] border-2 border-red-100 shadow-sm">
+                        <p class="text-xs font-bold text-red-500 uppercase mb-2">Мінус перед дужками</p>
+                        <p class="text-lg font-bold">\( -(a - b) = -a + b \)</p>
+                        <p class="text-xs text-slate-500 mt-2">ВСІ знаки доданків у дужках змінюємо на ПРОТИЛЕЖНІ.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="space-y-6">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+                    <h2 class="text-2xl font-black text-slate-800">№1168: Обчислення</h2>
+                    <span class="px-3 py-1 bg-indigo-100 text-indigo-600 rounded-full text-xs font-bold">Інтерактив</span>
+                </div>
+                <div id="tasks-1168" class="space-y-4"></div>
+            </section>
+
+            <section class="space-y-6">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+                    <h2 class="text-2xl font-black text-slate-800">№1170: Спрощення</h2>
+                    <span class="px-3 py-1 bg-purple-100 text-purple-600 rounded-full text-xs font-bold">Алгебра</span>
+                </div>
+                <div id="tasks-1170" class="space-y-4"></div>
+            </section>
+
+            <section class="pt-10 border-t border-slate-100">
+                <h2 class="text-3xl font-black text-center mb-8">🎯 Фінальний тест</h2>
+                <div id="final-test" class="space-y-6"></div>
+                <button onclick="showResults()" class="w-full mt-10 bg-slate-900 text-white py-5 rounded-3xl font-black text-xl hover:bg-indigo-600 transition shadow-xl active:scale-95">
+                    ПЕРЕВІРИТИ РЕЗУЛЬТАТИ
+                </button>
+            </section>
+        </main>
+    </div>
+
+    <div class="hidden lg:flex w-1/2 flex-col bg-slate-50 p-6 h-screen relative">
+        <div class="absolute top-8 left-1/2 -translate-x-1/2 z-40 flex items-center gap-2 bg-white p-2 rounded-2xl shadow-xl border border-slate-100">
+            <button onclick="setTool('pen')" id="tool-pen" class="p-3 rounded-xl tool-active">✏️</button>
+            <button onclick="setTool('eraser')" id="tool-eraser" class="p-3 rounded-xl hover:bg-slate-100">🧽</button>
+            <div class="w-px h-8 bg-slate-200 mx-1"></div>
+            <button onclick="toggleGrid()" id="tool-grid" class="px-3 py-2 text-xs font-bold text-slate-500 hover:bg-slate-100 rounded-lg">🌐 Сітка</button>
+            <button onclick="clearCanvas()" class="p-3 text-red-500 hover:bg-red-50 rounded-xl">🗑️</button>
+        </div>
+        <div class="canvas-container flex-1 bg-white shadow-sm border border-slate-200 overflow-hidden mt-16" id="canvas-wrap">
+            <canvas id="whiteboard"></canvas>
+        </div>
+        <div class="mt-4 flex justify-between items-center px-2">
+            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Твоя чернетка для обрахунків</p>
+        </div>
+    </div>
+
+    <div id="result-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-[3rem] p-10 max-w-md w-full text-center shadow-2xl">
+            <div class="text-6xl mb-4" id="res-emoji">🎉</div>
+            <h2 class="text-3xl font-black text-slate-800 mb-2">Урок завершено!</h2>
+            <p id="res-score" class="text-indigo-600 font-black text-5xl mb-4">0/30</p>
+            <p id="res-msg" class="text-slate-600 mb-8 font-medium italic"></p>
+            <button onclick="location.reload()" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-bold hover:bg-indigo-600 transition">Спробувати ще раз</button>
+        </div>
+    </div>
+
+<script>
+    let score = 0;
+    let answered = 0;
+    const TOTAL = 30;
+
+    // --- DATA ---
+    const reviewData = [
+        { q: "1 \\frac{1}{2} - 2,8", a: -1.3, h: "1,5 - 2,8 = ?" },
+        { q: "-3,5 + 2 \\frac{1}{4}", a: -1.25, h: "-3,5 + 2,25 = ?" },
+        { q: "- ( -4,1 + 1,1 )", a: 3, h: "Мінус перед дужками змінює знаки: 4,1 - 1,1 = ?" },
+        { q: "0,5 - ( - 1,5 )", a: 2, h: "Два мінуси дають плюс: 0,5 + 1,5 = ?" },
+        { q: "2 \\frac{4}{5} - 3", a: -0.2, h: "2,8 - 3 = ?" }
+    ];
+
+    const data1168 = [
+        { q: "-0,5 + (-4,2 + 3,9)", a: -0.8, s: "-0,5 - 4,2 + 3,9 = -4,7 + 3,9 = -0,8" },
+        { q: "1,8 - (2,9 - 4,8)", a: 3.7, s: "1,8 - 2,9 + 4,8 = -1,1 + 4,8 = 3,7" },
+        { q: "1,7 - (-2,9 + 0,4)", a: 4.2, s: "1,7 + 2,9 - 0,4 = 4,6 - 0,4 = 4,2" },
+        { q: "-(-2,9 + 5,2) - 1,8", a: -4.1, s: "2,9 - 5,2 - 1,8 = -2,3 - 1,8 = -4,1" },
+        { q: "\\frac{1}{10} - (\\frac{1}{2} - \\frac{1}{5})", a: -0.2, s: "0,1 - (0,5 - 0,2) = 0,1 - 0,3 = -0,2" },
+        { q: "\\frac{4}{5} - (\\frac{1}{10} - \\frac{2}{5})", a: 1.1, s: "0,8 - (0,1 - 0,4) = 0,8 - (-0,3) = 1,1" }
+    ];
+
+    const data1170 = [
+        { q: "1,8 + (2,5 - a)", a: "4,3-a", s: "1,8 + 2,5 - a = 4,3 - a" },
+        { q: "(5 + b) - 2,8", a: "2,2+b", s: "5 + b - 2,8 = 2,2 + b" },
+        { q: "-(p - 3,9) + 0,1", a: "-p+4", s: "-p + 3,9 + 0,1 = -p + 4" },
+        { q: "7 - (m - 6)", a: "13-m", s: "7 - m + 6 = 13 - m" },
+        { q: "(m + 1,3) - (n - 1,7)", a: "m-n+3", s: "m + 1,3 - n + 1,7 = m - n + 3" },
+        { q: "-(x - 3,9) + (y + 4)", a: "-x+y+7,9", s: "-x + 3,9 + y + 4 = -x + y + 7,9" }
+    ];
+
+    const testData = [
+        { q: "Розкрий дужки: \\( -(a - b + c) \\)", opts: ["\\( -a - b - c \\)", "\\( -a + b - c \\)", "\\( -a + b + c \\)"], a: 1 },
+        { q: "Спрости: \\( 1,2 + (x - 1,2) \\)", opts: ["\\( 2,4 + x \\)", "\\( x \\)", "\\( -x \\)"], a: 1 },
+        { q: "Обчисли: \\( - ( 5 - 8 ) \\)", opts: ["-3", "3", "13"], a: 1 }
+    ];
+
+    // --- RENDER FUNCTIONS ---
+    function init() {
+        renderTasks('review-tasks', reviewData, 'rev');
+        renderTasks('tasks-1168', data1168, '1168');
+        renderTasks('tasks-1170', data1170, '1170', true);
+        renderTest();
+        MathJax.typesetPromise();
+    }
+
+    function renderTasks(containerId, dataArr, prefix, isAlgebraic = false) {
+        const container = document.getElementById(containerId);
+        dataArr.forEach((item, i) => {
+            const card = document.createElement('div');
+            card.className = 'task-card';
+            card.innerHTML = `
+                <div class="flex justify-between mb-4">
+                    <span class="text-xl font-bold">\\( ${item.q} \\)</span>
+                    <span class="text-[10px] font-bold text-slate-300">#${prefix}-${i+1}</span>
+                </div>
+                <div class="flex gap-2">
+                    <input type="text" id="in-${prefix}-${i}" class="input-base" placeholder="Відповідь...">
+                    <button onclick="checkTask('${prefix}', ${i}, '${item.a}', ${isAlgebraic})" class="px-6 py-2 bg-slate-900 text-white rounded-xl font-bold transition active:scale-95">✓</button>
+                </div>
+                <div class="flex gap-4 mt-3">
+                    <button onclick="toggle('${prefix}-h-${i}')" class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Підказка</button>
+                    ${item.s ? `<button onclick="toggle('${prefix}-s-${i}')" class="text-[10px] font-bold text-indigo-400 uppercase tracking-widest">Розв'язання</button>` : ''}
+                </div>
+                <div id="${prefix}-h-${i}" class="hint-box bg-amber-50 text-amber-700 border border-amber-100">${item.h || 'Зверни увагу на знак перед дужками!'}</div>
+                <div id="${prefix}-s-${i}" class="hint-box bg-indigo-50 text-indigo-700 border border-indigo-100 italic">\\( ${item.s} \\)</div>
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    function renderTest() {
+        const container = document.getElementById('final-test');
+        testData.forEach((task, i) => {
+            const card = document.createElement('div');
+            card.className = 'task-card';
+            card.innerHTML = `
+                <p class="font-bold mb-4">${i+1}. ${task.q}</p>
+                <div class="space-y-2">
+                    ${task.opts.map((opt, oIdx) => `
+                        <button id="test-${i}-${oIdx}" onclick="checkTest(${i}, ${oIdx}, ${task.a})" class="w-full text-left p-4 rounded-2xl border-2 border-slate-100 bg-slate-50 font-medium hover:border-indigo-300 transition">
+                            ${opt}
+                        </button>
+                    `).join('')}
+                </div>
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    // --- LOGIC ---
+    function checkPuzzle() {
+        const inp = document.getElementById('puzzle-ans');
+        if (inp.value == -16) {
+            inp.classList.add('input-correct');
+            score++; updateProgress();
+        } else {
+            inp.classList.add('input-wrong');
+            setTimeout(() => inp.classList.remove('input-wrong'), 1000);
+        }
+    }
+
+    function checkTask(prefix, idx, correct, isAlgebraic) {
+        const inp = document.getElementById(`in-${prefix}-${idx}`);
+        let userVal = inp.value.trim().toLowerCase().replace(',', '.').replace(/\s/g, '');
+        let target = correct.toString().toLowerCase().replace(',', '.').replace(/\s/g, '');
+
+        if (userVal === target || (isAlgebraic && compareAlgebraic(userVal, target))) {
+            if (!inp.disabled) {
+                inp.classList.add('input-correct');
+                inp.disabled = true;
+                score++; updateProgress();
+            }
+        } else {
+            inp.classList.add('input-wrong');
+            setTimeout(() => inp.classList.remove('input-wrong'), 1000);
+        }
+    }
+
+    function compareAlgebraic(user, target) {
+        // Simple normalization: a+4.3 vs 4.3+a
+        return user.split('').sort().join('') === target.split('').sort().join('');
+    }
+
+    function checkTest(qIdx, oIdx, correct) {
+        const btn = document.getElementById(`test-${qIdx}-${oIdx}`);
+        if (oIdx === correct) {
+            btn.classList.add('bg-green-100', 'border-green-500', 'text-green-700');
+            score += 3; // Test weight
+        } else {
+            btn.classList.add('bg-red-100', 'border-red-500', 'text-red-700');
+        }
+        // Disable other buttons
+        testData[qIdx].opts.forEach((_, id) => document.getElementById(`test-${qIdx}-${id}`).disabled = true);
+        updateProgress();
+    }
+
+    function updateProgress() {
+        answered++;
+        document.getElementById('prog-text').innerText = `${answered}/${TOTAL}`;
+        document.getElementById('prog-bar').style.width = `${(answered / TOTAL) * 100}%`;
+    }
+
+    function toggle(id) {
+        const el = document.getElementById(id);
+        el.style.display = el.style.display === 'block' ? 'none' : 'block';
+    }
+
+    function showResults() {
+        const modal = document.getElementById('result-modal');
+        const scoreEl = document.getElementById('res-score');
+        const msgEl = document.getElementById('res-msg');
+        
+        scoreEl.innerText = `${score} / 36`;
+        msgEl.innerText = score > 30 ? "Ти — геній математики! 👑" : "Чудова робота! Твої навички вражають. 🌟";
+        modal.classList.remove('hidden');
+    }
+
+    // --- WHITEBOARD ---
+    const canvas = document.getElementById('whiteboard');
+    const ctx = canvas.getContext('2d');
+    const wrap = document.getElementById('canvas-wrap');
+    let drawing = false; let tool = 'pen'; let hasGrid = false;
+
+    function resize() {
+        canvas.width = wrap.clientWidth;
+        canvas.height = wrap.clientHeight;
+        if(hasGrid) drawGrid();
+    }
+
+    function draw(e) {
+        if (!drawing) return;
+        const rect = canvas.getBoundingClientRect();
+        const x = (e.clientX || e.touches[0].clientX) - rect.left;
+        const y = (e.clientY || e.touches[0].clientY) - rect.top;
+        ctx.lineWidth = tool === 'eraser' ? 40 : 3;
+        ctx.strokeStyle = tool === 'eraser' ? '#ffffff' : '#1e293b';
+        ctx.lineTo(x, y); ctx.stroke(); ctx.beginPath(); ctx.moveTo(x, y);
+    }
+
+    function setTool(t) {
+        tool = t;
+        document.getElementById('tool-pen').classList.toggle('tool-active', t === 'pen');
+        document.getElementById('tool-eraser').classList.toggle('tool-active', t === 'eraser');
+    }
+
+    function clearCanvas() { ctx.clearRect(0, 0, canvas.width, canvas.height); if(hasGrid) drawGrid(); }
+
+    function drawGrid() {
+        ctx.save(); ctx.strokeStyle = '#f1f5f9'; ctx.lineWidth = 1;
+        for(let x=0; x<canvas.width; x+=40) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,canvas.height); ctx.stroke(); }
+        for(let y=0; y<canvas.height; y+=40) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(canvas.width,y); ctx.stroke(); }
+        ctx.restore();
+    }
+
+    function toggleGrid() { hasGrid = !hasGrid; clearCanvas(); }
+
+    canvas.addEventListener('mousedown', () => drawing = true);
+    canvas.addEventListener('mouseup', () => { drawing = false; ctx.beginPath(); });
+    canvas.addEventListener('mousemove', draw);
+    canvas.addEventListener('touchstart', (e) => { e.preventDefault(); drawing = true; });
+    canvas.addEventListener('touchend', () => { drawing = false; ctx.beginPath(); });
+    canvas.addEventListener('touchmove', (e) => { e.preventDefault(); draw(e); });
+    window.addEventListener('resize', resize);
+
+    window.onload = () => { init(); setTimeout(resize, 200); };
+</script>
+</body>
+</html>
