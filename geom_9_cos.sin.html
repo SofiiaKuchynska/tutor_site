@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Теореми Синусів та Косинусів</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; overflow: hidden; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .task-card { border: 1px solid #e2e8f0; transition: all 0.3s ease; background: white; margin-bottom: 1.5rem; }
+        .task-card:hover { border-color: #6366f1; box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.1); }
+        .input-base {
+            width: 100%; padding: 0.75rem 1rem; border-radius: 0.75rem; border: 2px solid #e2e8f0; 
+            background-color: #f8fafc; font-weight: 600; outline: none; transition: all 0.2s;
+        }
+        .input-correct { border-color: #22c55e !important; background-color: #dcfce7 !important; color: #166534 !important; }
+        .input-wrong { border-color: #ef4444 !important; background-color: #fee2e2 !important; color: #991b1b !important; }
+        .canvas-container { position: relative; background: #ffffff; cursor: crosshair; touch-action: none; }
+        .tool-active { background-color: #4f46e5; color: #ffffff; }
+        .theory-pop { background: #f1f5f9; border-radius: 1rem; padding: 1rem; display: none; margin-top: 1rem; border-left: 4px solid #6366f1; }
+    </style>
+</head>
+<body class="h-screen flex text-slate-900">
+
+    <div class="w-full lg:w-1/2 flex flex-col bg-white border-r border-slate-200 shadow-xl z-10 relative">
+        <header class="p-6 border-b border-slate-100 flex justify-between items-center sticky top-0 bg-white/95 backdrop-blur-md z-30">
+            <div>
+                <h1 class="text-2xl font-black text-slate-800 tracking-tight">Геометрія</span></h1>
+                <p class="text-[11px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Синуси та Косинуси</p>
+            </div>
+            <div class="flex flex-col items-end">
+                <span id="prog-text" class="text-xs font-black text-indigo-600 uppercase mb-1">Виконано: 0 / 30</span>
+                <div class="w-32 h-2 bg-slate-100 rounded-full overflow-hidden">
+                    <div id="prog-bar" class="h-full bg-indigo-500 transition-all duration-700" style="width: 0%"></div>
+                </div>
+            </div>
+        </header>
+
+        <main class="flex-1 overflow-y-auto p-6 lg:p-10 space-y-12 custom-scrollbar pb-32">
+            
+            <section class="space-y-4">
+                <div class="flex items-center gap-4">
+                    <span class="text-3xl">🔗</span>
+                    <h2 class="text-xl font-black text-slate-800">Перевірка бази (Naurok)</h2>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <a href="https://naurok.com.ua/test/start/399341" target="_blank" class="p-4 border-2 border-indigo-50 rounded-2xl bg-indigo-50/30 hover:bg-indigo-50 transition flex items-center justify-between group">
+                        <span class="font-bold text-indigo-700 text-sm">Тест 1: Теорема синусів і косинусів</span>
+                        <span class="group-hover:translate-x-1 transition">➡️</span>
+                    </a>
+                    <a href="https://naurok.com.ua/test/start/777217" target="_blank" class="p-4 border-2 border-emerald-50 rounded-2xl bg-emerald-50/30 hover:bg-emerald-50 transition flex items-center justify-between group">
+                        <span class="font-bold text-emerald-700 text-sm">Тест 2: Значення синусів і косинусів</span>
+                        <span class="group-hover:translate-x-1 transition">➡️</span>
+                    </a>
+                </div>
+            </section>
+
+            <section id="tasks-container" class="space-y-8">
+                </section>
+
+            <div class="pt-8">
+                <button onclick="finishLesson()" class="w-full bg-slate-900 text-white py-6 rounded-[2.5rem] font-black text-xl hover:bg-indigo-600 transition-all shadow-xl active:scale-95">ЗАВЕРШИТИ УРОК</button>
+            </div>
+        </main>
+    </div>
+
+    <div class="hidden lg:flex w-1/2 flex-col bg-slate-50 p-8 h-screen relative">
+        <div class="absolute top-10 left-1/2 -translate-x-1/2 z-40 flex items-center gap-2 bg-white p-3 rounded-2xl shadow-xl border border-slate-100">
+            <button onclick="setTool('pen')" id="tool-pen" class="p-4 rounded-xl tool-active transition">✏️</button>
+            <button onclick="setTool('eraser')" id="tool-eraser" class="p-4 rounded-xl hover:bg-slate-100 transition">🧽</button>
+            <div class="w-px h-10 bg-slate-200 mx-2"></div>
+            <button onclick="drawGeometry('triangle')" class="px-4 py-2 text-[10px] font-black text-slate-400 hover:bg-indigo-50 rounded-xl transition">△ ТРИКУТНИК</button>
+            <button onclick="drawGeometry('circle')" class="px-4 py-2 text-[10px] font-black text-slate-400 hover:bg-indigo-50 rounded-xl transition">○ КОЛО</button>
+            <button onclick="clearCanvas()" class="p-4 text-red-500 hover:bg-red-50 rounded-xl transition">🗑️</button>
+        </div>
+        <div class="canvas-container flex-1 bg-white rounded-[3.5rem] shadow-sm border border-slate-200 overflow-hidden mt-20" id="canvas-wrap">
+            <canvas id="whiteboard"></canvas>
+        </div>
+    </div>
+
+    <div id="result-modal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-6">
+        <div class="bg-white rounded-[3rem] p-12 max-w-md w-full text-center shadow-2xl">
+            <div class="text-7xl mb-6">🏆</div>
+            <h2 class="text-3xl font-black text-slate-800 mb-2">Чудова робота!</h2>
+            <div class="bg-indigo-50 rounded-3xl p-6 mb-8">
+                <p id="res-score" class="text-indigo-600 font-black text-6xl">0 / 30</p>
+                <p class="text-xs font-bold text-indigo-400 uppercase mt-2">Твій фінальний бал</p>
+            </div>
+            <p id="res-msg" class="text-slate-600 mb-8 font-medium italic">Ти справжній майстер геометрії!</p>
+            <button onclick="location.reload()" class="w-full bg-slate-900 text-white py-5 rounded-2xl font-bold hover:bg-indigo-600 transition shadow-lg">ЩЕ РАЗ?</button>
+        </div>
+    </div>
+
+<script>
+    const allTasks = [
+        // ТЕОРЕМА СИНУСІВ (15 задач)
+        { id: 1, q: "У \\( \\triangle ABC \\): \\( a=10 \\), \\( \\sin A = 0.5 \\), \\( \\sin B = 0.3 \\). Знайди сторону \\( b \\).", a: "6", h: "Використай: \\( a/\\sin A = b/\\sin B \\)", s: "10 / 0.5 = b / 0.3 => 20 = b / 0.3 => b = 6" },
+        { id: 2, q: "Знайди діаметр описаного кола (2R), якщо \\( a=5 \\) см і кут проти неї 30°.", a: "10", h: "Формула: \\( a/\\sin A = 2R \\)", s: "5 / sin 30 = 5 / 0.5 = 10" },
+        { id: 3, q: "Сторона трикутника 12 см. Кут навпроти — 150°. Знайди радіус описаного кола R.", a: "12", h: "Не забудь, що \\( \\sin 150 = \\sin 30 = 0.5 \\). Потім \\( R = a / (2\\sin A) \\)", s: "12 / (2 * 0.5) = 12 / 1 = 12" },
+        { id: 4, q: "У трикутнику \\( a=8, b=4 \\). Якщо \\( \\sin A = 0.4 \\), чому дорівнює \\( \\sin B \\)?", a: "0.2", h: "Відношення сторін дорівнює відношенню синусів.", s: "8 / 0.4 = 4 / sin B => 20 = 4 / sin B => sin B = 0.2" },
+        { id: 5, q: "Знайди відношення \\( a/b \\), якщо кут \\( A=45^\\circ \\), а кут \\( B=30^\\circ \\). (Введи числом \\( \\sqrt{2} \\) ≈ 1.41)", a: "1.41", h: "a/b = sin A / sin B", s: "sin 45 / sin 30 = (√2/2) / (1/2) = √2 ≈ 1.41" },
+        { id: 6, q: "Сторона проти кута 45° дорівнює \\( 4\\sqrt{2} \\). Знайди сторону проти кута 30°.", a: "4", h: "4√2 / sin 45 = x / sin 30", s: "4√2 / (√2/2) = x / 0.5 => 8 = x / 0.5 => x = 4" },
+        { id: 7, q: "Чи правильно, що в будь-якому трикутнику проти більшої сторони лежить кут з більшим синусом? (1 - так, 0 - ні)", a: "1", h: "Це прямий наслідок теореми синусів.", s: "Так, це властивість пропорції." },
+        { id: 8, q: "У трикутнику \\( R=10 \\). Знайди сторону, що лежить проти кута 60°. (Введи числом \\( 10\\sqrt{3} \\) ≈ 17.3)", a: "17.3", h: "a = 2R * sin A", s: "20 * sin 60 = 20 * (√3/2) = 10√3 ≈ 17.3" },
+        { id: 9, q: "Сторони трикутника 4 і 6. Синус кута проти більшої сторони — 0.9. Знайди синус кута проти меншої сторони.", a: "0.6", h: "6 / 0.9 = 4 / x", s: "x = (4 * 0.9) / 6 = 3.6 / 6 = 0.6" },
+        { id: 10, q: "Кут А = 120°, а = 3√3. Знайди діаметр кола 2R.", a: "6", h: "sin 120 = sin 60 = √3/2", s: "3√3 / (√3/2) = 6" },
+        { id: 11, q: "У \\( \\triangle ABC \\) сторони пропорційні 2:3:4. Синус найменшого кута — 0.2. Знайди синус середнього за величиною кута.", a: "0.3", h: "2/0.2 = 3/sin B", s: "sin B = 0.3" },
+        { id: 12, q: "Кути трикутника 100° і 50°. Чому дорівнює третій кут?", a: "30", h: "Сума кутів = 180°.", s: "180 - 100 - 50 = 30" },
+        { id: 13, q: "Знайди площу трикутника, якщо \\( a=10, b=12, \\sin C = 0.5 \\).", a: "30", h: "S = 0.5 * a * b * sin C", s: "0.5 * 10 * 12 * 0.5 = 30" },
+        { id: 14, q: "Сторона 15, синус навпроти 0.75. Радіус R?", a: "10", h: "R = a / (2 sin A)", s: "15 / (2 * 0.75) = 15 / 1.5 = 10" },
+        { id: 15, q: "Синус гострого кута прямокутного трикутника 0.8. Гіпотенуза 10. Протилежний катет?", a: "8", h: "a = c * sin A", s: "10 * 0.8 = 8" },
+
+        // ТЕОРЕМА КОСИНУСІВ (15 задач)
+        { id: 16, q: "Знайди сторону \\( c \\), якщо \\( a=3, b=4 \\), а кут між ними 90°.", a: "5", h: "При cos 90 = 0 теорема стає Піфагором.", s: "√(9+16) = 5" },
+        { id: 17, q: "Знайди \\( c^2 \\), якщо \\( a=5, b=8, \\cos C = 0.5 \\).", a: "49", h: "c² = a² + b² - 2ab cos C", s: "25 + 64 - 2*5*8*0.5 = 89 - 40 = 49" },
+        { id: 18, q: "Сторони 3, 5, 7. Чому дорівнює косинус кута проти сторони 7?", a: "-0.5", h: "7² = 3² + 5² - 2*3*5*cos C", s: "49 = 9 + 25 - 30cos C => 15 = -30cos C => cos C = -0.5" },
+        { id: 19, q: "Сторони 3 і 4, кут між ними 60°. Знайди третю сторону (наближено \\( \\sqrt{13} \\) ≈ 3.61).", a: "3.61", h: "cos 60 = 0.5", s: "9+16 - 2*3*4*0.5 = 25-12 = 13. √13 ≈ 3.61" },
+        { id: 20, q: "Гострий кут ромба зі стороною 6 — 60°. Знайди меншу діагональ.", a: "6", h: "Трикутник з кутом 60° та рівними сторонами — рівносторонній.", s: "d² = 36+36 - 2*36*0.5 = 36 => d=6" },
+        { id: 21, q: "Сторона ромба 6, а гострий кут 30°. Площа?", a: "18", h: "S = a² * sin α", s: "36 * 0.5 = 18" },
+        { id: 22, q: "Діагоналі паралелограма 4 і 6, кут між ними 30°. Площа?", a: "6", h: "S = 0.5 * d1 * d2 * sin φ", s: "0.5 * 4 * 6 * 0.5 = 6" },
+        { id: 23, q: "У паралелограмі сторони 3 і 5, а кут 60°. Знайди більшу діагональ.", a: "7", h: "Тупий кут = 120°, cos 120 = -0.5", s: "9 + 25 - 2*3*5*(-0.5) = 34 + 15 = 49. d=7" },
+        { id: 24, q: "Сторони 4, 5, 6. Знайди косинус найменшого кута (проти сторони 4).", a: "0.75", h: "4² = 5² + 6² - 2*5*6*cos A", s: "16 = 25+36 - 60cos A => 45 = 60cos A => 0.75" },
+        { id: 25, q: "Медіана до сторони 10 прямокутного трикутника дорівнює?", a: "5", h: "Медіана до гіпотенузи дорівнює її половині.", s: "10 / 2 = 5" },
+        { id: 26, q: "Сторони 13, 14, 15. Знайди площу трикутника.", a: "84", h: "Формула Герона: p = 21, S = √(21*8*7*6).", s: "√7056 = 84" },
+        { id: 27, q: "Знайди висоту до сторони 14 у трикутнику зі сторонами 13, 14, 15.", a: "12", h: "h = 2S / a. Площу ми вже знаємо (84).", s: "168 / 14 = 12" },
+        { id: 28, q: "Сторона 10, кути при ній 45° і 45°. Знайди площу.", a: "25", h: "Це прямокутний рівнобедрений трикутник.", s: "S = (10² / 4) = 25" },
+        { id: 29, q: "Косинус якого кута дорівнює -1?", a: "180", h: "Це крайня ліва точка кола.", s: "180°" },
+        { id: 30, q: "Якщо сторони 5, 12, 13, то кут навпроти 13 дорівнює?", a: "90", h: "Перевір: 5²+12²=13².", s: "Так, це теорема Піфагора." }
+    ];
+
+    let score = 0;
+    let answered = 0;
+    const TOTAL = 30;
+
+    function renderTasks() {
+        const container = document.getElementById('tasks-container');
+        allTasks.forEach(t => {
+            const card = document.createElement('div');
+            card.className = 'task-card p-6 rounded-[2rem] space-y-4';
+            const inputType = t.type === 'text' ? 'text' : 'number';
+            
+            card.innerHTML = `
+                <div class="flex justify-between items-start">
+                    <p class="font-black text-slate-800 tracking-tight pr-4">Завдання #${t.id}: ${t.q}</p>
+                </div>
+                <div class="flex gap-2">
+                    <input type="${inputType}" step="0.01" id="in-${t.id}" class="input-base" placeholder="Введіть число...">
+                    <button onclick="checkAnswer(${t.id}, '${t.a}')" class="bg-indigo-600 text-white px-6 rounded-2xl font-black hover:bg-indigo-700 transition active:scale-95">OK</button>
+                </div>
+                <div class="flex gap-4">
+                    <button onclick="toggleInfo('h-${t.id}')" class="text-[10px] font-black uppercase text-slate-400 hover:text-indigo-500 transition">💡 Підказка</button>
+                    <button onclick="toggleInfo('s-${t.id}')" class="text-[10px] font-black uppercase text-slate-400 hover:text-indigo-500 transition">🔍 Розв'язання</button>
+                </div>
+                <div id="h-${t.id}" class="theory-pop text-xs text-slate-600">${t.h}</div>
+                <div id="s-${t.id}" class="theory-pop text-xs text-indigo-700 font-medium italic bg-indigo-50 border-indigo-200">
+                    <p class="mb-1 uppercase font-black text-[9px] tracking-widest">Хід думок:</p>
+                    ${t.s}
+                </div>
+            `;
+            container.appendChild(card);
+        });
+        MathJax.typeset();
+    }
+
+    function checkAnswer(id, correct) {
+        const input = document.getElementById(`in-${id}`);
+        if(input.disabled) return;
+
+        const userVal = input.value.trim().toLowerCase();
+        const corrVal = correct.toLowerCase();
+
+        const isCorrect = (userVal == corrVal) || (Math.abs(parseFloat(userVal) - parseFloat(corrVal)) < 0.1);
+
+        if(isCorrect) {
+            input.classList.add('input-correct');
+            score++;
+            updateProgress();
+        } else {
+            input.classList.add('input-wrong');
+            setTimeout(() => input.classList.remove('input-wrong'), 800);
+        }
+        input.disabled = true;
+        answered++;
+    }
+
+    function updateProgress() {
+        document.getElementById('prog-text').innerText = `Виконано: ${answered} / ${TOTAL}`;
+        document.getElementById('prog-bar').style.width = `${(answered/TOTAL)*100}%`;
+    }
+
+    function toggleInfo(id) {
+        const el = document.getElementById(id);
+        el.style.display = (el.style.display === 'block') ? 'none' : 'block';
+    }
+
+    // WHITEBOARD LOGIC
+    const canvas = document.getElementById('whiteboard');
+    const ctx = canvas.getContext('2d');
+    let isDrawing = false;
+    let tool = 'pen';
+
+    function initCanvas() {
+        const wrap = document.getElementById('canvas-wrap');
+        canvas.width = wrap.clientWidth;
+        canvas.height = wrap.clientHeight;
+        ctx.lineCap = 'round';
+        ctx.lineWidth = 3;
+    }
+
+    canvas.addEventListener('mousedown', () => { isDrawing = true; ctx.beginPath(); });
+    canvas.addEventListener('mousemove', (e) => {
+        if(!isDrawing) return;
+        const rect = canvas.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        ctx.strokeStyle = tool === 'pen' ? '#1e293b' : '#ffffff';
+        ctx.lineWidth = tool === 'pen' ? 3 : 40;
+        ctx.lineTo(x, y); ctx.stroke();
+    });
+    window.addEventListener('mouseup', () => isDrawing = false);
+
+    function setTool(t) {
+        tool = t;
+        document.getElementById('tool-pen').classList.toggle('tool-active', t === 'pen');
+        document.getElementById('tool-eraser').classList.toggle('tool-active', t === 'eraser');
+    }
+
+    function clearCanvas() { ctx.clearRect(0, 0, canvas.width, canvas.height); }
+
+    function drawGeometry(type) {
+        ctx.strokeStyle = '#6366f1';
+        ctx.lineWidth = 4;
+        const cx = canvas.width/2;
+        const cy = canvas.height/2;
+        ctx.beginPath();
+        if(type === 'triangle') {
+            ctx.moveTo(cx, cy-80); ctx.lineTo(cx-100, cy+80); ctx.lineTo(cx+100, cy+80); ctx.closePath();
+        } else {
+            ctx.arc(cx, cy, 80, 0, Math.PI*2);
+        }
+        ctx.stroke();
+    }
+
+    function finishLesson() {
+        document.getElementById('result-modal').classList.remove('hidden');
+        document.getElementById('res-score').innerText = `${score} / ${TOTAL}`;
+        if(score < 15) document.getElementById('res-msg').innerText = "Не здавайся, тригонометрія потребує практики!";
+    }
+
+    window.onload = () => {
+        renderTasks();
+        initCanvas();
+    };
+    window.onresize = initCanvas;
+</script>
+</body>
+</html>
