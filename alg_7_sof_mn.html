@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Алгебра 7 клас: Майстерність Многочленів</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; overflow: hidden; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .task-card { border: 1px solid #e2e8f0; transition: all 0.3s ease; background: white; }
+        .task-card:hover { border-color: #6366f1; box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.1); }
+        .input-base {
+            width: 100%; padding: 0.75rem 1rem; border-radius: 0.75rem; border: 2px solid #e2e8f0; 
+            background-color: #f8fafc; font-weight: 600; outline: none; transition: all 0.2s;
+        }
+        .input-correct { border-color: #22c55e !important; background-color: #dcfce7 !important; color: #166534 !important; }
+        .input-wrong { border-color: #ef4444 !important; background-color: #fee2e2 !important; color: #991b1b !important; }
+        .canvas-container { position: relative; background: #ffffff; cursor: crosshair; touch-action: none; }
+        .tool-active { background-color: #4f46e5; color: #ffffff; }
+        .theory-gradient { background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); }
+    </style>
+</head>
+<body class="h-screen flex text-slate-900">
+
+    <div class="w-full lg:w-1/2 flex flex-col bg-white border-r border-slate-200 shadow-xl z-10 relative">
+        <header class="p-6 border-b border-slate-100 flex justify-between items-center sticky top-0 bg-white/95 backdrop-blur-md z-30">
+            <div>
+                <h1 class="text-2xl font-black text-slate-800 tracking-tight">Algebra Pro</h1>
+                <p class="text-[11px] font-bold text-indigo-500 uppercase tracking-widest mt-0.5">7 Клас • Повний розбір виразів</p>
+            </div>
+            <div class="flex flex-col items-end w-32">
+                <div class="flex items-center gap-2 mb-1">
+                    <span id="prog-text" class="text-xs font-black text-indigo-600 uppercase">0 / 30 виконано</span>
+                </div>
+                <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+                    <div id="prog-bar" class="h-full bg-gradient-to-r from-indigo-500 to-purple-500 transition-all duration-700" style="width: 0%"></div>
+                </div>
+            </div>
+        </header>
+
+        <main class="flex-1 overflow-y-auto p-6 lg:p-10 space-y-16 custom-scrollbar pb-32">
+            
+            <section class="space-y-6">
+                <div class="flex items-center gap-4">
+                    <span class="text-4xl">💎</span>
+                    <h2 class="text-2xl font-black text-slate-800">Одночлени: Цеглинки</h2>
+                </div>
+                <div class="theory-gradient p-8 rounded-[2.5rem] border border-blue-100 text-slate-700 shadow-sm">
+                    <p class="text-sm leading-relaxed mb-4"><b>Одночлен</b> — це вираз, у якому є лише <b>множення</b> чисел та букв.</p>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-white/60 p-4 rounded-2xl border border-white">
+                            <p class="text-[10px] font-black uppercase text-blue-500 mb-1">Коефіцієнт</p>
+                            <p class="font-bold text-lg">\( \mathbf{-5}x^2 \)</p>
+                            <p class="text-[11px] text-slate-500">Число попереду виразу.</p>
+                        </div>
+                        <div class="bg-white/60 p-4 rounded-2xl border border-white">
+                            <p class="text-[10px] font-black uppercase text-blue-500 mb-1">Степінь</p>
+                            <p class="font-bold text-lg text-slate-800">Сума \( a^n b^m \)</p>
+                            <p class="text-[11px] text-slate-500">Додай усі показники букв.</p>
+                        </div>
+                    </div>
+                </div>
+                <div id="tasks-monomials" class="space-y-4"></div>
+            </section>
+
+            <section class="space-y-6">
+                <div class="flex items-center gap-4">
+                    <span class="text-4xl">🧱</span>
+                    <h2 class="text-2xl font-black text-slate-800">Многочлени: Стіни</h2>
+                </div>
+                <div class="bg-indigo-50 p-8 rounded-[2.5rem] border border-indigo-100 text-slate-700">
+                    <p class="text-sm leading-relaxed mb-4">Коли одночлени додаються або віднімаються, вони стають <b>многочленом</b>.</p>
+                    <ul class="text-xs space-y-2 font-medium">
+                        <li class="flex gap-2"><span>✅</span> <b>Степінь многочлена</b> — це степінь його найсильнішого одночлена.</li>
+                        <li class="flex gap-2"><span>✅</span> <b>Вільний член</b> — це просто число без жодних букв поруч.</li>
+                    </ul>
+                </div>
+                <div id="tasks-polynomials" class="space-y-4"></div>
+            </section>
+
+            <section class="space-y-6">
+                <div class="flex items-center gap-4">
+                    <span class="text-4xl">🗝️</span>
+                    <h2 class="text-2xl font-black text-slate-800">Золоте правило винесення</h2>
+                </div>
+                <div class="bg-emerald-50 p-8 rounded-[2.5rem] border border-emerald-100 text-slate-700 relative overflow-hidden">
+                    <div class="absolute -right-4 -bottom-4 opacity-10 text-8xl">📦</div>
+                    <h3 class="font-bold text-emerald-900 mb-3">Навіщо нам дужки?</h3>
+                    <p class="text-sm leading-relaxed">Ми шукаємо "спільне зерно" у кожного доданка і виносимо його за борт (дужки). Це як винести спільний інгредієнт у рецепті: замість "борошно з цукром + борошно з сіллю", ми пишемо "<b>борошно</b>(цукор + сіль)".</p>
+                </div>
+                <div id="tasks-factoring" class="space-y-4"></div>
+            </section>
+
+            <section class="space-y-6">
+                <div class="flex items-center gap-4">
+                    <span class="text-4xl">🤝</span>
+                    <h2 class="text-2xl font-black text-slate-800">Метод Групування</h2>
+                </div>
+                <div class="bg-amber-50 p-8 rounded-[2.5rem] border border-amber-100 text-sm text-slate-700">
+                    <p>Немає спільного для всіх? <b>Шукай пари!</b> Згрупуй доданки так, щоб винести щось з однієї пари та з іншої. Якщо все вірно — з'явиться <b>однакова дужка</b>, яку ми винесемо фінально.</p>
+                </div>
+                <div id="tasks-grouping" class="space-y-4"></div>
+            </section>
+
+            <section class="space-y-6">
+                <div class="flex items-center gap-4">
+                    <span class="text-4xl">🎯</span>
+                    <h2 class="text-2xl font-black text-slate-800">Рівняння</h2>
+                </div>
+                <div class="bg-rose-50 p-8 rounded-[2.5rem] border border-rose-100 text-sm text-slate-700">
+                    <p>Коли ми розклали все на дужки і отримали \( A \cdot B = 0 \), то розв'язок стає елементарним: або \( A = 0 \), або \( B = 0 \).</p>
+                </div>
+                <div id="tasks-equations" class="space-y-4"></div>
+            </section>
+
+            <div class="pt-8">
+                <button onclick="finishLesson()" class="w-full bg-slate-900 text-white py-6 rounded-[2.5rem] font-black text-xl hover:bg-indigo-600 transition-all shadow-xl active:scale-95">ЗАВЕРШИТИ ТРЕНУВАННЯ</button>
+            </div>
+        </main>
+    </div>
+
+    <div class="hidden lg:flex w-1/2 flex-col bg-slate-50 p-8 h-screen relative">
+        <div class="absolute top-10 left-1/2 -translate-x-1/2 z-40 flex items-center gap-2 bg-white p-3 rounded-2xl shadow-xl border border-slate-100">
+            <button onclick="setTool('pen')" id="tool-pen" class="p-4 rounded-xl tool-active transition">✏️</button>
+            <button onclick="setTool('eraser')" id="tool-eraser" class="p-4 rounded-xl hover:bg-slate-100 transition">🧽</button>
+            <div class="w-px h-10 bg-slate-200 mx-2"></div>
+            <button onclick="toggleGrid()" id="tool-grid" class="px-4 py-2 text-[10px] font-black text-slate-400 hover:bg-slate-100 rounded-xl transition">🌐 СІТКА</button>
+            <button onclick="clearCanvas()" class="p-4 text-red-500 hover:bg-red-50 rounded-xl transition">🗑️</button>
+        </div>
+        <div class="canvas-container flex-1 bg-white rounded-[3.5rem] shadow-sm border border-slate-200 overflow-hidden mt-20" id="canvas-wrap">
+            <canvas id="whiteboard"></canvas>
+        </div>
+        <div class="mt-6 text-center">
+            <p class="text-[10px] font-black text-slate-300 uppercase tracking-[0.3em]">Smart Sketchpad v2.0</p>
+        </div>
+    </div>
+
+    <div id="result-modal" class="fixed inset-0 bg-slate-900/70 backdrop-blur-md z-50 hidden flex items-center justify-center p-6">
+        <div class="bg-white rounded-[3rem] p-12 max-w-md w-full text-center shadow-2xl">
+            <div class="text-7xl mb-6">🎖️</div>
+            <h2 class="text-3xl font-black text-slate-800 mb-2">Це було потужно!</h2>
+            <div class="bg-indigo-50 rounded-3xl p-6 mb-8">
+                <p id="res-score" class="text-indigo-600 font-black text-6xl">0 / 30</p>
+                <p class="text-xs font-bold text-indigo-400 uppercase mt-2">Твій фінальний результат</p>
+            </div>
+            <p id="res-message" class="text-slate-600 mb-8 font-medium italic">Алгебра — це мова всесвіту, і ти щойно вивчив кілька нових слів.</p>
+            <button onclick="location.reload()" class="w-full bg-slate-900 text-white py-5 rounded-2xl font-bold hover:bg-indigo-600 transition shadow-lg">Ще раз?</button>
+        </div>
+    </div>
+
+<script>
+    let score = 0; let answered = 0; const TOTAL = 30;
+    const taskStates = {};
+
+    const allTasks = {
+        monomials: [
+            { id: 1, type: 'input', q: "Коефіцієнт одночлена \\( -9.2x^3y \\)?", a: -9.2, h: "Число попереду.", s: "-9.2" },
+            { id: 2, type: 'input', q: "Коефіцієнт одночлена \\( -z \\)?", a: -1, h: "Коли є лише мінус — це -1.", s: "-1" },
+            { id: 3, type: 'input', q: "Степінь одночлена \\( 4x^2y^4z \\)?", a: 7, h: "Додай: 2 + 4 + 1.", s: "7" },
+            { id: 4, type: 'input', q: "Степінь одночлена \\( 15a^2b^3 \\)?", a: 5, h: "2 + 3.", s: "5" },
+            { id: 5, type: 'mcq', q: "Який вираз НЕ є одночленом?", opts: ["\\( 4abc \\)", "\\( x/y \\)", "\\( 10 \\)"], a: 1, h: "Ділення на букву заборонене для одночленів.", s: "\\( x/y \\)" },
+            { id: 6, type: 'input', q: "Коефіцієнт \\( \\frac{1}{2}x^2 \\)? (Запиши десятковим дробом)", a: 0.5, h: "1/2 = ?", s: "0.5" }
+        ],
+        polynomials: [
+            { id: 7, type: 'input', q: "Степінь многочлена \\( 5x^4 - x^6 + 2 \\)?", a: 6, h: "Найбільший показник.", s: "6" },
+            { id: 8, type: 'input', q: "Степінь многочлена \\( 2a + 3 \\)?", a: 1, h: "Якщо показника немає — це 1.", s: "1" },
+            { id: 9, type: 'input', q: "Вільний член \\( 4x^2 - 7x - 14 \\)?", a: -14, h: "Число в самому кінці (зі знаком).", s: "-14" },
+            { id: 10, type: 'input', q: "Вільний член \\( a^2 + 25 \\)?", a: 25, h: "Просто число.", s: "25" },
+            { id: 11, type: 'input', q: "Зведіть подібні: \\( 5x - 3x + 10 \\). Який коефіцієнт біля x?", a: 2, h: "5 - 3 = ?", s: "2" },
+            { id: 12, type: 'input', q: "Степінь \\( 10x^3y^2 - 12x^4y^2 \\)?", a: 6, h: "Порахуй степінь кожного доданка і обери найбільший.", s: "4+2=6" }
+        ],
+        factoring: [
+            { id: 13, type: 'input', q: "Винеси 6: \\( 6a + 18 = 6(a + ?) \\)", a: 3, h: "18 поділи на 6.", s: "3" },
+            { id: 14, type: 'input', q: "Винеси 4: \\( 4x - 12 = 4(x - ?) \\)", a: 3, h: "12 поділи на 4.", s: "3" },
+            { id: 15, type: 'input', q: "Винеси \\( x \\): \\( x^2 + 5x = x(x + ?) \\)", a: 5, h: "Що лишиться від 5x?", s: "5" },
+            { id: 16, type: 'input', q: "Винеси \\( a^2 \\): \\( a^3 - a^2 = a^2(a - ?) \\)", a: 1, h: "Якщо винесли все — лишається 1.", s: "1" },
+            { id: 17, type: 'input', q: "Винеси \\( 2b \\): \\( 4b^2 + 2b = 2b(?b + 1) \\)", a: 2, h: "4 / 2 = ?", s: "2" },
+            { id: 18, type: 'input', q: "Винеси 10: \\( 20m - 100 = 10(?m - 10) \\)", a: 2, h: "20 / 10 = ?", s: "2" }
+        ],
+        grouping: [
+            { id: 19, type: 'mcq', q: "Розклади: \\( ax + ay + 5x + 5y \\)", opts: ["\\( (x+y)(a+5) \\)", "\\( (x-y)(a+5) \\)"], a: 0, h: "Групуй x+y.", s: "(x+y)(a+5)" },
+            { id: 20, type: 'mcq', q: "Розклади: \\( 2a - 2b + ca - cb \\)", opts: ["\\( (a-b)(2+c) \\)", "\\( (a+b)(2+c) \\)"], a: 0, h: "Винеси 2, а потім c.", s: "(a-b)(2+c)" },
+            { id: 21, type: 'input', q: "У виразі \\( x(a+2) + y(a+2) \\) винеси дужку. Що в другій дужці? \\( (a+2)(x + ?) \\)", a: 'y', type: 'text', h: "Лише буква.", s: "y" },
+            { id: 22, type: 'mcq', q: "Розклади: \\( m^2 - mn - 3m + 3n \\)", opts: ["\\( (m-n)(m-3) \\)", "\\( (m-n)(m+3) \\)"], a: 0, h: "m(m-n) - 3(m-n).", s: "(m-n)(m-3)" },
+            { id: 23, type: 'mcq', q: "Розклади: \\( ab + ac + b + c \\)", opts: ["\\( (b+c)(a+1) \\)", "\\( (b+c)(a-1) \\)"], a: 0, h: "Не забудь про одиницю!", s: "(b+c)(a+1)" },
+            { id: 24, type: 'input', q: "Винеси дужку: \\( 5(x-y) - a(x-y) = (x-y)(? - a) \\)", a: 5, h: "Число.", s: "5" }
+        ],
+        equations: [
+            { id: 25, type: 'input', q: "Корінь: \\( x(x - 9) = 0 \\). Додатний корінь?", a: 9, h: "x - 9 = 0.", s: "9" },
+            { id: 26, type: 'input', q: "Корінь: \\( (x+4)(x-3) = 0 \\). Від'ємний корінь?", a: -4, h: "x + 4 = 0.", s: "-4" },
+            { id: 27, type: 'input', q: "Рівняння: \\( x^2 - 10x = 0 \\). Більший корінь?", a: 10, h: "x(x-10)=0.", s: "10" },
+            { id: 28, type: 'input', q: "Корінь: \\( 2x(x + 5) = 0 \\). Менший корінь?", a: -5, h: "x + 5 = 0.", s: "-5" },
+            { id: 29, type: 'input', q: "Рівняння: \\( x^2 + x = 0 \\). Менший корінь?", a: -1, h: "x(x+1)=0.", s: "-1" },
+            { id: 30, type: 'input', q: "Рівняння: \\( 5x^2 - 10x = 0 \\). Більший корінь?", a: 2, h: "5x(x-2)=0.", s: "2" }
+        ]
+    };
+
+    function render() {
+        for(let cat in allTasks) {
+            const container = document.getElementById(`tasks-${cat}`);
+            allTasks[cat].forEach(t => {
+                const card = document.createElement('div');
+                card.className = 'task-card p-6 rounded-[2rem] space-y-4';
+                let action = t.type === 'mcq' 
+                    ? `<div class="grid gap-2">${t.opts.map((o,i)=>`<button onclick="checkMCQ(${t.id},${i},${t.a})" id="opt-${t.id}-${i}" class="text-left p-4 border-2 border-slate-50 rounded-2xl text-sm font-bold hover:border-indigo-100 hover:bg-indigo-50/30 transition">${o}</button>`).join('')}</div>`
+                    : `<div class="flex gap-2"><input type="${t.type==='text'?'text':'number'}" id="in-${t.id}" class="input-base" placeholder="Твоя відповідь..."><button onclick="checkIn(${t.id},'${t.a}')" class="bg-slate-900 text-white px-6 rounded-2xl font-black">OK</button></div>`;
+                
+                card.innerHTML = `<p class="font-black text-slate-800 tracking-tight">${t.q}</p>${action}
+                <div class="flex gap-4"><button onclick="toggle('h-${t.id}')" class="text-[10px] font-black uppercase text-slate-400 hover:text-indigo-500 transition">Підказка</button><button onclick="toggle('s-${t.id}')" class="text-[10px] font-black uppercase text-slate-400 hover:text-indigo-500 transition">Пояснення</button></div>
+                <p id="h-${t.id}" class="hidden text-xs text-amber-600 bg-amber-50 p-4 rounded-2xl border border-amber-100 font-medium">${t.h}</p>
+                <p id="s-${t.id}" class="hidden text-xs text-indigo-600 bg-indigo-50 p-4 rounded-2xl border border-indigo-100 font-medium italic"><b>Математика каже:</b> ${t.s}</p>`;
+                container.appendChild(card);
+            });
+        }
+        MathJax.typesetPromise();
+    }
+
+    function checkIn(id, corr) {
+        if(taskStates[id]) return;
+        const el = document.getElementById(`in-${id}`);
+        if(el.value.toString().toLowerCase().trim() === corr.toString().toLowerCase().trim()) { el.classList.add('input-correct'); score++; upd(id); }
+        else { el.classList.add('input-wrong'); setTimeout(()=>el.classList.remove('input-wrong'),800); }
+    }
+
+    function checkMCQ(id, sel, corr) {
+        if(taskStates[id]) return;
+        document.getElementById(`opt-${id}-${sel}`).classList.add(sel===corr?'bg-green-100':'bg-red-100');
+        if(sel===corr) score++; else document.getElementById(`opt-${id}-${corr}`).classList.add('bg-green-50','border-green-200');
+        upd(id);
+    }
+
+    function upd(id) {
+        taskStates[id]=true; answered++;
+        document.getElementById('prog-text').innerText = `${answered} / ${TOTAL} виконано`;
+        document.getElementById('prog-bar').style.width = `${(answered/TOTAL)*100}%`;
+    }
+
+    function toggle(id) { document.getElementById(id).classList.toggle('hidden'); }
+
+    function finishLesson() { document.getElementById('result-modal').classList.remove('hidden'); document.getElementById('res-score').innerText = `${score} / ${TOTAL}`; }
+
+    // WHITEBOARD
+    const canvas = document.getElementById('whiteboard'); const ctx = canvas.getContext('2d');
+    let dr = false; let tool = 'pen'; let grid = false;
+    function init() { canvas.width = canvas.parentElement.clientWidth; canvas.height = canvas.parentElement.clientHeight; ctx.lineCap = 'round'; ctx.lineWidth = 3; }
+    function draw(e) {
+        if(!dr) return; const rect = canvas.getBoundingClientRect();
+        const x = (e.clientX || e.touches[0].clientX) - rect.left; const y = (e.clientY || e.touches[0].clientY) - rect.top;
+        ctx.strokeStyle = tool === 'pen' ? '#1e293b' : '#ffffff'; ctx.lineWidth = tool === 'pen' ? 3 : 40;
+        ctx.lineTo(x, y); ctx.stroke(); ctx.beginPath(); ctx.moveTo(x, y);
+    }
+    function setTool(t) { tool=t; document.getElementById('tool-pen').classList.toggle('tool-active',t==='pen'); document.getElementById('tool-eraser').classList.toggle('tool-active',t==='eraser'); }
+    function clearCanvas() { ctx.clearRect(0,0,canvas.width,canvas.height); }
+    function toggleGrid() { grid=!grid; if(grid){ ctx.save(); ctx.strokeStyle='#f1f5f9'; ctx.beginPath(); for(let i=0;i<canvas.width;i+=40){ctx.moveTo(i,0);ctx.lineTo(i,canvas.height);} for(let i=0;i<canvas.height;i+=40){ctx.moveTo(0,i);ctx.lineTo(canvas.width,i);} ctx.stroke(); ctx.restore(); } else clearCanvas(); }
+
+    canvas.addEventListener('mousedown', () => { dr=true; ctx.beginPath(); });
+    canvas.addEventListener('mousemove', draw); window.addEventListener('mouseup', () => dr=false);
+    canvas.addEventListener('touchstart', (e)=>{dr=true; ctx.beginPath(); e.preventDefault();}, {passive:false});
+    canvas.addEventListener('touchmove', (e)=>{draw(e); e.preventDefault();}, {passive:false});
+
+    window.onload = () => { render(); init(); };
+    window.onresize = init;
+</script>
+</body>
+</html>
