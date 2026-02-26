@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Методист: Комбінаторика (9 клас)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['\\(', '\\)']],
+                displayMath: [['\\[', '\\]']]
+            },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; overflow: hidden; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .task-card { border: 1px solid #e2e8f0; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .task-card:hover { border-color: #3b82f6; box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.1); }
+        .whiteboard-container { background-image: radial-gradient(#e2e8f0 1px, transparent 1px); background-size: 20px 20px; }
+        .tool-active { @apply bg-indigo-600 text-white shadow-md; }
+        .solved-card { border-color: #22c55e !important; background-color: #f0fdf4 !important; }
+        .theory-block { border-left: 4px solid #6366f1; background: #f5f3ff; }
+        .final-test-section { background: #1e1b4b; color: white; border-radius: 2rem; padding: 2rem; }
+    </style>
+</head>
+<body class="h-screen flex text-slate-900">
+
+    <div class="w-full lg:w-1/2 flex flex-col bg-white border-r border-slate-200">
+        <header class="p-6 border-b border-slate-100 flex justify-between items-center sticky top-0 bg-white/90 backdrop-blur-md z-50">
+            <div>
+                <h1 class="text-xl font-extrabold text-slate-800">§21. Комбінаторні правила</h1>
+                <p class="text-xs font-bold text-indigo-500 uppercase tracking-widest mt-1">Алгебра 9 клас • Правила суми та добутку</p>
+            </div>
+            <div class="text-right">
+                <div class="text-xs font-black text-slate-400 mb-1" id="prog-label">Прогрес: 0/20</div>
+                <div class="w-32 h-2 bg-slate-100 rounded-full overflow-hidden">
+                    <div id="prog-bar" class="h-full bg-indigo-600 transition-all duration-500" style="width: 0%"></div>
+                </div>
+            </div>
+        </header>
+
+        <main class="flex-1 overflow-y-auto p-8 space-y-8 custom-scrollbar">
+            
+            <section class="theory-block p-6 rounded-r-2xl">
+                <h2 class="text-lg font-bold text-indigo-900 mb-3">📚 Коротко про головне</h2>
+                <div class="space-y-4 text-sm leading-relaxed text-slate-700">
+                    <div class="bg-white p-3 rounded-lg shadow-sm">
+                        <span class="font-bold text-indigo-600">➕ Правило суми (А АБО В):</span><br>
+                        Якщо елемент A можна вибрати \(k_1\) способами, а B — \(k_2\) способами, то вибрати A <b>або</b> B можна \(k_1 + k_2\) способами.
+                    </div>
+                    <div class="bg-white p-3 rounded-lg shadow-sm">
+                        <span class="font-bold text-indigo-600">✖️ Правило добутку (А І В):</span><br>
+                        Якщо елемент A можна вибрати \(k_1\) способами, і <b>після кожного</b> такого вибору елемент B можна вибрати \(k_2\) способами, то пару (A, B) можна вибрати \(k_1 \cdot k_2\) способами.
+                    </div>
+                </div>
+            </section>
+
+            <div id="tasks-list" class="space-y-6"></div>
+
+            <div id="test-zone" class="hidden py-10">
+                <div class="final-test-section shadow-2xl">
+                    <h2 class="text-2xl font-black mb-6 text-indigo-300">🏁 ФІНАЛЬНИЙ ТЕСТ</h2>
+                    <div id="test-questions" class="space-y-6"></div>
+                    <button onclick="checkTest()" class="mt-8 w-full bg-indigo-500 text-white py-4 rounded-xl font-bold hover:bg-indigo-400 transition">ПЕРЕВІРИТИ РЕЗУЛЬТАТ</button>
+                </div>
+            </div>
+
+            <div class="py-10">
+                <button onclick="finishLesson()" class="w-full bg-slate-900 text-white py-5 rounded-2xl font-black text-lg hover:bg-indigo-600 transition shadow-xl active:scale-[0.98]">
+                    ЗАВЕРШИТИ УРОК
+                </button>
+            </div>
+        </main>
+    </div>
+
+    <div class="hidden lg:flex w-1/2 flex-col bg-slate-100 p-6 relative">
+        <div class="absolute top-10 left-1/2 -translate-x-1/2 z-40 flex items-center gap-2 bg-white/95 backdrop-blur-md p-2 rounded-2xl shadow-xl border border-slate-200">
+            <button onclick="setTool('pen')" id="btn-pen" class="p-3 rounded-xl tool-active" title="Олівець">✏️</button>
+            <button onclick="setTool('eraser')" id="btn-eraser" class="p-3 rounded-xl hover:bg-slate-100" title="Гумка">🧽</button>
+            <div class="w-px h-6 bg-slate-200 mx-1"></div>
+            <button onclick="toggleGrid()" id="btn-grid" class="p-3 rounded-xl hover:bg-slate-100" title="Сітка/Дерево">📏</button>
+            <button onclick="clearCanvas()" class="px-4 py-2 text-[10px] font-black text-red-500 hover:bg-red-50 rounded-xl uppercase">Очистити</button>
+        </div>
+        
+        <div class="flex-1 whiteboard-container bg-white rounded-[2rem] shadow-inner border border-slate-200 overflow-hidden relative" id="canvas-parent">
+            <canvas id="whiteboard" class="cursor-crosshair"></canvas>
+        </div>
+        
+        <div class="mt-4 text-[10px] text-slate-400 text-center font-bold uppercase tracking-widest">
+            Інтерактивна чернетка для розрахунків
+        </div>
+    </div>
+
+    <div id="modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] hidden flex items-center justify-center p-6">
+        <div class="bg-white rounded-[2.5rem] p-10 max-w-sm w-full text-center shadow-2xl">
+            <div id="modal-icon" class="text-6xl mb-4">🌟</div>
+            <h2 class="text-2xl font-black text-slate-800 mb-2">Урок завершено!</h2>
+            <p id="res-score" class="text-indigo-600 font-black text-3xl mb-4"></p>
+            <p id="res-msg" class="text-slate-500 mb-8 italic"></p>
+            <button onclick="location.reload()" class="w-full bg-slate-900 text-white py-4 rounded-xl font-bold hover:bg-indigo-600 transition">Спробувати ще раз</button>
+        </div>
+    </div>
+
+<script>
+    const tasksData = [
+        { id: 8961, q: "На тарілці 5 яблук і 8 слив. Скількома способами можна взяти <b>один</b> фрукт?", a: "13", h: "Використовуй правило суми: 5 + 8", s: "5 + 8 = 13" },
+        { id: 8962, q: "На тарілці 5 яблук і 8 слив. Скількома способами можна взяти <b>одне яблуко і одну сливу</b>?", a: "40", h: "Використовуй правило добутку: 5 * 8", s: "5 * 8 = 40" },
+        { id: 8971, q: "У класі 10 юнаків і 15 дівчат. Скільки є способів вибрати <b>одного</b> учня?", a: "25", h: "Будь-хто з класу: 10 + 15", s: "10 + 15 = 25" },
+        { id: 8972, q: "Скільки пар 'юнак і дівчина' можна скласти з 10 юнаків і 15 дівчат?", a: "150", h: "На кожного юнака є 15 дівчат: 10 * 15", s: "10 * 15 = 150" },
+        { id: 898, q: "Костюм складається з блузки та спідниці. Скільки костюмів можна скласти з 5 блузок і 4 спідниць?", a: "20", h: "Правило добутку", s: "5 * 4 = 20" },
+        { id: 899, q: "Скільки комплектів з однієї ручки (7 видів) і одного зошита (5 видів) можна обрати?", a: "35", h: "7 варіантів ручки * 5 варіантів зошита", s: "7 * 5 = 35" },
+        { id: 900, q: "Скільки чотирицифрових чисел можна скласти з цифр 5, 6, 7, 8, якщо цифри <b>не повторюються</b>?", a: "24", h: "На 1-ше місце 4 цифри, на 2-ге — 3, на 3-тє — 2, на 4-те — 1", s: "4 * 3 * 2 * 1 = 24" },
+        { id: 901, q: "Скільки трицифрових чисел можна записати цифрами 1, 2, 3 (без повторень)?", a: "6", h: "3 * 2 * 1", s: "6" },
+        { id: 902, q: "Скільки пар з одного голосного і одного приголосного звуків у слові <b>'студент'</b>?", a: "10", h: "Голосні: у, е (2). Приголосні: с, т, д, н, т (5).", s: "2 * 5 = 10" },
+        { id: 903, q: "Скільки пар з одного голосного і одного приголосного звуків у слові <b>'функція'</b>?", a: "12", h: "Голосні: у, і, я (3). Приголосні: ф, н, к, ц (4).", s: "3 * 4 = 12" },
+        { id: 906, q: "З А до В ведуть 3 дороги, з В до С — 2 дороги. Скількома способами можна дійти з А до С?", a: "6", h: "На кожну з 3-х доріг до В є 2 дороги далі", s: "3 * 2 = 6" },
+        { id: 907, q: "Кожну клітинку квадрата 2х2 можна пофарбувати в зелений або червоний. Скільки є варіантів?", a: "16", h: "4 клітинки, для кожної 2 варіанти: \(2^4\)", s: "2 * 2 * 2 * 2 = 16" },
+        { id: 908, q: "З 5 членів президії треба обрати голову і секретаря. Скільки способів?", a: "20", h: "Голова — будь-хто з 5, секретар — з 4-х, що залишились", s: "5 * 4 = 20" },
+        { id: 910, q: "Кубик підкидають двічі. Скільки різних пар чисел можна отримати?", a: "36", h: "6 варіантів першого * 6 варіантів другого", s: "6 * 6 = 36" },
+        { id: 911, q: "Монету підкидають тричі. Скільки різних послідовностей випадання аверсу/реверсу?", a: "8", h: "2 * 2 * 2", s: "8" },
+        { id: 9121, q: "Скільки трицифрових чисел тільки з <b>непарних</b> цифр (1,3,5,7,9), якщо цифри <b>не повторюються</b>?", a: "60", h: "5 варіантів на сотні, 4 на десятки, 3 на одиниці", s: "5 * 4 * 3 = 60" },
+        { id: 9122, q: "Те саме, але цифри <b>можуть повторюватися</b>?", a: "125", h: "5 * 5 * 5", s: "125" },
+        { id: 919, q: "У турнірі 10 шахістів. Кожен зіграв з кожним по одній партії. Скільки всього партій?", a: "45", h: "Кожен з 10 грав з 9-ма, але партія А-Б та Б-А однакова: (10*9)/2", s: "(10 * 9) / 2 = 45" },
+        { id: 915, q: "На полиці 6 різних підручників. Алгебра має бути крайньою ліворуч. Скільки варіантів розстановки?", a: "120", h: "Перше місце зайняте. Лишилося 5 місць для 5 книг.", s: "5 * 4 * 3 * 2 * 1 = 120" },
+        { id: 921, q: "Скільки непарних чотирицифрових чисел з цифр 2, 3, 4, 5, 6 (без повторень)?", a: "48", h: "Остання цифра має бути 3 або 5 (2 вар). Для інших 3-х місць лишається 4, 3, 2 вар.", s: "2 * (4 * 3 * 2) = 48" }
+    ];
+
+    const testData = [
+        { q: "Скільки двоцифрових чисел можна скласти з цифр 1, 2, 3, якщо цифри можуть повторюватись?", a: "9" },
+        { q: "У кафе 3 види чаю і 5 видів тістечок. Скільки способів вибрати 'чай + тістечко'?", a: "15" },
+        { q: "Скільки способів обрати капітана футбольної команди (11 гравців)?", a: "11" },
+        { q: "Скільки є способів вишикувати 3-х учнів у чергу?", a: "6" }
+    ];
+
+    let solvedCount = 0;
+
+    function initTasks() {
+        const container = document.getElementById('tasks-list');
+        tasksData.forEach((task, idx) => {
+            const div = document.createElement('div');
+            div.id = `task-${idx}`;
+            div.className = "task-card bg-white p-5 rounded-2xl shadow-sm";
+            div.innerHTML = `
+                <div class="flex justify-between items-start mb-2">
+                    <span class="text-[9px] font-black text-slate-300 uppercase tracking-widest">Завдання №${task.id}</span>
+                    <span id="check-${idx}" class="hidden text-green-500 font-bold text-[10px]">✅ ГОТОВО</span>
+                </div>
+                <div class="text-sm font-medium text-slate-700 mb-4">${task.q}</div>
+                <div class="flex gap-2">
+                    <input type="text" id="input-${idx}" onkeypress="if(event.key==='Enter') checkTask(${idx})" 
+                        class="flex-1 bg-slate-50 rounded-xl px-4 py-2 border-2 border-transparent focus:border-indigo-400 outline-none transition text-sm" placeholder="Відповідь...">
+                    <button onclick="checkTask(${idx})" class="bg-indigo-600 text-white px-4 rounded-xl font-bold hover:bg-indigo-700 transition">Перевірити</button>
+                </div>
+                <div class="mt-3 flex gap-3">
+                    <button onclick="toggleInfo(${idx}, 'hint')" class="text-[9px] font-bold text-indigo-400 hover:text-indigo-600 uppercase">Підказка</button>
+                    <button onclick="toggleInfo(${idx}, 'sol')" class="text-[9px] font-bold text-slate-300 hover:text-slate-500 uppercase ml-auto">Розв'язання</button>
+                </div>
+                <div id="hint-${idx}" class="hidden mt-2 p-3 bg-indigo-50 rounded-xl text-[11px] text-indigo-700 italic border-l-2 border-indigo-200">💡 ${task.h}</div>
+                <div id="sol-${idx}" class="hidden mt-2 p-3 bg-slate-50 rounded-xl text-[11px] font-mono text-slate-600">Результат: ${task.s}</div>
+            `;
+            container.appendChild(div);
+        });
+        MathJax.typeset();
+    }
+
+    function checkTask(idx) {
+        const input = document.getElementById(`input-${idx}`);
+        const val = input.value.trim().toLowerCase();
+        if (val === tasksData[idx].a.toLowerCase()) {
+            if (!document.getElementById(`task-${idx}`).classList.contains('solved-card')) {
+                solvedCount++;
+                updateProgress();
+            }
+            document.getElementById(`task-${idx}`).classList.add('solved-card');
+            document.getElementById(`check-${idx}`).classList.remove('hidden');
+            input.disabled = true;
+        } else {
+            input.classList.add('border-red-400', 'animate-pulse');
+            setTimeout(() => input.classList.remove('border-red-400', 'animate-pulse'), 500);
+        }
+    }
+
+    function updateProgress() {
+        const p = (solvedCount / tasksData.length) * 100;
+        document.getElementById('prog-bar').style.width = p + '%';
+        document.getElementById('prog-label').innerText = `Прогрес: ${solvedCount}/${tasksData.length}`;
+        if (solvedCount >= 10) document.getElementById('test-zone').classList.remove('hidden');
+        if (solvedCount === tasksData.length) initTest();
+    }
+
+    function initTest() {
+        const cont = document.getElementById('test-questions');
+        if (cont.innerHTML !== "") return;
+        testData.forEach((t, i) => {
+            cont.innerHTML += `
+                <div class="p-4 bg-white/5 rounded-xl border border-white/10">
+                    <p class="mb-3 text-sm font-medium text-indigo-100">${i+1}. ${t.q}</p>
+                    <input type="text" id="test-input-${i}" class="w-full bg-white/10 border-b border-white/30 outline-none focus:border-indigo-400 py-1 text-white">
+                </div>`;
+        });
+    }
+
+    function checkTest() {
+        let correct = 0;
+        testData.forEach((t, i) => {
+            if (document.getElementById(`test-input-${i}`).value.trim() === t.a) correct++;
+        });
+        alert(`Результат тесту: ${correct} з ${testData.length}`);
+    }
+
+    function toggleInfo(idx, type) {
+        document.getElementById(`${type}-${idx}`).classList.toggle('hidden');
+    }
+
+    // CANVAS LOGIC
+    const canvas = document.getElementById('whiteboard');
+    const ctx = canvas.getContext('2d');
+    let drawing = false, tool = 'pen', hasGrid = false;
+
+    function initCanvas() {
+        const p = document.getElementById('canvas-parent');
+        canvas.width = p.clientWidth;
+        canvas.height = p.clientHeight;
+        ctx.lineCap = 'round';
+        ctx.lineWidth = 2.5;
+    }
+
+    function setTool(t) {
+        tool = t;
+        document.getElementById('btn-pen').classList.toggle('tool-active', t === 'pen');
+        document.getElementById('btn-eraser').classList.toggle('tool-active', t === 'eraser');
+    }
+
+    function toggleGrid() {
+        hasGrid = !hasGrid;
+        document.getElementById('btn-grid').classList.toggle('tool-active', hasGrid);
+        clearCanvas();
+        if(hasGrid) {
+            ctx.strokeStyle = '#e2e8f0';
+            ctx.lineWidth = 0.5;
+            for(let x=0; x<canvas.width; x+=30) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,canvas.height); ctx.stroke(); }
+            for(let y=0; y<canvas.height; y+=30) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(canvas.width,y); ctx.stroke(); }
+            ctx.lineWidth = 2.5;
+        }
+    }
+
+    canvas.onmousedown = (e) => { drawing = true; ctx.beginPath(); const pos = getPos(e); ctx.moveTo(pos.x, pos.y); };
+    canvas.onmousemove = (e) => { 
+        if (!drawing) return; 
+        const pos = getPos(e);
+        ctx.strokeStyle = tool === 'eraser' ? '#ffffff' : '#4338ca';
+        ctx.lineWidth = tool === 'eraser' ? 25 : 2.5;
+        ctx.lineTo(pos.x, pos.y); 
+        ctx.stroke();
+    };
+    window.onmouseup = () => drawing = false;
+
+    function getPos(e) { 
+        const r = canvas.getBoundingClientRect(); 
+        return { x: e.clientX - r.left, y: e.clientY - r.top }; 
+    }
+
+    function clearCanvas() { ctx.clearRect(0,0,canvas.width,canvas.height); if(hasGrid) { hasGrid = false; toggleGrid(); } }
+
+    function finishLesson() {
+        const score = Math.round((solvedCount / tasksData.length) * 12);
+        document.getElementById('res-score').innerText = `${score} / 12`;
+        
+        let msg = "";
+        let icon = "🌟";
+        if (score >= 10) { msg = "Неймовірно! Ти справжній майстер комбінаторики!"; icon = "🏆"; }
+        else if (score >= 7) { msg = "Гарний результат! Спробуй розв'язати складніші задачі."; icon = "👍"; }
+        else { msg = "Тобі варто ще раз переглянути правила суми та добутку."; icon = "📚"; }
+        
+        document.getElementById('res-msg').innerText = msg;
+        document.getElementById('modal-icon').innerText = icon;
+        document.getElementById('modal').classList.remove('hidden');
+    }
+
+    window.onload = () => { initTasks(); initCanvas(); };
+    window.onresize = initCanvas;
+</script>
+</body>
+</html>
