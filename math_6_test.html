@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Методист: Раціональні числа (Екзамен)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['\\(', '\\)']],
+                displayMath: [['\\[', '\\]']]
+            },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; overflow: hidden; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .task-card { border: 1px solid #e2e8f0; transition: all 0.3s ease; background: white; position: relative; }
+        .whiteboard-container { background-image: radial-gradient(#e2e8f0 1px, transparent 1px); background-size: 20px 20px; }
+        .tool-active { @apply bg-indigo-600 text-white shadow-md; }
+        .solved-card { border-color: #22c55e !important; background-color: #f0fdf4 !important; }
+        .wrong-card { border-color: #ef4444 !important; background-color: #fef2f2 !important; }
+        .match-btn { cursor: pointer; transition: 0.2s; border: 2px solid #e2e8f0; text-align: center; font-size: 0.85rem; padding: 10px; border-radius: 12px; background: #f8fafc; }
+        .match-selected { border-color: #6366f1; background: #eef2ff; color: #4338ca; }
+        .match-correct { border-color: #22c55e; background: #dcfce7; color: #166534; pointer-events: none; }
+        .choice-btn { width: 100%; text-align: left; padding: 12px; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 8px; transition: 0.2s; font-size: 0.9rem; background: #fff; }
+        .choice-btn:not(:disabled):hover { background: #f1f5f9; }
+        .choice-correct { background: #22c55e !important; color: white; border-color: #16a34a !important; }
+        .choice-wrong { background: #ef4444 !important; color: white; border-color: #dc2626 !important; }
+        .score-badge { position: absolute; top: 1rem; right: 1rem; font-size: 0.7rem; font-weight: 800; padding: 4px 8px; border-radius: 8px; }
+    </style>
+</head>
+<body class="h-screen flex text-slate-900">
+
+    <div class="w-full lg:w-1/2 flex flex-col bg-white border-r border-slate-200">
+        <header class="p-6 border-b border-slate-100 flex justify-between items-center sticky top-0 bg-white/90 backdrop-blur-md z-50">
+            <div>
+                <h1 class="text-xl font-extrabold text-slate-800">Раціональні числа</h1>
+                <p class="text-[10px] font-bold text-indigo-500 uppercase tracking-widest mt-1">Контрольна • Макс: 12 балів</p>
+            </div>
+            <div class="text-right">
+                <div class="text-[10px] font-black text-slate-400 mb-1" id="prog-label">Виконано: 0/30</div>
+                <div class="w-32 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                    <div id="prog-bar" class="h-full bg-indigo-600 transition-all duration-500" style="width: 0%"></div>
+                </div>
+            </div>
+        </header>
+
+        <main class="flex-1 overflow-y-auto p-8 space-y-8 custom-scrollbar">
+            
+            <section class="theory-block p-5 rounded-r-2xl border-l-4 border-indigo-500 bg-indigo-50">
+                <h2 class="text-sm font-black text-indigo-900 mb-1 uppercase">💡 Пам'ятка</h2>
+                <p class="text-xs text-indigo-700 leading-relaxed">Кожна правильна відповідь приносить <b>0.4 бала</b>. Після натискання кнопки змінити вибір буде неможливо.</p>
+            </section>
+
+            <div class="task-card p-6 rounded-3xl" id="match-section">
+                <h3 class="text-xs font-black text-slate-400 uppercase mb-4">№1-6 Встанови відповідність (0.4 за пару)</h3>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-3" id="match-left"></div>
+                    <div class="space-y-3" id="match-right"></div>
+                </div>
+            </div>
+
+            <div id="tasks-list" class="space-y-6"></div>
+
+            <div id="test-zone" class="hidden pt-6">
+                <div class="p-8 bg-slate-900 text-white rounded-[2.5rem] shadow-2xl">
+                    <h2 class="text-xl font-black mb-6 text-indigo-300">🏁 ФІНАЛЬНИЙ БЛІЦ</h2>
+                    <div id="test-questions" class="space-y-6"></div>
+                    <button onclick="checkFinalTest(this)" class="mt-8 w-full bg-indigo-500 text-white py-4 rounded-2xl font-bold hover:bg-indigo-400 transition shadow-lg shadow-indigo-500/30">ПІДТВЕРДИТИ БЛІЦ</button>
+                </div>
+            </div>
+
+            <div class="py-10">
+                <button onclick="finishLesson()" class="w-full bg-slate-900 text-white py-5 rounded-3xl font-black text-xl hover:bg-indigo-600 transition-all shadow-xl active:scale-[0.98]">
+                    ЗАВЕРШИТИ УРОК
+                </button>
+            </div>
+        </main>
+    </div>
+
+    <div class="hidden lg:flex w-1/2 flex-col bg-slate-50 p-6 relative">
+        <div class="absolute top-10 left-1/2 -translate-x-1/2 z-40 flex items-center gap-2 bg-white/95 backdrop-blur-md p-2 rounded-2xl shadow-xl border border-slate-200">
+            <button onclick="setTool('pen')" id="btn-pen" class="p-3 rounded-xl tool-active">✏️</button>
+            <button onclick="setTool('eraser')" id="btn-eraser" class="p-3 rounded-xl hover:bg-slate-100">🧽</button>
+            <div class="w-px h-6 bg-slate-200 mx-1"></div>
+            <button onclick="toggleGrid()" id="btn-grid" class="p-3 rounded-xl hover:bg-slate-100">📏</button>
+            <button onclick="clearCanvas()" class="px-4 py-2 text-[10px] font-black text-red-500 hover:bg-red-50 rounded-xl uppercase">Очистити</button>
+        </div>
+        <div class="flex-1 whiteboard-container bg-white rounded-[2.5rem] shadow-inner border border-slate-200 overflow-hidden relative" id="canvas-parent">
+            <canvas id="whiteboard" class="cursor-crosshair"></canvas>
+        </div>
+    </div>
+
+    <div id="modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-[100] hidden flex items-center justify-center p-6">
+        <div class="bg-white rounded-[3rem] p-12 max-w-sm w-full text-center shadow-2xl border-4 border-indigo-100">
+            <div id="modal-icon" class="text-8xl mb-6">🎓</div>
+            <h2 class="text-2xl font-black text-slate-800 mb-2 uppercase tracking-tighter">Твій результат</h2>
+            <p id="res-score" class="text-indigo-600 font-black text-7xl mb-4">12</p>
+            <p id="res-msg" class="text-slate-500 mb-10 italic text-sm px-4"></p>
+            <button onclick="location.reload()" class="w-full bg-slate-900 text-white py-5 rounded-2xl font-bold hover:bg-indigo-600 transition">ПОВТОРИТИ ТЕСТ</button>
+        </div>
+    </div>
+
+<script>
+    let currentScore = 0;
+    let solvedCount = 0;
+    let selectedLeft = null;
+
+    const tasksData = [
+        // Matching
+        { id: 'm1', l: "-(a-2) + (-a+5)", r: "-2a+7", type: 'match' },
+        { id: 'm2', l: "2(x+y) - (2x-3y)", r: "5y", type: 'match' },
+        { id: 'm3', l: "-(m+3) - (-m-3)", r: "0", type: 'match' },
+        { id: 'm4', l: "3(b-1) - 2(b-1)", r: "b-1", type: 'match' },
+        { id: 'm5', l: "-(x-1) - (-x-1)", r: "2", type: 'match' },
+        { id: 'm6', l: "|a-3| - |a+3|, a=0", r: "0", type: 'match' },
+        // Choice
+        { q: "Який вираз дорівнює \\( -(-(-(-x))) \\)?", a: 0, opts: ["x", "-x", "0"], type: 'choice', h: "Парна кількість мінусів", s: "x" },
+        { q: "Спростіть: \\( -(a+b) - (-a+b) \\)", a: 0, opts: ["-2b", "-2a", "0"], type: 'choice', h: "-a - b + a - b", s: "-2b" },
+        { q: "Який знак матиме сума \\( -12.4 + (-0.1) \\)?", a: 1, opts: ["+", "-", "0"], type: 'choice', h: "Сума від'ємних", s: "-" },
+        { q: "Розкрийте: \\( -\\frac{1}{2}(4a - 6b) \\)", a: 0, opts: ["-2a+3b", "2a-3b", "-2a-3b"], type: 'choice', h: "Множимо на кожне", s: "-2a+3b" },
+        { q: "Протилежне число до різниці \\( 10 - (-5) \\)?", a: 1, opts: ["15", "-15", "5"], type: 'choice', h: "10+5=15", s: "-15" },
+        { q: "Значення \\( |-10| + (-10) \\)", a: 2, opts: ["20", "-20", "0"], type: 'choice', h: "Модуль завжди > 0", s: "0" },
+        { q: "Обчисліть: \\( |x| - |y| \\), якщо \\( x=-8, y=12 \\)", a: 0, opts: ["-4", "4", "20"], type: 'choice', h: "8 - 12", s: "-4" },
+        { q: "Відстань між \\( А(-5) \\) та \\( В(x) \\), якщо \\( x = | -10 | \\)?", a: 2, opts: ["5", "10", "15"], type: 'choice', h: "x=10. |-5-10|", s: "15" },
+        // Input
+        { q: "Рівняння: \\( -(x-10)+2 = 0 \\)", a: "12", type: 'input', h: "-x+10+2=0", s: "x=12" },
+        { q: "Рівняння: \\( |x-3|=7 \\) (більший корінь)", a: "10", type: 'input', h: "x-3=7", s: "10" },
+        { q: "На скільки сума -8 і -4 менша за їх різницю?", a: "8", type: 'input', h: "(-4 - (-8)) - (-8 + (-4))", s: "8" },
+        { q: "Було -10°C, впало на 5°C, зросло на 20°C. Стало?", a: "5", type: 'input', h: "-10-5+20", s: "5" },
+        { q: "Обчисліть: \\( \\frac{3}{4} + (-\\frac{1}{2}) - \\frac{1}{4} \\)", a: "0", type: 'input', h: "0.75 - 0.5 - 0.25", s: "0" },
+        { q: "Відстань між А(-20) та В(-5)?", a: "15", type: 'input', h: "|-20 - (-5)|", s: "15" },
+        { q: "Найбільше з 3-х цілих, сума яких -6?", a: "-1", type: 'input', h: "Числа: -3, -2, -1", s: "-1" },
+        { q: "Рівняння: \\( -0.2(x-5) = 0 \\)", a: "5", type: 'input', h: "x-5=0", s: "5" },
+        { q: "Вираз \\( -(a-b) - (-b-a) \\), якщо a=-2, b=10", a: "20", type: 'input', h: "Спрости до 2b", s: "20" },
+        { q: "Глибина: -100м. +40м, потім -20м. Де водолаз?", a: "-80", type: 'input', h: "-100+40-20", s: "-80" },
+        { q: "Рівняння: \\( |x| = |-12| + |-3| \\) (додатний корінь)", a: "15", type: 'input', h: "12+3=15", s: "15" },
+        { q: "Сума двох від'ємних -30. Одне в 2 рази більше. Менше?", a: "-20", type: 'input', h: "-20 + (-10) = -30", s: "-20" }
+    ];
+
+    const blitzData = [
+        { q: "Чи може сума двох від'ємних бути 1?", a: "ні" },
+        { q: "Протилежне до \\( -7/9 \\)?", a: "7/9" },
+        { q: "Середина між А(-8) та В(0)?", a: "-4" },
+        { q: "На скільки 5 більше за -5?", a: "10" }
+    ];
+
+    function initTasks() {
+        const leftBox = document.getElementById('match-left');
+        const rightBox = document.getElementById('match-right');
+        const matchTasks = tasksData.filter(t => t.type === 'match');
+        
+        matchTasks.forEach(t => {
+            const btn = document.createElement('div');
+            btn.className = 'match-btn'; btn.innerHTML = `\\(${t.l}\\)`;
+            btn.onclick = () => selectLeft(btn, t.id);
+            leftBox.appendChild(btn);
+        });
+
+        [...matchTasks].sort(() => Math.random() - 0.5).forEach(t => {
+            const btn = document.createElement('div');
+            btn.className = 'match-btn'; btn.innerHTML = `\\(${t.r}\\)`;
+            btn.onclick = () => selectRight(btn, t.id);
+            rightBox.appendChild(btn);
+        });
+
+        const list = document.getElementById('tasks-list');
+        tasksData.forEach((t, i) => {
+            if(t.type === 'match') return;
+            const card = document.createElement('div');
+            card.className = "task-card p-6 rounded-3xl"; card.id = `card-${i}`;
+            
+            let content = `<p class="text-[9px] font-black text-slate-300 uppercase mb-2">Завдання №${i+1}</p>
+                           <p class="text-sm font-bold text-slate-700 mb-4">${t.q}</p><div id="score-${i}" class="score-badge"></div>`;
+
+            if(t.type === 'choice') {
+                content += `<div class="space-y-2" id="opts-${i}">`;
+                t.opts.forEach((opt, oi) => {
+                    content += `<button class="choice-btn" onclick="checkChoice(this, ${oi === t.a}, ${i})">\\(${opt}\\)</button>`;
+                });
+                content += `</div>`;
+            } else {
+                content += `<div class="flex gap-2">
+                                <input type="text" id="in-${i}" class="flex-1 bg-slate-50 border-2 border-slate-100 rounded-xl px-4 text-sm" placeholder="Відповідь...">
+                                <button id="btn-${i}" onclick="checkInput(${i}, '${t.a}')" class="bg-indigo-600 text-white px-6 py-3 rounded-xl font-bold active:scale-90 transition">OK</button>
+                            </div>`;
+            }
+            content += `<div class="flex gap-4 mt-4 text-[9px] font-bold uppercase tracking-widest">
+                <button onclick="toggleInfo(${i}, 'h')" class="text-indigo-400">Підказка</button>
+                <button onclick="toggleInfo(${i}, 's')" class="text-slate-300 ml-auto">Розв'язання</button>
+            </div>
+            <div id="h-${i}" class="hidden mt-3 p-3 bg-indigo-50 rounded-xl text-[10px] italic text-indigo-700">💡 ${t.h}</div>
+            <div id="s-${i}" class="hidden mt-3 p-3 bg-slate-100 rounded-xl text-[10px] font-mono text-slate-500">${t.s}</div>`;
+            
+            card.innerHTML = content;
+            list.appendChild(card);
+        });
+        setTimeout(() => MathJax.typeset(), 200);
+    }
+
+    function selectLeft(el, id) {
+        if(el.classList.contains('match-correct')) return;
+        document.querySelectorAll('#match-left .match-btn').forEach(b => b.classList.remove('match-selected'));
+        el.classList.add('match-selected'); selectedLeft = { el, id };
+    }
+
+    function selectRight(el, id) {
+        if(!selectedLeft || el.classList.contains('match-correct')) return;
+        const scoreBox = document.getElementById('match-section');
+        if(selectedLeft.id === id) {
+            el.classList.add('match-correct'); selectedLeft.el.classList.add('match-correct');
+            solvedCount++; updateProgress(0.4);
+        } else {
+            el.classList.add('choice-wrong'); 
+            setTimeout(() => el.classList.remove('choice-wrong'), 500);
+            selectedLeft.el.classList.remove('match-selected');
+            solvedCount++; updateProgress(0); // Mark as attempted
+        }
+        selectedLeft = null;
+    }
+
+    function checkChoice(btn, isCorrect, idx) {
+        const parent = document.getElementById(`opts-${idx}`);
+        const badge = document.getElementById(`score-${idx}`);
+        const card = document.getElementById(`card-${idx}`);
+        
+        Array.from(parent.children).forEach(b => b.disabled = true);
+        if(isCorrect) {
+            btn.classList.add('choice-correct'); card.classList.add('solved-card');
+            badge.innerHTML = '<span class="text-green-600">+0.4 бали</span>';
+            updateProgress(0.4);
+        } else {
+            btn.classList.add('choice-wrong'); card.classList.add('wrong-card');
+            badge.innerHTML = '<span class="text-red-600">+0 балів</span>';
+            updateProgress(0);
+        }
+        solvedCount++;
+    }
+
+    function checkInput(idx, correct) {
+        const input = document.getElementById(`in-${idx}`);
+        const btn = document.getElementById(`btn-${idx}`);
+        const badge = document.getElementById(`score-${idx}`);
+        const card = document.getElementById(`card-${idx}`);
+        
+        input.disabled = true; btn.disabled = true;
+        if(input.value.trim().toLowerCase() === correct.toLowerCase()) {
+            card.classList.add('solved-card');
+            badge.innerHTML = '<span class="text-green-600">+0.4 бали</span>';
+            updateProgress(0.4);
+        } else {
+            card.classList.add('wrong-card');
+            badge.innerHTML = '<span class="text-red-600">+0 балів</span>';
+            updateProgress(0);
+        }
+        solvedCount++;
+    }
+
+    function updateProgress(points) {
+        currentScore += points;
+        const p = (solvedCount / 30) * 100;
+        document.getElementById('prog-bar').style.width = p + '%';
+        document.getElementById('prog-label').innerText = `Виконано: ${solvedCount}/30`;
+        if(solvedCount >= 20) document.getElementById('test-zone').classList.remove('hidden');
+        if(solvedCount === 26) initBlitz();
+    }
+
+    function initBlitz() {
+        const box = document.getElementById('test-questions');
+        if(box.innerHTML !== "") return;
+        blitzData.forEach((t, i) => {
+            box.innerHTML += `<div class="bg-white/5 p-4 rounded-2xl border border-white/10">
+                                <p class="text-xs font-bold text-indigo-200 mb-2">${t.q}</p>
+                                <input type="text" id="blitz-${i}" class="w-full bg-transparent border-b border-white/20 outline-none text-white text-sm">
+                              </div>`;
+        });
+        MathJax.typeset();
+    }
+
+    function checkFinalTest(btn) {
+        btn.disabled = true;
+        blitzData.forEach((t, i) => {
+            const inp = document.getElementById(`blitz-${i}`);
+            inp.disabled = true;
+            if(inp.value.trim().toLowerCase() === t.a.toLowerCase()) {
+                currentScore += 0.4;
+            }
+            solvedCount++;
+        });
+        updateProgress(0);
+    }
+
+    function toggleInfo(i, type) { document.getElementById(`${type}-${i}`).classList.toggle('hidden'); }
+
+    function finishLesson() {
+        const finalGrade = Math.min(12, currentScore).toFixed(1);
+        document.getElementById('res-score').innerText = finalGrade;
+        document.getElementById('res-msg').innerText = finalGrade >= 10 ? "Блискуче! Ти справжній математичний стратег." : "Непогано, але раціональні числа люблять точність. Спробуй ще!";
+        document.getElementById('modal').classList.remove('hidden');
+    }
+
+    // CANVAS
+    const canvas = document.getElementById('whiteboard');
+    const ctx = canvas.getContext('2d');
+    let drawing = false, tool = 'pen', hasGrid = false;
+    function initCanvas() {
+        const p = document.getElementById('canvas-parent');
+        canvas.width = p.clientWidth; canvas.height = p.clientHeight;
+        ctx.lineCap = 'round'; ctx.lineWidth = 2;
+    }
+    function setTool(t) {
+        tool = t; document.getElementById('btn-pen').classList.toggle('tool-active', t === 'pen');
+        document.getElementById('btn-eraser').classList.toggle('tool-active', t === 'eraser');
+    }
+    function toggleGrid() {
+        hasGrid = !hasGrid; document.getElementById('btn-grid').classList.toggle('tool-active', hasGrid);
+        clearCanvas();
+        if(hasGrid) {
+            ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 0.5;
+            for(let x=0; x<canvas.width; x+=30) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,canvas.height); ctx.stroke(); }
+            for(let y=0; y<canvas.height; y+=30) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(canvas.width,y); ctx.stroke(); }
+            ctx.lineWidth = 2;
+        }
+    }
+    canvas.onmousedown = (e) => { drawing = true; ctx.beginPath(); const pos = getPos(e); ctx.moveTo(pos.x, pos.y); };
+    canvas.onmousemove = (e) => { if (!drawing) return; const pos = getPos(e); ctx.strokeStyle = tool === 'eraser' ? '#ffffff' : '#4338ca'; ctx.lineWidth = tool === 'eraser' ? 30 : 2; ctx.lineTo(pos.x, pos.y); ctx.stroke(); };
+    window.onmouseup = () => drawing = false;
+    function getPos(e) { const r = canvas.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top }; }
+    function clearCanvas() { ctx.clearRect(0,0,canvas.width,canvas.height); if(hasGrid) { hasGrid = false; toggleGrid(); } }
+
+    window.onload = () => { initTasks(); initCanvas(); };
+</script>
+</body>
+</html>
