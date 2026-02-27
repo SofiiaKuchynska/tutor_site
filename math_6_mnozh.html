@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MathPro: Множення раціональних чисел</title>
+    <title>MathMaster: Раціональні числа (80 вправ)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         window.MathJax = {
@@ -15,314 +15,387 @@
         };
     </script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f1f5f9; overflow: hidden; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; overflow: hidden; }
         .custom-scrollbar::-webkit-scrollbar { width: 6px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
         
-        .task-card { border: 2px solid #e2e8f0; transition: all 0.3s ease; }
-        .task-card:hover { border-color: #6366f1; transform: translateY(-2px); }
+        .task-card { border: 2px solid #f1f5f9; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .task-card:hover { border-color: #6366f1; transform: translateX(5px); }
         .solved-card { border-color: #10b981 !important; background-color: #f0fdf4 !important; }
         
         .whiteboard-container { 
             background-color: #ffffff;
-            background-image: radial-gradient(#e2e8f0 1px, transparent 1px); 
-            background-size: 20px 20px; 
+            background-image: radial-gradient(#e2e8f0 1.5px, transparent 1.5px); 
+            background-size: 30px 30px; 
         }
-        .tool-active { background-color: #4f46e5 !important; color: white !important; }
+        .tool-active { background-color: #4f46e5 !important; color: white !important; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3); }
         
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .animate-fade { animation: fadeIn 0.4s ease-out forwards; }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-slide { animation: slideIn 0.5s ease-out forwards; }
     </style>
 </head>
 <body class="h-screen flex overflow-hidden">
 
-    <div class="w-full lg:w-1/2 flex flex-col bg-white border-r border-slate-200 shadow-xl z-10">
+    <div class="w-full lg:w-1/2 flex flex-col bg-white border-r border-slate-200 shadow-2xl z-10">
         
-        <header class="p-6 border-b flex justify-between items-center bg-white/80 backdrop-blur-md sticky top-0 z-20">
+        <header class="p-5 border-b flex justify-between items-center bg-white/90 backdrop-blur-md sticky top-0 z-30">
             <div>
-                <h1 class="text-xl font-extrabold text-slate-900 tracking-tight">Math<span class="text-indigo-600">Pro</span> 6</h1>
-                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Множення раціональних чисел</p>
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center text-white font-bold text-xl">M</div>
+                    <h1 class="text-xl font-extrabold text-slate-900 tracking-tight">Math<span class="text-indigo-600">Master</span> 6</h1>
+                </div>
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Множення: Від Бази до Олімпіади</p>
             </div>
             <div class="flex flex-col items-end">
-                <span class="text-xs font-bold text-indigo-600 mb-1" id="prog-text">0 / 55 виконано</span>
-                <div class="w-32 h-2 bg-slate-100 rounded-full overflow-hidden">
-                    <div id="prog-bar" class="h-full bg-indigo-600 transition-all duration-500" style="width: 0%"></div>
+                <span class="text-xs font-bold text-indigo-600 mb-1" id="prog-text">0 / 80 виконано</span>
+                <div class="w-40 h-2.5 bg-slate-100 rounded-full overflow-hidden border border-slate-200">
+                    <div id="prog-bar" class="h-full bg-gradient-to-r from-indigo-500 to-emerald-500 transition-all duration-700" style="width: 0%"></div>
                 </div>
             </div>
         </header>
 
-        <main class="flex-1 overflow-y-auto p-6 custom-scrollbar" id="content-scroll">
+        <main class="flex-1 overflow-y-auto p-6 custom-scrollbar space-y-8" id="content-scroll">
             
-            <section class="mb-10">
-                <details class="group bg-indigo-50 rounded-3xl p-2 border-2 border-indigo-100 transition-all">
-                    <summary class="flex items-center justify-between p-4 cursor-pointer font-bold text-indigo-900">
-                        <div class="flex items-center gap-3">
-                            <span class="text-xl">📚</span>
-                            <span>Шпаргалка: Правила знаків</span>
+            <section>
+                <details class="group bg-slate-50 rounded-[2rem] p-2 border-2 border-slate-100 transition-all">
+                    <summary class="flex items-center justify-between p-5 cursor-pointer font-bold text-slate-700">
+                        <div class="flex items-center gap-4">
+                            <span class="p-3 bg-white rounded-2xl shadow-sm text-xl">📖</span>
+                            <div>
+                                <h3 class="text-lg">Швидка шпаргалка</h3>
+                                <p class="text-xs font-normal text-slate-500 italic">Алгоритми та секрети знаків</p>
+                            </div>
                         </div>
-                        <span class="group-open:rotate-180 transition-transform">▼</span>
+                        <span class="group-open:rotate-180 transition-transform bg-white p-2 rounded-full shadow-sm">▼</span>
                     </summary>
-                    <div class="p-4 pt-0 text-sm leading-relaxed text-indigo-800 space-y-4">
-                        <div class="grid grid-cols-2 gap-4">
-                            <div class="bg-white p-3 rounded-2xl shadow-sm border border-indigo-100">
-                                <p class="font-bold text-center mb-2">Однакові знаки (+)</p>
-                                <ul class="space-y-1 text-center font-mono">
-                                    <li>(+) · (+) = <b>(+)</b></li>
-                                    <li>(-) · (-) = <b>(+)</b></li>
+                    <div class="p-6 pt-0 space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="bg-white p-4 rounded-2xl border border-indigo-100">
+                                <p class="font-bold text-indigo-900 mb-2 underline decoration-indigo-200">Правило "Свої-Чужі":</p>
+                                <ul class="space-y-2 font-mono text-sm">
+                                    <li class="flex justify-between"><span>(+) × (+) = </span><span class="font-bold text-emerald-600">(+)</span></li>
+                                    <li class="flex justify-between"><span>(-) × (-) = </span><span class="font-bold text-emerald-600">(+)</span></li>
+                                    <li class="flex justify-between"><span>(+) × (-) = </span><span class="font-bold text-red-500">(-)</span></li>
+                                    <li class="flex justify-between"><span>(-) × (+) = </span><span class="font-bold text-red-500">(-)</span></li>
                                 </ul>
                             </div>
-                            <div class="bg-white p-3 rounded-2xl shadow-sm border border-indigo-100">
-                                <p class="font-bold text-center mb-2">Різні знаки (-)</p>
-                                <ul class="space-y-1 text-center font-mono">
-                                    <li>(+) · (-) = <b>(-)</b></li>
-                                    <li>(-) · (+) = <b>(-)</b></li>
-                                </ul>
+                            <div class="bg-white p-4 rounded-2xl border border-indigo-100">
+                                <p class="font-bold text-indigo-900 mb-2">Секрет степеня:</p>
+                                <p class="text-xs leading-relaxed">
+                                    \( (-a)^n \) <br>
+                                    Якщо \( n \) — <b>парне</b> (2, 4, 6...), то результат \( + \).<br>
+                                    Якщо \( n \) — <b>непарне</b> (1, 3, 5...), то результат \( - \).
+                                </p>
                             </div>
                         </div>
-                        <p class="bg-white/50 p-3 rounded-xl italic text-xs">
-                            💡 <b>Лайфхак:</b> Якщо в добутку парна кількість від'ємних множників — результат "+", якщо непарна — "-".
-                        </p>
+                        <div class="bg-indigo-600 text-white p-4 rounded-2xl text-xs flex gap-3 items-center">
+                            <span class="text-2xl">💡</span>
+                            <p>Якщо серед множників є <b>хоча б один нуль</b>, весь добуток миттєво стає <b>0</b>. Не витрачай час на обчислення іншого!</p>
+                        </div>
                     </div>
                 </details>
             </section>
 
-            <div id="tasks-container" class="space-y-6"></div>
+            <div id="tasks-container" class="space-y-6">
+                </div>
 
-            <div id="final-test" class="hidden mt-12 p-8 bg-slate-900 rounded-[2.5rem] text-white animate-fade">
-                <h2 class="text-2xl font-black mb-4">🏆 Фінальний тест</h2>
-                <div id="test-questions" class="space-y-6"></div>
-                <button onclick="finishLesson()" class="mt-8 w-full bg-indigo-500 py-4 rounded-2xl font-bold hover:bg-indigo-400 transition-all shadow-lg shadow-indigo-500/20">
-                    ЗАВЕРШИТИ УРОК
+            <div id="final-test-section" class="hidden mt-12 p-8 bg-slate-900 rounded-[3rem] text-white shadow-2xl shadow-indigo-200">
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="text-4xl">🏁</div>
+                    <div>
+                        <h2 class="text-2xl font-black">Фінальний бос</h2>
+                        <p class="text-slate-400 text-sm">Перевір себе перед завершенням</p>
+                    </div>
+                </div>
+                <div id="test-questions" class="space-y-8"></div>
+                <button onclick="finishLesson()" class="mt-10 w-full bg-indigo-500 py-5 rounded-2xl font-black text-lg hover:bg-indigo-400 transition-all hover:scale-[1.02] active:scale-95 shadow-lg shadow-indigo-500/40">
+                    ЗАВЕРШИТИ МАРАФОН
                 </button>
             </div>
+            
+            <div class="h-20"></div>
         </main>
     </div>
 
-    <div class="hidden lg:flex flex-1 flex-col bg-slate-100 p-4">
-        <div class="mb-4 flex items-center justify-between bg-white p-3 rounded-2xl shadow-sm">
-            <div class="flex gap-2">
-                <button onclick="setTool('pen')" id="tool-pen" class="p-3 rounded-xl tool-active transition-all" title="Олівець">✏️</button>
-                <button onclick="setTool('eraser')" id="tool-eraser" class="p-3 rounded-xl bg-slate-50 text-slate-400 hover:bg-slate-100 transition-all" title="Гумка">🧽</button>
+    <div class="hidden lg:flex flex-1 flex-col bg-slate-100 p-6 relative">
+        <div class="mb-4 flex items-center justify-between bg-white/80 backdrop-blur p-4 rounded-[2rem] shadow-sm border border-white">
+            <div class="flex gap-3">
+                <button onclick="setTool('pen')" id="tool-pen" class="p-4 rounded-2xl tool-active transition-all" title="Олівець">✏️</button>
+                <button onclick="setTool('eraser')" id="tool-eraser" class="p-4 rounded-2xl bg-slate-50 text-slate-400 hover:bg-slate-100 transition-all" title="Гумка">🧽</button>
             </div>
-            <div class="flex gap-2">
-                <button onclick="drawGrid()" class="px-4 py-2 text-xs font-bold bg-indigo-50 text-indigo-600 rounded-xl hover:bg-indigo-100 transition-all">СІТКА</button>
-                <button onclick="clearCanvas()" class="px-4 py-2 text-xs font-bold bg-red-50 text-red-500 rounded-xl hover:bg-red-100 transition-all">ОЧИСТИТИ</button>
+            <div class="flex gap-3">
+                <button onclick="drawGrid()" class="px-6 py-3 text-xs font-black bg-indigo-50 text-indigo-600 rounded-2xl hover:bg-indigo-100 transition-all tracking-widest">СІТКА</button>
+                <button onclick="clearCanvas()" class="px-6 py-3 text-xs font-black bg-red-50 text-red-500 rounded-2xl hover:bg-red-100 transition-all tracking-widest">ОЧИСТИТИ</button>
             </div>
         </div>
-        <div class="flex-1 whiteboard-container rounded-[2rem] border-2 border-slate-200 overflow-hidden relative cursor-crosshair" id="canvas-wrap">
+        
+        <div class="flex-1 whiteboard-container rounded-[3rem] border-4 border-white shadow-inner overflow-hidden relative cursor-crosshair group" id="canvas-wrap">
             <canvas id="canvas"></canvas>
+            <div class="absolute bottom-6 left-1/2 -translate-x-1/2 px-4 py-2 bg-slate-800/10 backdrop-blur-sm rounded-full text-[10px] text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity uppercase font-bold tracking-tighter">
+                Інтерактивна чернетка MathMaster
+            </div>
         </div>
     </div>
 
-    <div id="modal" class="fixed inset-0 bg-slate-900/90 backdrop-blur-sm z-50 hidden flex items-center justify-center p-6">
-        <div class="bg-white rounded-[3rem] p-10 max-w-sm w-full text-center shadow-2xl">
-            <div id="res-emoji" class="text-7xl mb-4">🎉</div>
-            <h2 id="res-title" class="text-3xl font-black text-slate-800 mb-2">Чудово!</h2>
-            <p id="res-msg" class="text-slate-500 mb-6">Ти пройшов 55 прикладів на множення.</p>
-            <div class="bg-slate-50 rounded-2xl p-4 mb-6">
-                <span class="text-indigo-600 font-black text-4xl" id="res-score">55/55</span>
-                <p class="text-[10px] uppercase font-bold text-slate-400 mt-1">Твій результат</p>
+    <div id="modal" class="fixed inset-0 bg-slate-900/90 backdrop-blur-md z-[100] hidden flex items-center justify-center p-6">
+        <div class="bg-white rounded-[4rem] p-12 max-w-md w-full text-center shadow-2xl transform transition-all scale-90 opacity-0" id="modal-content">
+            <div class="text-8xl mb-6">🏆</div>
+            <h2 class="text-4xl font-black text-slate-900 mb-2">Геній!</h2>
+            <p id="res-msg" class="text-slate-500 mb-8 leading-relaxed">Ти щойно розв'язав 80 прикладів. Твій мозок тепер працює швидше за калькулятор!</p>
+            <div class="bg-indigo-50 rounded-[2.5rem] p-8 mb-8 border border-indigo-100">
+                <span class="text-indigo-600 font-black text-6xl" id="res-score">80/80</span>
+                <p class="text-xs uppercase font-black text-indigo-300 mt-2 tracking-[0.2em]">Ідеальний результат</p>
             </div>
-            <button onclick="location.reload()" class="w-full bg-slate-900 text-white py-4 rounded-xl font-bold">СПРОБУВАТИ ЩЕ</button>
+            <button onclick="location.reload()" class="w-full bg-slate-900 text-white py-5 rounded-2xl font-black text-lg hover:bg-black transition-all shadow-xl">НОВИЙ РЕКОРД</button>
         </div>
     </div>
 
 <script>
-    // --- ДАНІ ЗАВДАНЬ (55 ПРИКЛАДІВ) ---
     const tasks = [];
-    
-    // Рівень 1: База (15)
-    for(let i=1; i<=15; i++) {
-        let a = (Math.random() > 0.5 ? 1 : -1) * Math.floor(Math.random() * 9 + 2);
-        let b = (Math.random() > 0.5 ? 1 : -1) * Math.floor(Math.random() * 9 + 2);
-        tasks.push({
-            q: `Обчисли: \\( ${a} \\cdot (${b}) \\)`,
-            a: (a * b).toString(),
-            h: "Визнач знак: мінус на мінус дає плюс, різні знаки дають мінус.",
-            s: `${a} * ${b} = ${a*b}`,
-            lvl: "Легкий"
-        });
-    }
-    // Рівень 2: Десяткові дроби (15)
-    for(let i=1; i<=15; i++) {
-        let a = (Math.random() > 0.5 ? 1 : -1) * (Math.floor(Math.random() * 5) + 0.5);
-        let b = (Math.random() > 0.5 ? 1 : -1) * 2;
-        tasks.push({
-            q: `Обчисли: \\( ${a.toString().replace('.',',')} \\cdot (${b.toString().replace('.',',')}) \\)`,
-            a: (a * b).toString().replace('.',','),
-            h: "Помнож числа, не звертаючи уваги на коми, а потім постав знак.",
-            s: `${a} * ${b} = ${a*b}`,
-            lvl: "Середній"
-        });
-    }
-    // Рівень 3: Три множники та степені (15)
-    for(let i=1; i<=15; i++) {
-        let a = -2, b = -3, c = (Math.random() > 0.5 ? 2 : -2);
-        tasks.push({
-            q: `Обчисли: \\( (${a}) \\cdot (${b}) \\cdot (${c}) \\)`,
-            a: (a * b * c).toString(),
-            h: "Рахуй поступово або порахуй кількість мінусів.",
-            s: `(-2)*(-3) = 6; 6*(${c}) = ${6*c}`,
-            lvl: "Достатній"
-        });
-    }
-    // Рівень 4: Професіонал (10)
-    const pro = [
-        {q: "Обчисли: \\( (-1)^5 \\cdot (-10) \\)", a: "10", h: "Від'ємне число у непарному степені — від'ємне.", s: "(-1) * (-10) = 10", lvl: "Високий"},
-        {q: "Чому дорівнює \\( x \\), якщо \\( -5 \\cdot x = 20 \\)?", a: "-4", h: "Щоб знайти множник, треба добуток поділити на відомий множник.", s: "20 / (-5) = -4", lvl: "Високий"},
-        {q: "Обчисли: \\( 0,25 \\cdot (-4) \\cdot (-7) \\)", a: "7", h: "Спочатку 0,25 * (-4).", s: "-1 * (-7) = 7", lvl: "Високий"},
-        {q: "Знайди значення: \\( (-2)^3 \\)", a: "-8", h: "Це (-2) * (-2) * (-2).", s: "-8", lvl: "Високий"},
-        {q: "Обчисли: \\( -1,2 \\cdot (-5) \\)", a: "6", h: "12 * 5 = 60, тоді 1,2 * 5 = 6.", s: "6", lvl: "Високий"},
-        {q: "Обчисли: \\( -0,1 \\cdot (-0,1) \\cdot (-0,1) \\)", a: "-0,001", h: "Три мінуси дадуть мінус.", s: "-0,001", lvl: "Високий"},
-        {q: "Обчисли: \\( (-4) \\cdot (-5) \\cdot 0 \\cdot (-10) \\)", a: "0", h: "Будь-яке число помножене на 0 дорівнює...", s: "0", lvl: "Високий"},
-        {q: "Обчисли: \\( -2,5 \\cdot 4 \\)", a: "-10", h: "Два з половиною взяти чотири рази.", s: "-10", lvl: "Високий"},
-        {q: "Обчисли: \\( (-0,5)^2 \\)", a: "0,25", h: "Мінус у квадраті завжди плюс.", s: "0,25", lvl: "Високий"},
-        {q: "Який знак має добуток 12 від'ємних чисел?", a: "+", h: "Парна кількість мінусів.", s: "+", lvl: "Високий"}
-    ];
-    tasks.push(...pro);
-
-    // --- ЛОГІКА ІНТЕРФЕЙСУ ---
-    let solved = 0;
     const container = document.getElementById('tasks-container');
+    let solvedCount = 0;
+
+    // ГЕНЕРАТОР ЗАВДАНЬ (80 УНІКАЛЬНИХ)
+    function generateMathTasks() {
+        // 1. Базові цілі числа (20 завдань)
+        for(let i=0; i<20; i++) {
+            const a = (Math.random() > 0.5 ? 1 : -1) * (Math.floor(Math.random() * 12) + 2);
+            const b = (Math.random() > 0.5 ? 1 : -1) * (Math.floor(Math.random() * 12) + 2);
+            tasks.push({
+                q: `\\( ${a} \\cdot (${b}) \\)`,
+                a: (a * b).toString(),
+                h: "Порахуй мінуси. Якщо їх 2 — буде плюс, якщо 1 — мінус.",
+                s: `${a} × ${b} = ${a*b}. Знаки: ${a>0?'+':'-'} × ${b>0?'+':'-'} = ${a*b>0?'+':'-'}.`,
+                lvl: "База"
+            });
+        }
+
+        // 2. Десяткові дроби (20 завдань)
+        for(let i=0; i<20; i++) {
+            const vals = [0.2, 0.5, 0.4, 1.5, 0.1, 0.3, 2.5, 0.8];
+            const a = (Math.random() > 0.5 ? 1 : -1) * vals[Math.floor(Math.random()*vals.length)];
+            const b = (Math.random() > 0.5 ? 1 : -1) * (Math.floor(Math.random() * 5) + 1);
+            const res = parseFloat((a * b).toFixed(2));
+            tasks.push({
+                q: `\\( ${a.toString().replace('.',',')} \\cdot (${b.toString().replace('.',',')}) \\)`,
+                a: res.toString().replace('.',','),
+                h: "Множ як звичайні числа, потім відділи стільки знаків комою, скільки було в обох числах.",
+                s: `${a} × ${b} = ${res}`,
+                lvl: "Дроби"
+            });
+        }
+
+        // 3. Три та більше множників (15 завдань)
+        for(let i=0; i<15; i++) {
+            const a = (Math.random() > 0.5 ? -2 : -1);
+            const b = (Math.random() > 0.5 ? -5 : 4);
+            const c = (Math.random() > 0.5 ? -3 : 2);
+            const d = (Math.random() > 0.8 ? 0 : 1); // інколи додаємо 0
+            const res = a * b * c * d;
+            tasks.push({
+                q: `\\( (${a}) \\cdot (${b}) \\cdot (${c}) ${d===0 ? '\\cdot 0' : ''} \\)`,
+                a: res.toString(),
+                h: "Порахуй кількість мінусів. Непарна кількість? Результат від'ємний.",
+                s: `Крок за кроком: ${a}*${b}=${a*b}; далі ${a*b}*${c}=${a*b*c}...`,
+                lvl: "Комбо"
+            });
+        }
+
+        // 4. Степені та змінні (15 завдань)
+        for(let i=0; i<15; i++) {
+            const base = - (Math.floor(Math.random() * 4) + 2);
+            const pwr = Math.floor(Math.random() * 2) + 2; // 2 або 3
+            const res = Math.pow(base, pwr);
+            tasks.push({
+                q: `Знайди значення: \\( (${base})^{${pwr}} \\)`,
+                a: res.toString(),
+                h: `Це означає помножити число ${base} саме на себе ${pwr} рази.`,
+                s: `${base} у степені ${pwr} = ${res}`,
+                lvl: "Степені"
+            });
+        }
+
+        // 5. "Олімпіадні" та логічні (10 завдань)
+        const logic = [
+            {q: "Обчисли: \\( -1 \\cdot (-1) \\cdot (-1) \\cdot ... \\) (всього 100 разів)", a: "1", h: "100 — це парна кількість мінусів.", s: "(-1)^{100} = 1", lvl: "Логіка"},
+            {q: "Чому дорівнює \\( x \\), якщо \\( -0,5 \\cdot x = 10 \\)?", a: "-20", h: "Поділи 10 на -0,5. Ділити на 0,5 — це як множити на 2.", s: "x = 10 / (-0.5) = -20", lvl: "Рівняння"},
+            {q: "Знайди добуток: \\( (-4)^2 \\cdot (-1) \\)", a: "-16", h: "Спочатку піднеси до квадрату, потім множ на -1.", s: "16 * (-1) = -16", lvl: "Логіка"},
+            {q: "Знак добутку 13 від'ємних чисел?", a: "-", h: "13 — непарне число.", s: "Непарна кількість мінусів дає мінус.", lvl: "Теорія"},
+            {q: "Обчисли: \\( 1,25 \\cdot (-8) \\)", a: "-10", h: "1,25 — це 5/4. Помнож 5/4 на 8.", s: "1.25 * 8 = 10, додаємо мінус.", lvl: "Профі"},
+            {q: "Знайди \\( (-0,1)^3 \\)", a: "-0,001", h: "0,1 * 0,1 * 0,1 = 0,001. Степінь непарний.", s: "-0,001", lvl: "Степені"},
+            {q: "Обчисли: \\( -2 \\cdot (-3) \\cdot (-4) \\)", a: "-24", h: "Три мінуси — результат мінус.", s: "6 * (-4) = -24", lvl: "Комбо"},
+            {q: "Яке число треба помножити на -7, щоб отримати 0?", a: "0", h: "Тільки нуль дає нуль у добутку.", s: "0", lvl: "Логіка"},
+            {q: "Обчисли: \\( (-2) \\cdot 0,5 \\cdot (-10) \\)", a: "10", h: "(-2)*0,5 = -1. Потім -1 * (-10).", s: "10", lvl: "Профі"},
+            {q: "Знайди значення \\( -x \\), якщо \\( x = -5 \\cdot 4 \\)", a: "20", h: "Спочатку знайди x, потім зміни його знак.", s: "x = -20, отже -x = 20", lvl: "Рівняння"}
+        ];
+        tasks.push(...logic);
+    }
 
     function renderTasks() {
+        container.innerHTML = '';
         tasks.forEach((t, i) => {
             const card = document.createElement('div');
-            card.className = `task-card bg-white p-5 rounded-3xl animate-fade`;
-            card.style.animationDelay = `${i * 0.02}s`;
+            card.className = `task-card bg-white p-6 rounded-[2rem] animate-slide`;
+            card.style.animationDelay = `${i * 0.05}s`;
             card.id = `task-${i}`;
             card.innerHTML = `
-                <div class="flex justify-between items-center mb-3 text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                    <span>${t.lvl} • №${i+1}</span>
-                    <span id="status-${i}" class="hidden text-emerald-500">✅ Готово</span>
+                <div class="flex justify-between items-center mb-4 text-[10px] font-black uppercase tracking-[0.15em] text-slate-400">
+                    <span class="bg-slate-100 px-3 py-1 rounded-full">${t.lvl} • Завдання ${i+1}</span>
+                    <span id="status-${i}" class="hidden text-emerald-500 flex items-center gap-1">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+                        Виконано
+                    </span>
                 </div>
-                <div class="text-lg font-semibold text-slate-800 mb-4">${t.q}</div>
-                <div class="flex gap-2">
-                    <input type="text" id="in-${i}" placeholder="Відповідь" 
-                        class="flex-1 bg-slate-50 border-2 border-slate-100 rounded-xl px-4 py-3 outline-none focus:border-indigo-500 transition-all font-mono"
-                        onkeypress="if(event.key==='Enter') check(${i})">
-                    <button onclick="check(${i})" class="bg-slate-900 text-white px-5 rounded-xl font-bold hover:bg-indigo-600 transition-all">OK</button>
+                <div class="text-2xl font-bold text-slate-800 mb-6">${t.q}</div>
+                <div class="flex gap-3">
+                    <input type="text" id="in-${i}" placeholder="Введіть число..." 
+                        class="flex-1 bg-slate-50 border-2 border-slate-100 rounded-2xl px-5 py-4 outline-none focus:border-indigo-500 focus:bg-white transition-all font-mono text-lg shadow-inner"
+                        onkeypress="if(event.key==='Enter') checkTask(${i})">
+                    <button onclick="checkTask(${i})" class="bg-slate-900 text-white px-8 rounded-2xl font-black hover:bg-indigo-600 transition-all active:scale-90 shadow-lg">ПЕРЕВІРИТИ</button>
                 </div>
-                <div class="mt-4 flex gap-4">
-                    <button onclick="toggle(${i}, 'h')" class="text-[10px] font-bold text-indigo-500 hover:underline">💡 ПІДКАЗКА</button>
-                    <button onclick="toggle(${i}, 's')" class="text-[10px] font-bold text-slate-400 hover:underline">📝 РОЗВ'ЯЗОК</button>
+                <div class="mt-6 flex gap-6">
+                    <button onclick="toggleInfo(${i}, 'h')" class="text-[11px] font-black text-indigo-500 hover:text-indigo-700 transition-colors uppercase tracking-wider">💡 Підказка</button>
+                    <button onclick="toggleInfo(${i}, 's')" class="text-[11px] font-black text-slate-400 hover:text-slate-600 transition-colors uppercase tracking-wider">📝 Розв'язання</button>
                 </div>
-                <div id="h-${i}" class="hidden mt-3 text-xs italic text-indigo-600 bg-indigo-50 p-3 rounded-lg">${t.h}</div>
-                <div id="s-${i}" class="hidden mt-3 text-xs font-mono text-slate-600 bg-slate-50 p-3 rounded-lg border border-dashed border-slate-200">${t.s}</div>
+                <div id="h-${i}" class="hidden mt-4 text-sm text-indigo-700 bg-indigo-50 p-4 rounded-2xl border border-indigo-100 animate-slide">${t.h}</div>
+                <div id="s-${i}" class="hidden mt-4 text-sm font-mono text-slate-600 bg-slate-50 p-4 rounded-2xl border-2 border-dashed border-slate-200 animate-slide">${t.s}</div>
             `;
             container.appendChild(card);
         });
         MathJax.typeset();
     }
 
-    function check(i) {
+    function checkTask(i) {
         const input = document.getElementById(`in-${i}`);
-        const userVal = input.value.trim().replace('.', ',');
-        const correctVal = tasks[i].a.replace('.', ',');
+        const val = input.value.trim().replace('.', ',');
+        const correct = tasks[i].a.replace('.', ',');
 
-        if(userVal === correctVal) {
+        if(val === correct) {
             if(!document.getElementById(`task-${i}`).classList.contains('solved-card')) {
-                solved++;
-                updateProgress();
+                solvedCount++;
+                updateProg();
             }
             document.getElementById(`task-${i}`).classList.add('solved-card');
             document.getElementById(`status-${i}`).classList.remove('hidden');
             input.disabled = true;
-            input.classList.add('bg-emerald-100', 'text-emerald-700', 'border-emerald-200');
+            input.className = "flex-1 bg-emerald-50 border-emerald-200 text-emerald-700 rounded-2xl px-5 py-4 font-mono text-lg";
         } else {
-            input.classList.add('border-red-500', 'bg-red-50');
-            setTimeout(() => input.classList.remove('border-red-500', 'bg-red-50'), 500);
+            input.classList.add('ring-4', 'ring-red-100', 'border-red-400');
+            setTimeout(() => input.classList.remove('ring-4', 'ring-red-100', 'border-red-400'), 1000);
         }
     }
 
-    function updateProgress() {
-        const percent = (solved / tasks.length) * 100;
-        document.getElementById('prog-bar').style.width = percent + '%';
-        document.getElementById('prog-text').innerText = `${solved} / ${tasks.length} виконано`;
-        if(solved === tasks.length) {
-            document.getElementById('final-test').classList.remove('hidden');
-            initTest();
+    function updateProg() {
+        const p = (solvedCount / tasks.length) * 100;
+        document.getElementById('prog-bar').style.width = p + '%';
+        document.getElementById('prog-text').innerText = `${solvedCount} / ${tasks.length} виконано`;
+        if(solvedCount >= 70) {
+            document.getElementById('final-test-section').classList.remove('hidden');
+            initFinalTest();
         }
     }
 
-    function toggle(i, type) {
+    function toggleInfo(i, type) {
         const el = document.getElementById(`${type}-${i}`);
         el.classList.toggle('hidden');
     }
 
-    // --- ТЕСТ ---
-    function initTest() {
+    // --- ФІНАЛЬНИЙ ТЕСТ ---
+    function initFinalTest() {
         const testCont = document.getElementById('test-questions');
-        const q = [
-            {q: "Який знак має добуток: \\( -5 \\cdot (-2) \\cdot 3 \\cdot (-1) \\cdot (-4) \\)?", a: "+"},
-            {q: "Обчисли: \\( (-0,5) \\cdot (-20) \\cdot (-1) \\)", a: "-10"},
-            {q: "Знайди \\( x \\), якщо \\( x \\cdot (-7) = -49 \\)", a: "7"}
+        const questions = [
+            {q: "Знак добутку: \\( (-1) \\cdot (-2) \\cdot (-3) \\cdot (-4) \\cdot (-5) \\)?", o: ["+", "-"], c: "-"},
+            {q: "Обчисли найзручнішим способом: \\( -0,25 \\cdot 7 \\cdot (-4) \\)", o: ["7", "-7", "0,7"], c: "7"},
+            {q: "Розв'яжи рівняння: \\( -x = -2 \\cdot (-8) \\)", o: ["-16", "16", "0"], c: "-16"}
         ];
-        testCont.innerHTML = q.map((item, idx) => `
-            <div class="space-y-2">
-                <p class="text-sm font-medium text-slate-300">${idx+1}. ${item.q}</p>
-                <input type="text" id="t-in-${idx}" class="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-2 text-white outline-none focus:border-indigo-400">
+        
+        testCont.innerHTML = questions.map((q, idx) => `
+            <div class="bg-white/5 p-6 rounded-[2rem] border border-white/10">
+                <p class="text-lg font-bold mb-4">${idx+1}. ${q.q}</p>
+                <div class="flex gap-4">
+                    ${q.o.map(opt => `
+                        <button onclick="selectTestOpt(this, '${q.c}')" class="flex-1 py-3 bg-white/10 rounded-xl hover:bg-white/20 transition-all font-bold border border-white/5">${opt}</button>
+                    `).join('')}
+                </div>
             </div>
         `).join('');
         MathJax.typeset();
     }
 
-    function finishLesson() {
-        document.getElementById('modal').classList.remove('hidden');
-        document.getElementById('res-score').innerText = `${solved}/55`;
+    function selectTestOpt(btn, correct) {
+        const parent = btn.parentElement;
+        [...parent.children].forEach(b => b.className = "flex-1 py-3 bg-white/10 rounded-xl font-bold border border-white/5 opacity-50");
+        if(btn.innerText === correct) {
+            btn.className = "flex-1 py-3 bg-emerald-500 rounded-xl font-bold shadow-lg shadow-emerald-500/50 scale-105 transition-all";
+        } else {
+            btn.className = "flex-1 py-3 bg-red-500 rounded-xl font-bold scale-95 transition-all";
+        }
     }
 
-    // --- WHITEBOARD LOGIC ---
+    function finishLesson() {
+        const modal = document.getElementById('modal');
+        const content = document.getElementById('modal-content');
+        modal.classList.remove('hidden');
+        document.getElementById('res-score').innerText = `${solvedCount}/80`;
+        setTimeout(() => {
+            content.classList.remove('scale-90', 'opacity-0');
+            content.classList.add('scale-100', 'opacity-100');
+        }, 10);
+    }
+
+    // --- WHITEBOARD (CANVAS) ---
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
-    let drawing = false;
-    let currentTool = 'pen';
+    let isDrawing = false;
+    let tool = 'pen';
 
-    function resize() {
+    function resizeCanvas() {
         const wrap = document.getElementById('canvas-wrap');
         canvas.width = wrap.clientWidth;
         canvas.height = wrap.clientHeight;
     }
 
     function setTool(t) {
-        currentTool = t;
-        document.getElementById('tool-pen').className = t === 'pen' ? 'p-3 rounded-xl tool-active transition-all' : 'p-3 rounded-xl bg-slate-50 text-slate-400 hover:bg-slate-100 transition-all';
-        document.getElementById('tool-eraser').className = t === 'eraser' ? 'p-3 rounded-xl tool-active transition-all' : 'p-3 rounded-xl bg-slate-50 text-slate-400 hover:bg-slate-100 transition-all';
+        tool = t;
+        document.getElementById('tool-pen').className = t === 'pen' ? 'p-4 rounded-2xl tool-active transition-all' : 'p-4 rounded-2xl bg-slate-50 text-slate-400 hover:bg-slate-100 transition-all';
+        document.getElementById('tool-eraser').className = t === 'eraser' ? 'p-4 rounded-2xl tool-active transition-all' : 'p-4 rounded-2xl bg-slate-50 text-slate-400 hover:bg-slate-100 transition-all';
     }
 
-    function start(e) {
-        drawing = true;
+    function getCoords(e) {
+        const rect = canvas.getBoundingClientRect();
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        return { x: clientX - rect.left, y: clientY - rect.top };
+    }
+
+    function startDraw(e) {
+        isDrawing = true;
+        const {x, y} = getCoords(e);
         ctx.beginPath();
-        const pos = getPos(e);
-        ctx.moveTo(pos.x, pos.y);
+        ctx.moveTo(x, y);
+        e.preventDefault();
     }
 
     function draw(e) {
-        if(!drawing) return;
-        const pos = getPos(e);
-        ctx.lineWidth = currentTool === 'eraser' ? 30 : 2;
-        ctx.strokeStyle = currentTool === 'eraser' ? '#ffffff' : '#1e293b';
+        if(!isDrawing) return;
+        const {x, y} = getCoords(e);
+        ctx.lineWidth = tool === 'eraser' ? 40 : 3;
         ctx.lineCap = 'round';
-        ctx.lineTo(pos.x, pos.y);
+        ctx.strokeStyle = tool === 'eraser' ? '#ffffff' : '#334155';
+        ctx.lineTo(x, y);
         ctx.stroke();
+        e.preventDefault();
     }
 
-    function stop() { drawing = false; }
-
-    function getPos(e) {
-        const rect = canvas.getBoundingClientRect();
-        const x = (e.clientX || e.touches[0].clientX) - rect.left;
-        const y = (e.clientY || e.touches[0].clientY) - rect.top;
-        return {x, y};
-    }
+    function stopDraw() { isDrawing = false; }
 
     function clearCanvas() { ctx.clearRect(0, 0, canvas.width, canvas.height); }
 
     function drawGrid() {
-        ctx.strokeStyle = '#e2e8f0';
+        ctx.strokeStyle = '#f1f5f9';
         ctx.lineWidth = 1;
         for(let x=0; x<canvas.width; x+=30) {
             ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
@@ -332,17 +405,18 @@
         }
     }
 
-    canvas.addEventListener('mousedown', start);
+    canvas.addEventListener('mousedown', startDraw);
     canvas.addEventListener('mousemove', draw);
-    window.addEventListener('mouseup', stop);
-    canvas.addEventListener('touchstart', start);
+    window.addEventListener('mouseup', stopDraw);
+    canvas.addEventListener('touchstart', startDraw);
     canvas.addEventListener('touchmove', draw);
-    window.addEventListener('touchend', stop);
-    
+    window.addEventListener('touchend', stopDraw);
+
     window.onload = () => {
+        generateMathTasks();
         renderTasks();
-        resize();
-        window.addEventListener('resize', resize);
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
     };
 </script>
 </body>
