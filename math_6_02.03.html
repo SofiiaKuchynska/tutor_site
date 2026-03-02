@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MathMaster 6: Властивості множення (55 вправ)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['\\(', '\\)']],
+                displayMath: [['\\[', '\\]']]
+            },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; overflow: hidden; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        
+        .task-card { border: 2px solid #f1f5f9; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .task-card:hover { border-color: #6366f1; transform: translateX(5px); }
+        .solved-card { border-color: #10b981 !important; background-color: #f0fdf4 !important; }
+        
+        .theory-block { border-left: 4px solid #6366f1; background-color: #f5f7ff; }
+        
+        .whiteboard-container { 
+            background-color: #ffffff;
+            background-image: radial-gradient(#e2e8f0 1.5px, transparent 1.5px); 
+            background-size: 30px 30px; 
+        }
+        .tool-active { background-color: #4f46e5 !important; color: white !important; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3); }
+        
+        @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-slide { animation: slideIn 0.5s ease-out forwards; }
+    </style>
+</head>
+<body class="h-screen flex overflow-hidden">
+
+    <div class="w-full lg:w-1/2 flex flex-col bg-white border-r border-slate-200 shadow-2xl z-10">
+        
+        <header class="p-5 border-b flex justify-between items-center bg-white/90 backdrop-blur-md sticky top-0 z-30">
+            <div>
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center text-white font-bold text-xl">M</div>
+                    <h1 class="text-xl font-extrabold text-slate-900 tracking-tight">Math<span class="text-indigo-600">Master</span> 6</h1>
+                </div>
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Властивості множення: 55 прикладів</p>
+            </div>
+            <div class="flex flex-col items-end">
+                <span class="text-xs font-bold text-indigo-600 mb-1" id="prog-text">0 / 55 виконано</span>
+                <div class="w-40 h-2.5 bg-slate-100 rounded-full overflow-hidden border border-slate-200">
+                    <div id="prog-bar" class="h-full bg-gradient-to-r from-indigo-500 to-emerald-500 transition-all duration-700" style="width: 0%"></div>
+                </div>
+            </div>
+        </header>
+
+        <main class="flex-1 overflow-y-auto p-6 custom-scrollbar space-y-12" id="content-scroll">
+            
+            <section class="space-y-6">
+                <div class="theory-block p-6 rounded-2xl">
+                    <h2 class="text-lg font-extrabold text-indigo-900 mb-2">1. Переставна та сполучна властивості</h2>
+                    <p class="text-sm text-slate-600 leading-relaxed mb-4">
+                        Від зміни місць множників добуток не змінюється: \( a \cdot b = b \cdot a \). <br>
+                        Ми можемо групувати числа так, щоб отримати "круглі" результати (10, 100, 1000).
+                    </p>
+                    <div class="bg-white p-3 rounded-xl border border-indigo-100 text-xs font-mono text-indigo-600">
+                        Приклад: \( -5 \cdot 17 \cdot (-2) = (-5 \cdot -2) \cdot 17 = 10 \cdot 17 = 170 \)
+                    </div>
+                </div>
+                <div id="group-1" class="space-y-4"></div>
+            </section>
+
+            <section class="space-y-6">
+                <div class="theory-block p-6 rounded-2xl border-emerald-400 bg-emerald-50">
+                    <h2 class="text-lg font-extrabold text-emerald-900 mb-2">2. Розподільна властивість (Розкриття дужок)</h2>
+                    <p class="text-sm text-slate-600 leading-relaxed mb-4">
+                        Щоб помножити число на суму, треба помножити це число на кожний доданок: \( a(b + c) = ab + ac \).
+                    </p>
+                    <div class="bg-white p-3 rounded-xl border border-emerald-100 text-xs font-mono text-emerald-600">
+                        Приклад: \( -2(x + 5) = -2 \cdot x + (-2) \cdot 5 = -2x - 10 \)
+                    </div>
+                </div>
+                <div id="group-2" class="space-y-4"></div>
+            </section>
+
+            <section class="space-y-6">
+                <div class="theory-block p-6 rounded-2xl border-orange-400 bg-orange-50">
+                    <h2 class="text-lg font-extrabold text-orange-900 mb-2">3. Винесення спільного множника</h2>
+                    <p class="text-sm text-slate-600 leading-relaxed mb-4">
+                        Це розподільна властивість "навпаки": \( ab + ac = a(b + c) \). Спільне число виносимо за дужки.
+                    </p>
+                    <div class="bg-white p-3 rounded-xl border border-orange-100 text-xs font-mono text-orange-600">
+                        Приклад: \( 7x - 7y = 7(x - y) \)
+                    </div>
+                </div>
+                <div id="group-3" class="space-y-4"></div>
+            </section>
+
+            <section class="space-y-6">
+                <div class="theory-block p-6 rounded-2xl border-purple-400 bg-purple-50">
+                    <h2 class="text-lg font-extrabold text-purple-900 mb-2">4. Обчислення зручним способом</h2>
+                    <p class="text-sm text-slate-600 leading-relaxed mb-4">
+                        Використовуємо винесення за дужки для швидкого рахунку без калькулятора.
+                    </p>
+                    <div class="bg-white p-3 rounded-xl border border-purple-100 text-xs font-mono text-purple-600">
+                        Приклад: \( 15 \cdot 4 + 15 \cdot 6 = 15(4 + 6) = 15 \cdot 10 = 150 \)
+                    </div>
+                </div>
+                <div id="group-4" class="space-y-4"></div>
+            </section>
+
+            <div id="final-test-section" class="hidden p-8 bg-slate-900 rounded-[3rem] text-white text-center shadow-2xl">
+                <div class="text-6xl mb-4">🏆</div>
+                <h2 class="text-2xl font-black mb-2">Урок завершено!</h2>
+                <p class="text-slate-400 mb-8">Ти опанував усі властивості множення раціональних чисел.</p>
+                <button onclick="location.reload()" class="bg-indigo-500 px-12 py-4 rounded-2xl font-black hover:bg-indigo-400 transition-all">ПОВТОРИТИ</button>
+            </div>
+            
+            <div class="h-20"></div>
+        </main>
+    </div>
+
+    <div class="hidden lg:flex flex-1 flex-col bg-slate-100 p-6 relative">
+        <div class="mb-4 flex items-center justify-between bg-white/80 backdrop-blur p-4 rounded-[2rem] shadow-sm border border-white">
+            <div class="flex gap-3">
+                <button onclick="setTool('pen')" id="tool-pen" class="p-4 rounded-2xl tool-active transition-all">✏️</button>
+                <button onclick="setTool('eraser')" id="tool-eraser" class="p-4 rounded-2xl bg-slate-50 text-slate-400 hover:bg-slate-100 transition-all">🧽</button>
+            </div>
+            <div class="flex gap-3">
+                <button onclick="drawGrid()" class="px-6 py-3 text-xs font-black bg-indigo-50 text-indigo-600 rounded-2xl hover:bg-indigo-100 transition-all">СІТКА</button>
+                <button onclick="clearCanvas()" class="px-6 py-3 text-xs font-black bg-red-50 text-red-500 rounded-2xl hover:bg-red-100 transition-all">ОЧИСТИТИ</button>
+            </div>
+        </div>
+        <div class="flex-1 whiteboard-container rounded-[3rem] border-4 border-white shadow-inner overflow-hidden relative cursor-crosshair" id="canvas-wrap">
+            <canvas id="canvas"></canvas>
+        </div>
+    </div>
+
+<script>
+    const taskGroups = {
+        1: [
+            { q: "\\( -5 \\cdot 17 \\cdot (-20) \\)", a: "1700", h: "(-5)*(-20)=100", s: "100*17=1700" },
+            { q: "\\( 12 \\cdot (-25) \\cdot 4 \\)", a: "-1200", h: "(-25)*4=-100", s: "12*(-100)=-1200" },
+            { q: "\\( -4 \\cdot (-2,5) \\cdot (-7) \\)", a: "-70", h: "(-4)*(-2,5)=10", s: "10*(-7)=-70" },
+            { q: "\\( -0,5 \\cdot (-15) \\cdot 20 \\)", a: "150", h: "(-0,5)*20=-10", s: "-10*(-15)=150" },
+            { q: "\\( 2,59 \\cdot 250 \\cdot (-4) \\)", a: "-2590", h: "250*(-4)=-1000", s: "-2590" },
+            { q: "\\( -125 \\cdot 1,5 \\cdot (-8) \\cdot 6 \\)", a: "9000", h: "(-125)*(-8)=1000", s: "9000" },
+            { q: "\\( -8 \\cdot (-2,5) \\cdot (-1,25) \\cdot (-4) \\)", a: "100", h: "Пари: 10 та 10", s: "100" },
+            { q: "\\( 0,25 \\cdot (-13) \\cdot (-4) \\)", a: "13", h: "0,25*(-4)=-1", s: "13" },
+            { q: "\\( -0,125 \\cdot 80 \\cdot (-1) \\)", a: "10", h: "-0,125*80=-10", s: "10" },
+            { q: "\\( 40 \\cdot (-3,7) \\cdot 0,25 \\)", a: "-37", h: "40*0,25=10", s: "-37" },
+            { q: "\\( -0,01 \\cdot (-100) \\cdot (-4,5) \\)", a: "-4,5", h: "1*(-4,5)", s: "-4,5" },
+            { q: "\\( -5 \\cdot 0,2 \\cdot (-12) \\cdot (-1) \\)", a: "-12", h: "-1*12", s: "-12" },
+            { q: "\\( -2 \\cdot (-50) \\cdot (-1,5) \\)", a: "-150", h: "100*(-1,5)", s: "-150" },
+            { q: "\\( 1,25 \\cdot (-8) \\cdot (-5) \\)", a: "50", h: "1,25*(-8)=-10", s: "50" },
+            { q: "\\( -4 \\cdot 0,2 \\cdot (-25) \\cdot (-5) \\)", a: "-100", h: "(-4)*(-25)=100", s: "-100" }
+        ],
+        2: [
+            { q: "\\( 4(k - 5) \\)", a: "4k-20", h: "4*k та 4*(-5)", s: "4k-20" },
+            { q: "\\( -2(x + y) \\)", a: "-2x-2y", h: "Зміни всі знаки", s: "-2x-2y" },
+            { q: "\\( (a - c) \\cdot (-3) \\)", a: "-3a+3c", h: "(-3)*a та (-3)*(-c)", s: "-3a+3c" },
+            { q: "\\( -7(-n + 1) \\)", a: "7n-7", h: "(-7)*(-n)=7n", s: "7n-7" },
+            { q: "\\( 3(x + 2y - z) \\)", a: "3x+6y-3z", h: "Множ на кожен", s: "3x+6y-3z" },
+            { q: "\\( -5(2a + b) \\)", a: "-10a-5b", h: "(-5)*2a", s: "-10a-5b" },
+            { q: "\\( 1,5(-a + 2) \\)", a: "-1,5a+3", h: "1,5*2=3", s: "-1,5a+3" },
+            { q: "\\( -2(b - 0,3) \\)", a: "-2b+0,6", h: "(-2)*(-0,3)=+0,6", s: "-2b+0,6" },
+            { q: "\\( (2x - y) \\cdot (-3) \\)", a: "-6x+3y", h: "(-3)*(-y)=+3y", s: "-6x+3y" },
+            { q: "\\( 0,4(-10b - 5c) \\)", a: "-4b-2c", h: "0,4*(-10)= -4", s: "-4b-2c" },
+            { q: "\\( -6(0,7 + b) \\)", a: "-4,2-6b", h: "(-6)*0,7=-4,2", s: "-4,2-6b" },
+            { q: "\\( (-a + 3) \\cdot (-2) \\)", a: "2a-6", h: "(-2)*(-a)=2a", s: "2a-6" },
+            { q: "\\( (-4x - 2y) \\cdot 0,5 \\)", a: "-2x-y", h: "0,5*(-4)=-2", s: "-2x-y" },
+            { q: "\\( -1(x - y + 4) \\)", a: "-x+y-4", h: "Зміни знаки", s: "-x+y-4" },
+            { q: "\\( 10(0,2x - 1,5) \\)", a: "2x-15", h: "10*0,2=2", s: "2x-15" }
+        ],
+        3: [
+            { q: "\\( 2a - 2b = 2 \\cdot (\\dots) \\)", a: "a-b", h: "Винеси 2", s: "2(a-b)" },
+            { q: "\\( 2a - 5a = a \\cdot (\\dots) \\)", a: "2-5", h: "Винеси 'a'", s: "a(2-5)" },
+            { q: "\\( -2a - 2b = -2 \\cdot (\\dots) \\)", a: "a+b", h: "Знак міняється", s: "-2(a+b)" },
+            { q: "\\( ac - cb = c \\cdot (\\dots) \\)", a: "a-b", h: "Винеси 'c'", s: "c(a-b)" },
+            { q: "\\( 7x + 7y = 7 \\cdot (\\dots) \\)", a: "x+y", h: "Винеси 7", s: "7(x+y)" },
+            { q: "\\( 6x - 6y = 6 \\cdot (\\dots) \\)", a: "x-y", h: "Винеси 6", s: "6(x-y)" },
+            { q: "\\( -3a + 3 = -3 \\cdot (\\dots) \\)", a: "a-1", h: "3 = -3 * -1", s: "-3(a-1)" },
+            { q: "\\( -9 - 9b = -9 \\cdot (\\dots) \\)", a: "1+b", h: "Винеси -9", s: "-9(1+b)" },
+            { q: "\\( 1,2k - 1,2m = 1,2 \\cdot (\\dots) \\)", a: "k-m", h: "Винеси 1,2", s: "1,2(k-m)" },
+            { q: "\\( 2a + ab = a \\cdot (\\dots) \\)", a: "2+b", h: "Винеси 'a'", s: "a(2+b)" },
+            { q: "\\( -ab + 6bc = b \\cdot (\\dots) \\)", a: "-a+6c", h: "Винеси 'b'", s: "b(-a+6c)" },
+            { q: "\\( -2mb - mc = -m \\cdot (\\dots) \\)", a: "2b+c", h: "Винеси -m", s: "-m(2b+c)" },
+            { q: "\\( ab - 2ac + ad = a \\cdot (\\dots) \\)", a: "b-2c+d", h: "Винеси 'a'", s: "a(b-2c+d)" },
+            { q: "\\( 10m - 10n = 10 \\cdot (\\dots) \\)", a: "m-n", h: "Винеси 10", s: "10(m-n)" },
+            { q: "\\( 4a - 4 = 4 \\cdot (\\dots) \\)", a: "a-1", h: "Залишається 1", s: "4(a-1)" }
+        ],
+        4: [
+            { q: "\\( 5 \\cdot 17 + 5 \\cdot 13 \\)", a: "150", h: "5*(17+13)", s: "150" },
+            { q: "\\( -7 \\cdot 23 + 8 \\cdot 23 \\)", a: "23", h: "23*(-7+8)", s: "23" },
+            { q: "\\( -17 \\cdot 7 + (-17) \\cdot 3 \\)", a: "-170", h: "-17*(7+3)", s: "-170" },
+            { q: "\\( 4 \\cdot (-23) + 4 \\cdot 43 \\)", a: "80", h: "4*(20)", s: "80" },
+            { q: "\\( 90 \\cdot 25 + 25 \\cdot (-86) \\)", a: "100", h: "25*(4)", s: "100" },
+            { q: "\\( 54 \\cdot (-8) + 9 \\cdot 54 \\)", a: "54", h: "54*(1)", s: "54" },
+            { q: "\\( 25 \\cdot 2,7 - 25 \\cdot 3,7 \\)", a: "-25", h: "25*(-1)", s: "-25" },
+            { q: "\\( 25 \\cdot (-0,9) + 5 \\cdot (-0,9) \\)", a: "-27", h: "-0,9*(30)", s: "-27" },
+            { q: "\\( 14 \\cdot 1,9 - 14 \\cdot 0,9 \\)", a: "14", h: "14*(1)", s: "14" },
+            { q: "\\( (-2)^2 \\cdot 5 \\)", a: "20", h: "4*5", s: "20" }
+        ]
+    };
+
+    let solvedCount = 0;
+    const totalTasks = 55;
+
+    function renderAll() {
+        Object.keys(taskGroups).forEach(groupId => {
+            const container = document.getElementById(`group-${groupId}`);
+            taskGroups[groupId].forEach((t, i) => {
+                const taskId = `${groupId}-${i}`;
+                const card = document.createElement('div');
+                card.className = `task-card bg-white p-5 rounded-[2rem] animate-slide`;
+                card.id = `task-${taskId}`;
+                card.innerHTML = `
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="text-[10px] font-bold text-slate-300 uppercase">Вправа</span>
+                        <span id="st-${taskId}" class="hidden text-emerald-500 text-[10px] font-bold tracking-widest uppercase">Готово</span>
+                    </div>
+                    <div class="text-xl font-bold text-slate-800 mb-4">${t.q}</div>
+                    <div class="flex gap-2">
+                        <input type="text" id="in-${taskId}" placeholder="?" 
+                            class="flex-1 bg-slate-50 border-2 border-slate-100 rounded-2xl px-5 py-3 outline-none focus:border-indigo-400 font-mono text-lg transition-all"
+                            onkeypress="if(event.key==='Enter') checkTask('${taskId}', ${groupId}, ${i})">
+                        <button onclick="checkTask('${taskId}', ${groupId}, ${i})" class="bg-slate-900 text-white px-6 rounded-2xl font-black">OK</button>
+                    </div>
+                    <div class="mt-4 flex gap-4">
+                        <button onclick="toggle('${taskId}', 'h')" class="text-[10px] font-black text-indigo-500 uppercase">Підказка</button>
+                        <button onclick="toggle('${taskId}', 's')" class="text-[10px] font-black text-slate-300 uppercase">Розв'язання</button>
+                    </div>
+                    <div id="h-${taskId}" class="hidden mt-3 text-xs text-indigo-700 bg-indigo-50 p-3 rounded-xl border border-indigo-100">${t.h}</div>
+                    <div id="s-${taskId}" class="hidden mt-3 text-xs font-mono text-slate-500 bg-slate-50 p-3 rounded-xl border border-dashed border-slate-200">\( ${t.s} \)</div>
+                `;
+                container.appendChild(card);
+            });
+        });
+        MathJax.typeset();
+    }
+
+    function checkTask(taskId, gid, idx) {
+        const input = document.getElementById(`in-${taskId}`);
+        const userVal = input.value.trim().replace(/\s/g, '').replace(',', '.');
+        const correct = taskGroups[gid][idx].a.replace(/\s/g, '').replace(',', '.');
+
+        if(userVal === correct) {
+            if(!document.getElementById(`task-${taskId}`).classList.contains('solved-card')) {
+                solvedCount++;
+                updateProg();
+            }
+            document.getElementById(`task-${taskId}`).classList.add('solved-card');
+            document.getElementById(`st-${taskId}`).classList.remove('hidden');
+            input.disabled = true;
+            input.className = "flex-1 bg-emerald-50 border-emerald-200 text-emerald-700 rounded-2xl px-5 py-3 font-mono text-lg";
+        } else {
+            input.classList.add('ring-4', 'ring-red-100', 'border-red-400');
+            setTimeout(() => input.classList.remove('ring-4', 'ring-red-100', 'border-red-400'), 800);
+        }
+    }
+
+    function updateProg() {
+        const p = (solvedCount / totalTasks) * 100;
+        document.getElementById('prog-bar').style.width = p + '%';
+        document.getElementById('prog-text').innerText = `${solvedCount} / ${totalTasks} виконано`;
+        if(solvedCount === totalTasks) {
+            document.getElementById('final-test-section').classList.remove('hidden');
+            document.getElementById('final-test-section').scrollIntoView({ behavior: 'smooth' });
+        }
+    }
+
+    function toggle(id, type) { document.getElementById(`${type}-${id}`).classList.toggle('hidden'); }
+
+    // --- CANVAS ---
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    let isDrawing = false;
+    let tool = 'pen';
+
+    function initCanvas() {
+        const wrap = document.getElementById('canvas-wrap');
+        canvas.width = wrap.clientWidth;
+        canvas.height = wrap.clientHeight;
+        drawGrid();
+    }
+
+    function setTool(t) {
+        tool = t;
+        document.getElementById('tool-pen').className = t === 'pen' ? 'p-4 rounded-2xl tool-active transition-all' : 'p-4 rounded-2xl bg-slate-50 text-slate-400';
+        document.getElementById('tool-eraser').className = t === 'eraser' ? 'p-4 rounded-2xl tool-active transition-all' : 'p-4 rounded-2xl bg-slate-50 text-slate-400';
+    }
+
+    canvas.addEventListener('mousedown', (e) => { isDrawing = true; draw(e); });
+    canvas.addEventListener('mousemove', draw);
+    window.addEventListener('mouseup', () => { isDrawing = false; ctx.beginPath(); });
+
+    function draw(e) {
+        if(!isDrawing) return;
+        const rect = canvas.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        ctx.lineWidth = tool === 'eraser' ? 40 : 3;
+        ctx.lineCap = 'round';
+        ctx.strokeStyle = tool === 'eraser' ? '#ffffff' : '#334155';
+        ctx.lineTo(x, y);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+    }
+
+    function clearCanvas() { ctx.clearRect(0, 0, canvas.width, canvas.height); drawGrid(); }
+
+    function drawGrid() {
+        ctx.strokeStyle = '#f1f5f9';
+        ctx.lineWidth = 1;
+        for(let x=0; x<canvas.width; x+=30) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke(); }
+        for(let y=0; y<canvas.height; y+=30) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke(); }
+    }
+
+    window.onload = () => { renderAll(); initCanvas(); };
+    window.onresize = initCanvas;
+</script>
+</body>
+</html>
