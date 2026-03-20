@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Математичний інтенсив: 9 клас</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root { --primary: #4f46e5; --accent: #10b981; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; overflow: hidden; }
+        
+        .custom-scroll::-webkit-scrollbar { width: 6px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        
+        .theory-section { border-left: 4px solid var(--primary); background: #f5f3ff; border-radius: 0 1.5rem 1.5rem 0; padding: 1.5rem; margin-bottom: 2rem; }
+        .task-card { background: white; border: 1px solid #e2e8f0; border-radius: 1.5rem; padding: 1.5rem; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .task-card:hover { border-color: var(--primary); box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.1); }
+
+        .input-field { width: 100%; padding: 10px 14px; border-radius: 12px; border: 2px solid #e2e8f0; font-weight: 600; outline: none; transition: 0.2s; }
+        .input-field:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1); }
+        .is-correct { border-color: #10b981 !important; background: #f0fdf4 !important; }
+        .is-wrong { border-color: #ef4444 !important; background: #fef2f2 !important; animation: shake 0.3s; }
+
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }
+
+        /* Canvas Layers */
+        .canvas-stack { position: relative; width: 100%; height: 100%; background: #ffffff; border-radius: 2rem; border: 1px solid #e2e8f0; overflow: hidden; }
+        canvas { position: absolute; top: 0; left: 0; cursor: crosshair; }
+        #layer-grid { z-index: 1; pointer-events: none; opacity: 0.5; }
+        #layer-draw { z-index: 2; }
+
+        .tool-btn { padding: 10px; border-radius: 12px; background: white; border: 1px solid #e2e8f0; transition: 0.2s; }
+        .tool-active { background: var(--primary) !important; color: white !important; border-color: var(--primary); }
+    </style>
+</head>
+<body class="h-screen flex text-slate-900">
+
+    <div class="w-full lg:w-[55%] flex flex-col bg-white border-r border-slate-200 z-10 overflow-hidden shadow-2xl">
+        <header class="p-6 border-b border-slate-100 flex justify-between items-center bg-white/80 backdrop-blur-md sticky top-0 z-30">
+            <div>
+                <h1 class="text-xl font-extrabold text-slate-800 tracking-tight">Математичний практикум: 9 клас</h1>
+                <p class="text-[10px] font-black text-indigo-500 uppercase tracking-widest mt-0.5">Нерівності • Функції • Геометрія • 45 хв</p>
+            </div>
+            <div class="flex flex-col items-end">
+                <span id="score-text" class="text-xs font-bold text-slate-400 mb-1">ПРОГРЕС: 0/25</span>
+                <div class="w-24 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                    <div id="prog-bar" class="h-full bg-indigo-600 transition-all duration-500" style="width: 0%"></div>
+                </div>
+            </div>
+        </header>
+
+        <main class="flex-1 overflow-y-auto p-8 custom-scroll space-y-12">
+            
+            <section id="section-inequalities">
+                <div class="theory-section">
+                    <h3 class="font-extrabold text-indigo-900 mb-2 flex items-center gap-2"><span>1.</span> Лінійні нерівності та модулі</h3>
+                    <p class="text-sm text-indigo-800/80 leading-relaxed mb-3">
+                        Головне правило: при множенні або діленні на <b>від’ємне число</b> — знак нерівності розвертається. <br>
+                        Для модулів: \( |x| < a \) означає \( -a < x < a \).
+                    </p>
+                </div>
+                <div class="space-y-4" id="tasks-ineq"></div>
+            </section>
+
+            <section id="section-parabola">
+                <div class="theory-section">
+                    <h3 class="font-extrabold text-indigo-900 mb-2 flex items-center gap-2"><span>2.</span> Квадратична функція</h3>
+                    <p class="text-sm text-indigo-800/80 leading-relaxed mb-3">
+                        Вершина параболи \( y = ax^2 + bx + c \) обчислюється як: \( x_0 = -\frac{b}{2a} \). <br>
+                        Якщо \( a > 0 \), гілки дивляться вгору, якщо \( a < 0 \) — вниз.
+                    </p>
+                </div>
+                <div class="space-y-4" id="tasks-parabola"></div>
+            </section>
+
+            <section id="section-geometry">
+                <div class="theory-section">
+                    <h3 class="font-extrabold text-indigo-900 mb-2 flex items-center gap-2"><span>3.</span> Кола та прямокутний трикутник</h3>
+                    <p class="text-sm text-indigo-800/80 leading-relaxed">
+                        • <b>Описане коло (R):</b> центр лежить на середині гіпотенузи. \( R = \frac{c}{2} \). <br>
+                        • <b>Вписане коло (r):</b> \( r = \frac{a+b-c}{2} \).
+                    </p>
+                </div>
+                <div class="space-y-4" id="tasks-geom"></div>
+            </section>
+
+            <button onclick="finishLesson()" class="w-full bg-slate-900 text-white py-5 rounded-3xl font-black text-lg hover:bg-indigo-600 transition-all shadow-xl active:scale-95 mb-10">
+                ЗАВЕРШИТИ ТА ОТРИМАТИ ОЦІНКУ
+            </button>
+        </main>
+    </div>
+
+    <div class="hidden lg:flex w-[45%] flex-col bg-slate-50 p-6 h-screen relative">
+        <div class="flex items-center justify-between mb-4 bg-white p-3 rounded-2xl shadow-sm border border-slate-200">
+            <div class="flex gap-2">
+                <button onclick="setTool('pen')" id="btn-pen" class="tool-btn tool-active">✏️</button>
+                <button onclick="setTool('eraser')" id="btn-eraser" class="tool-btn">🧽</button>
+                <div class="w-px h-8 bg-slate-200 mx-1"></div>
+                <button onclick="drawSmart('triangle')" class="tool-btn text-[10px] font-bold">△ ПРЯМ.</button>
+                <button onclick="drawSmart('inscribed')" class="tool-btn text-[10px] font-bold">⭕ ВПИС.</button>
+                <button onclick="drawSmart('circumscribed')" class="tool-btn text-[10px] font-bold">🔵 ОПИС.</button>
+            </div>
+            <button onclick="clearDraw()" class="tool-btn text-red-500">🗑️</button>
+        </div>
+
+        <div class="canvas-stack">
+            <canvas id="layer-grid"></canvas>
+            <canvas id="layer-draw"></canvas>
+        </div>
+        <p class="mt-4 text-[10px] font-bold text-slate-400 text-center uppercase tracking-widest">Твій інтерактивний простір для розрахунків</p>
+    </div>
+
+<script>
+    const data = {
+        ineq: [
+            { q: "Розв'яжіть: \\( 2x - 10 > 0 \\). Вкажіть найменше ціле x:", a: "6", h: "2x > 10 => x > 5", s: "x > 5. Найменше ціле число — 6." },
+            { q: "Розв'яжіть: \\( -3x < 15 \\). Чому дорівнює x? (Вкажіть тільки знак > або < )", a: ">", h: "Ділимо на -3, знак змінюється.", s: "x > -5. Відповідь: >" },
+            { q: "Обчисліть: \\( |x| = 7 \\). Вкажіть суму всіх розв'язків:", a: "0", h: "x = 7 та x = -7.", s: "7 + (-7) = 0." },
+            { q: "Розв'яжіть: \\( \\frac{1}{2}x \\ge 4 \\). x ≥ ?", a: "8", h: "Помножте обидві частини на 2.", s: "x ≥ 8." },
+            { q: "Скільки цілих розв'язків у нерівності \\( |x| \\le 2 \\)?", a: "5", h: "Це числа від -2 до 2 включно.", s: "-2, -1, 0, 1, 2. Всього 5." }
+        ],
+        parabola: [
+            { q: "Знайдіть вершину \\( x_0 \\) для \\( y = x^2 - 6x + 5 \\):", a: "3", h: "x₀ = -b / (2a)", s: "x₀ = -(-6) / 2 = 3." },
+            { q: "Гілки параболи \\( y = -2x^2 + 4x \\) спрямовані... (вгору/вниз)", a: "вниз", h: "Дивись на знак перед x².", s: "-2 < 0, отже вниз." },
+            { q: "Знайдіть точку перетину з віссю Y для \\( y = x^2 + 5x - 8 \\):", a: "-8", h: "Підстав x = 0.", s: "y = 0 + 0 - 8 = -8." },
+            { q: "Знайдіть дискримінант рівняння \\( x^2 - 4x + 4 = 0 \\):", a: "0", h: "D = b² - 4ac", s: "(-4)² - 4*1*4 = 16 - 16 = 0." },
+            { q: "Скільки спільних точок з віссю X має парабола, якщо D = 0?", a: "1", h: "Один корінь — одна точка.", s: "D=0 означає дотик вершиною." }
+        ],
+        geom: [
+            { q: "Катети 3 і 4. Знайдіть гіпотенузу:", a: "5", h: "Теорема Піфагора: 3² + 4² = c².", s: "9 + 16 = 25. c = 5." },
+            { q: "Катети 3 і 4. Знайдіть радіус описаного кола R:", a: "2.5", h: "R = c / 2.", s: "5 / 2 = 2.5." },
+            { q: "Катети 6 і 8. Знайдіть радіус вписаного кола r:", a: "2", h: "r = (a + b - c) / 2.", s: "c=10. r = (6+8-10)/2 = 2." },
+            { q: "Гіпотенуза 12. Чому дорівнює R?", a: "6", h: "R — це половина гіпотенузи.", s: "12 / 2 = 6." },
+            { q: "Де лежить центр описаного кола прямокутного трикутника? (середина гіпотенузи / катет / всередині)", a: "середина гіпотенузи", h: "Це базова властивість.", s: "Завжди на середині гіпотенузи." }
+        ]
+    };
+
+    let score = 0;
+    const total = 15; // 5 на блок
+
+    function renderTasks() {
+        Object.keys(data).forEach(key => {
+            const container = document.getElementById(`tasks-${key}`);
+            data[key].forEach((task, i) => {
+                container.innerHTML += `
+                    <div class="task-card">
+                        <p class="font-bold text-slate-700 mb-3">${task.q}</p>
+                        <div class="flex gap-2">
+                            <input type="text" id="in-${key}-${i}" class="input-field" placeholder="Відповідь">
+                            <button onclick="checkTask('${key}', ${i})" class="bg-slate-900 text-white px-4 rounded-xl font-bold">ОК</button>
+                        </div>
+                        <div class="flex gap-4 mt-3">
+                            <button onclick="toggleInfo('h-${key}-${i}')" class="text-[10px] font-bold text-amber-500 uppercase tracking-tighter">Підказка</button>
+                            <button onclick="toggleInfo('s-${key}-${i}')" class="text-[10px] font-bold text-indigo-500 uppercase tracking-tighter">Розв'язання</button>
+                        </div>
+                        <div id="h-${key}-${i}" class="hidden mt-2 p-3 bg-amber-50 text-xs rounded-xl border border-amber-100 italic">${task.h}</div>
+                        <div id="s-${key}-${i}" class="hidden mt-2 p-3 bg-indigo-50 text-xs rounded-xl border border-indigo-100 font-medium">${task.s}</div>
+                    </div>
+                `;
+            });
+        });
+    }
+
+    window.toggleInfo = (id) => document.getElementById(id).classList.toggle('hidden');
+
+    window.checkTask = (key, i) => {
+        const inp = document.getElementById(`in-${key}-${i}`);
+        const val = inp.value.trim().toLowerCase();
+        if(val === data[key][i].a.toLowerCase()) {
+            if(!inp.classList.contains('is-correct')) {
+                inp.className = "input-field is-correct";
+                score++;
+                updateProg();
+            }
+        } else {
+            inp.classList.add('is-wrong');
+            setTimeout(() => inp.classList.remove('is-wrong'), 400);
+        }
+    };
+
+    function updateProg() {
+        document.getElementById('prog-bar').style.width = (score / total * 100) + "%";
+        document.getElementById('score-text').innerText = `ПРОГРЕС: ${score}/${total}`;
+    }
+
+    // --- CANVAS ENGINE ---
+    const layerGrid = document.getElementById('layer-grid');
+    const layerDraw = document.getElementById('layer-draw');
+    const gCtx = layerGrid.getContext('2d');
+    const dCtx = layerDraw.getContext('2d');
+    let drawing = false, tool = 'pen';
+
+    function initCanvases() {
+        const parent = layerDraw.parentElement;
+        [layerGrid, layerDraw].forEach(c => {
+            c.width = parent.clientWidth;
+            c.height = parent.clientHeight;
+        });
+        drawDotGrid();
+        dCtx.lineCap = 'round';
+        dCtx.lineJoin = 'round';
+    }
+
+    function drawDotGrid() {
+        gCtx.clearRect(0,0,layerGrid.width, layerGrid.height);
+        gCtx.fillStyle = '#cbd5e1';
+        for(let x=0; x<layerGrid.width; x+=30) {
+            for(let y=0; y<layerGrid.height; y+=30) {
+                gCtx.beginPath();
+                gCtx.arc(x, y, 1, 0, Math.PI*2);
+                gCtx.fill();
+            }
+        }
+    }
+
+    layerDraw.addEventListener('mousedown', (e) => { drawing = true; dCtx.beginPath(); draw(e); });
+    layerDraw.addEventListener('mousemove', draw);
+    window.addEventListener('mouseup', () => { drawing = false; dCtx.beginPath(); });
+
+    function draw(e) {
+        if(!drawing) return;
+        const rect = layerDraw.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        if(tool === 'pen') {
+            dCtx.globalCompositeOperation = 'source-over';
+            dCtx.lineWidth = 2;
+            dCtx.strokeStyle = '#1e293b';
+            dCtx.lineTo(x, y);
+            dCtx.stroke();
+        } else {
+            dCtx.globalCompositeOperation = 'destination-out';
+            dCtx.lineWidth = 30;
+            dCtx.lineTo(x, y);
+            dCtx.stroke();
+        }
+    }
+
+    window.setTool = (t) => {
+        tool = t;
+        document.getElementById('btn-pen').classList.toggle('tool-active', t === 'pen');
+        document.getElementById('btn-eraser').classList.toggle('tool-active', t === 'eraser');
+    }
+
+    window.clearDraw = () => dCtx.clearRect(0, 0, layerDraw.width, layerDraw.height);
+
+    window.drawSmart = (type) => {
+        dCtx.globalCompositeOperation = 'source-over';
+        dCtx.strokeStyle = '#6366f1'; dCtx.lineWidth = 3;
+        const cx = layerDraw.width/2, cy = layerDraw.height/2;
+        
+        // Математичні константи для трикутника
+        const a = 120, b = 90; // катети
+        const c = Math.sqrt(a*a + b*b); // гіпотенуза
+        const x1 = cx-60, y1 = cy+45; // точка прямого кута
+
+        if(type === 'triangle') {
+            dCtx.beginPath();
+            dCtx.moveTo(x1, y1);
+            dCtx.lineTo(x1, y1-a);
+            dCtx.lineTo(x1+b, y1);
+            dCtx.closePath();
+            dCtx.stroke();
+        } else if(type === 'inscribed') {
+            const r = (a + b - c) / 2;
+            dCtx.strokeStyle = '#10b981';
+            dCtx.beginPath();
+            dCtx.arc(x1 + r, y1 - r, r, 0, Math.PI*2);
+            dCtx.stroke();
+        } else if(type === 'circumscribed') {
+            const R = c / 2;
+            dCtx.strokeStyle = '#f59e0b';
+            dCtx.beginPath();
+            dCtx.arc(x1 + b/2, y1 - a/2, R, 0, Math.PI*2);
+            dCtx.stroke();
+        }
+    }
+
+    window.finishLesson = () => {
+        const rating = Math.round((score/total) * 12);
+        alert(`Твій результат: ${score} з ${total}. Оцінка: ${rating} балів. 
+\nТи молодець! Математика — це твоя суперсила! 🚀`);
+    };
+
+    window.onload = () => {
+        renderTasks();
+        initCanvases();
+        MathJax.typeset();
+    };
+    window.onresize = initCanvases;
+</script>
+</body>
+</html>
