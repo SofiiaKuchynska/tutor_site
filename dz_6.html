@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тренажер: Раціональні числа</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root {
+            --accent: #ff9f43;
+            --primary: #54a0ff;
+            --success: #1dd1a1;
+            --error: #ff6b6b;
+            --dark: #222f3e;
+            --light: #f1f2f6;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background-color: #dfe6e9;
+            color: var(--dark);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            padding: 30px 15px;
+        }
+
+        .container {
+            background: white;
+            width: 100%;
+            max-width: 600px;
+            padding: 35px;
+            border-radius: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 22px;
+            color: var(--dark);
+            margin-bottom: 35px;
+            position: relative;
+        }
+
+        h1::after {
+            content: '';
+            display: block;
+            width: 50px;
+            height: 4px;
+            background: var(--accent);
+            margin: 10px auto;
+            border-radius: 2px;
+        }
+
+        .task-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--light);
+            padding: 18px 25px;
+            border-radius: 18px;
+            border: 2px solid transparent;
+            transition: 0.3s;
+        }
+
+        .item:hover {
+            border-color: #ced6e0;
+            background: #fff;
+        }
+
+        .formula {
+            font-size: 1.2rem;
+            flex-grow: 1;
+        }
+
+        input {
+            width: 90px;
+            height: 45px;
+            border: 2px solid #ced6e0;
+            border-radius: 12px;
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: 700;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 10px rgba(84, 160, 255, 0.2);
+        }
+
+        input.correct {
+            border-color: var(--success);
+            background-color: #e3fdf5;
+            color: #10ac84;
+        }
+
+        input.wrong {
+            border-color: var(--error);
+            background-color: #fff5f5;
+            color: #ee5253;
+        }
+
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+        }
+
+        .btn {
+            padding: 16px 30px;
+            border: none;
+            border-radius: 15px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            width: 100%;
+            margin-bottom: 12px;
+        }
+
+        .btn-main {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-main:hover {
+            background: #2e86de;
+            transform: translateY(-2px);
+        }
+
+        .btn-copy {
+            background: #f1f2f6;
+            color: var(--dark);
+            border: 2px solid #ced6e0;
+            display: none;
+        }
+
+        .btn-copy:hover {
+            background: #dfe4ea;
+        }
+
+        #result-card {
+            display: none;
+            margin-top: 25px;
+            padding: 25px;
+            border-radius: 20px;
+            background: #f8faff;
+            border: 2px dashed var(--primary);
+            animation: bounceIn 0.6s ease;
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0.9); opacity: 0; }
+            70% { transform: scale(1.05); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .score-val {
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--primary);
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Практична робота: Ділення чисел</h1>
+    
+    <div id="test" class="task-grid"></div>
+
+    <div class="footer">
+        <button class="btn btn-main" onclick="finish()">Завершити урок</button>
+        <button id="copyBtn" class="btn btn-copy" onclick="copyReport()">📋 Скопіювати звіт вчителю</button>
+    </div>
+
+    <div id="result-card">
+        <div style="font-size: 1.1rem;">Твій результат:</div>
+        <div class="score-val" id="score-text">0 / 6</div>
+        <div id="praise" style="font-weight: 600; color: #576574;"></div>
+    </div>
+</div>
+
+<script>
+    const questions = [
+        { q: "-2\\frac{1}{4} : 1\\frac{1}{2}", a: "-1.5" },
+        { q: "-6.3 : (-0.9)", a: "7" },
+        { q: "0.48 : (-0.12)", a: "-4" },
+        { q: "240 : (-6) + 20 \\cdot (-3)", a: "-100" },
+        { q: "120 : (-4) - (-36) : 6", a: "-24" },
+        { q: "\\text{Знайди } x : (-4), \\text{ якщо } x = -28", a: "7" }
+    ];
+
+    function init() {
+        const container = document.getElementById('test');
+        questions.forEach((item, i) => {
+            const div = document.createElement('div');
+            div.className = 'item';
+            div.innerHTML = `
+                <div class="formula">\\( ${item.q} = \\)</div>
+                <input type="text" id="ans-${i}" oninput="check(${i}, this)" placeholder="?">
+            `;
+            container.appendChild(div);
+        });
+        MathJax.typeset();
+    }
+
+    function check(i, el) {
+        const val = el.value.trim().replace(',', '.');
+        if (!val) { el.className = ""; return; }
+        el.className = (val === questions[i].a) ? "correct" : "wrong";
+    }
+
+    function finish() {
+        let score = 0;
+        questions.forEach((item, i) => {
+            const val = document.getElementById(`ans-${i}`).value.trim().replace(',', '.');
+            if (val === item.a) score++;
+        });
+
+        const praises = [
+            "Ти сьогодні молодець! 🌟",
+            "Чудовий результат! Так тримати! 🚀",
+            "Математика — це твоє! Блискуче! ✨",
+            "Гарна робота, ти дуже старанний! 💪"
+        ];
+
+        document.getElementById('score-text').innerText = `${score} / ${questions.length}`;
+        document.getElementById('praise').innerText = praises[Math.floor(Math.random() * praises.length)];
+        document.getElementById('result-card').style.display = 'block';
+        document.getElementById('copyBtn').style.display = 'block';
+        
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }
+
+    function copyReport() {
+        let score = 0;
+        let details = "";
+        questions.forEach((item, i) => {
+            const val = document.getElementById(`ans-${i}`).value || "немає";
+            const ok = val.trim().replace(',', '.') === item.a;
+            if(ok) score++;
+            details += `Приклад ${i+1}: ${ok ? '✅' : '❌'} (${val})\n`;
+        });
+
+        const text = `ЗВІТ УЧНЯ\nТема: Раціональні числа\nРезультат: ${score} з ${questions.length}\n\nДеталі:\n${details}`;
+        
+        navigator.clipboard.writeText(text).then(() => {
+            const btn = document.getElementById('copyBtn');
+            btn.innerText = "✅ Скопійовано!";
+            setTimeout(() => { btn.innerText = "📋 Скопіювати звіт вчителю"; }, 2000);
+        });
+    }
+
+    window.onload = init;
+</script>
+
+</body>
+</html>
