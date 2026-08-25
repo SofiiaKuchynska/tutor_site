@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Діагностичний тест з математики (6 клас)</title>
+  <style>
+    * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background-color: #f8fafc; margin: 0; padding: 16px; color: #0f172a; }
+    .container { max-width: 480px; margin: 0 auto; background: #ffffff; padding: 24px 20px; border-radius: 16px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05), 0 8px 10px -6px rgba(0,0,0,0.01); border: 1px solid #e2e8f0; }
+    
+    .header-box { text-align: center; margin-bottom: 20px; border-bottom: 2px dashed #e2e8f0; padding-bottom: 14px; }
+    .header-box h2 { font-size: 1.15rem; margin: 0 0 4px 0; color: #0f172a; font-weight: 700; }
+    .header-box p { font-size: 0.85rem; color: #64748b; margin: 0; }
+
+    .progress-bar { width: 100%; height: 6px; background: #e2e8f0; border-radius: 10px; margin-bottom: 16px; overflow: hidden; }
+    .progress-fill { height: 100%; width: 12.5%; background: #2563eb; transition: width 0.3s ease; }
+    .progress-text { font-size: 0.8rem; font-weight: 600; color: #64748b; margin-bottom: 14px; text-align: right; }
+
+    .task-title { font-size: 1.05rem; font-weight: 600; margin-bottom: 18px; line-height: 1.5; color: #1e293b; }
+    
+    .options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+    .btn-option { background: #ffffff; border: 2px solid #e2e8f0; padding: 14px 16px; border-radius: 12px; font-size: 1rem; text-align: left; cursor: pointer; transition: all 0.15s ease; color: #1e293b; font-weight: 500; display: flex; align-items: center; justify-content: space-between; }
+    .btn-option:active { transform: scale(0.99); }
+    .btn-option.selected { border-color: #2563eb; background: #eff6ff; color: #1d4ed8; font-weight: 600; }
+    
+    .btn-next { width: 100%; background: #2563eb; color: #ffffff; border: none; padding: 15px; border-radius: 12px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+    .btn-next:disabled { background: #cbd5e1; cursor: not-allowed; }
+    .hidden { display: none; }
+    
+    /* Result screen */
+    .result-box { text-align: center; }
+    .score-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 14px; padding: 16px; margin: 16px 0 20px 0; }
+    .score-badge { font-size: 2.4rem; font-weight: 800; color: #2563eb; line-height: 1; margin-bottom: 4px; }
+    .score-label { font-size: 0.85rem; color: #64748b; font-weight: 500; }
+
+    .summary-list { text-align: left; margin: 20px 0; font-size: 0.92rem; }
+    .summary-item { padding: 12px 14px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; margin-bottom: 10px; line-height: 1.45; }
+    .summary-q { font-weight: 600; color: #0f172a; margin-bottom: 4px; }
+    .summary-ans { font-size: 0.88rem; }
+    .correct { color: #16a34a; font-weight: 600; }
+    .wrong { color: #dc2626; font-weight: 600; }
+    
+    .btn-share { background: #16a34a; color: white; border: none; padding: 15px; border-radius: 12px; font-size: 1rem; font-weight: 600; width: 100%; cursor: pointer; transition: background 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .btn-share:active { background: #15803d; }
+    .alert-copied { font-size: 0.85rem; color: #16a34a; margin-top: 8px; font-weight: 600; display: none; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <!-- Dynamic Test Content -->
+  <div id="test-screen">
+    <div class="header-box">
+      <h2>Математика (6 клас)</h2>
+      <p>Вхідна діагностика • 20 хвилин</p>
+    </div>
+    
+    <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+    <div class="progress-text" id="progress-text">Питання 1 з 8</div>
+    
+    <div class="task-title" id="task-question"></div>
+    <div class="options" id="task-options"></div>
+    <button class="btn-next" id="next-btn" disabled onclick="submitAnswer()">Далі ➔</button>
+  </div>
+
+  <!-- Results Screen -->
+  <div id="result-screen" class="hidden">
+    <div class="result-box">
+      <h3 style="margin: 0; font-size: 1.3rem;">Тест завершено!</h3>
+      
+      <div class="score-card">
+        <div class="score-badge" id="score-text">0 / 8</div>
+        <div class="score-label">Правильних відповідей</div>
+      </div>
+      
+      <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 16px;">Результати зафіксовано. Можливість виправлення відповідей відсутня.</p>
+      
+      <div class="summary-list" id="summary-container"></div>
+
+      <button class="btn-share" onclick="copyResultsLink()">
+        <span>📋</span> Скопіювати посилання для вчителя
+      </button>
+      <div class="alert-copied" id="alert-copied">✓ Посилання скопійовано! Надішли його вчителю.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const questions = [
+    {
+      q: "Обчисліть значення виразу: −12 + 18 − 9",
+      options: ["−3", "−39", "3", "−15"],
+      correct: 0
+    },
+    {
+      q: "Знайдіть добуток: −0.4 · (−15)",
+      options: ["−6", "6", "−60", "0.6"],
+      correct: 1
+    },
+    {
+      q: "Виконайте додавання дробів: 3/8 + 1/6",
+      options: ["4/14", "13/24", "11/24", "5/12"],
+      correct: 1
+    },
+    {
+      q: "Обчисліть: 4/5 : 2/3",
+      options: ["1 1/5", "8/15", "5/6", "3/5"],
+      correct: 0
+    },
+    {
+      q: "Знайдіть невідомий член пропорції x : 6 = 5 : 2",
+      options: ["15", "2.5", "12", "1.6"],
+      correct: 0
+    },
+    {
+      q: "Спростіть вираз: −3(2a − 4) + 5a",
+      options: ["−a − 12", "−a + 12", "11a − 12", "a + 12"],
+      correct: 1
+    },
+    {
+      q: "Розв'яжіть рівняння: 4x − 7 = 2x + 9",
+      options: ["x = 1", "x = 8", "x = −8", "x = 3.2"],
+      correct: 1
+    },
+    {
+      q: "Розв'яжіть рівняння: 3(x − 4) = −15",
+      options: ["x = −1", "x = 9", "x = −9", "x = 1"],
+      correct: 0
+    }
+  ];
+
+  let currentIdx = 0;
+  let selectedOption = null;
+  let userAnswers = [];
+
+  window.onload = function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const resData = urlParams.get('res');
+    
+    if (resData) {
+      showTeacherView(resData);
+    } else {
+      loadQuestion();
+    }
+  };
+
+  function loadQuestion() {
+    selectedOption = null;
+    document.getElementById('next-btn').disabled = true;
+    
+    const total = questions.length;
+    document.getElementById('progress-text').innerText = `Питання ${currentIdx + 1} з ${total}`;
+    document.getElementById('progress-fill').style.width = `${((currentIdx + 1) / total) * 100}%`;
+    
+    const item = questions[currentIdx];
+    document.getElementById('task-question').innerText = `${currentIdx + 1}. ${item.q}`;
+    
+    const optionsContainer = document.getElementById('task-options');
+    optionsContainer.innerHTML = '';
+    
+    item.options.forEach((opt, idx) => {
+      const btn = document.createElement('button');
+      btn.className = 'btn-option';
+      btn.innerText = opt;
+      btn.onclick = () => selectOption(idx, btn);
+      optionsContainer.appendChild(btn);
+    });
+  }
+
+  function selectOption(idx, btnElement) {
+    selectedOption = idx;
+    const allBtns = document.querySelectorAll('.btn-option');
+    allBtns.forEach(b => b.classList.remove('selected'));
+    btnElement.classList.add('selected');
+    document.getElementById('next-btn').disabled = false;
+  }
+
+  function submitAnswer() {
+    if (selectedOption === null) return;
+    
+    userAnswers.push(selectedOption);
+    currentIdx++;
+    
+    if (currentIdx < questions.length) {
+      loadQuestion();
+    } else {
+      finishTest();
+    }
+  }
+
+  function finishTest() {
+    document.getElementById('test-screen').classList.add('hidden');
+    document.getElementById('result-screen').classList.remove('hidden');
+    
+    let score = 0;
+    const summaryContainer = document.getElementById('summary-container');
+    summaryContainer.innerHTML = '';
+
+    userAnswers.forEach((ans, idx) => {
+      const isCorrect = ans === questions[idx].correct;
+      if (isCorrect) score++;
+      
+      const itemDiv = document.createElement('div');
+      itemDiv.className = 'summary-item';
+      itemDiv.innerHTML = `
+        <div class="summary-q">${idx + 1}. ${questions[idx].q}</div>
+        <div class="summary-ans">
+          Відповідь учня: <span class="${isCorrect ? 'correct' : 'wrong'}">${questions[idx].options[ans]}</span> 
+          ${!isCorrect ? `<br>Правильно: <strong class="correct">${questions[idx].options[questions[idx].correct]}</strong>` : ' ✓'}
+        </div>
+      `;
+      summaryContainer.appendChild(itemDiv);
+    });
+
+    document.getElementById('score-text').innerText = `${score} / ${questions.length}`;
+  }
+
+  function copyResultsLink() {
+    const encodedRes = btoa(JSON.stringify(userAnswers));
+    const shareUrl = window.location.origin + window.location.pathname + '?res=' + encodedRes;
+    
+    navigator.clipboard.writeText(shareUrl).then(() => {
+      document.getElementById('alert-copied').style.display = 'block';
+    }).catch(err => {
+      alert("Ось посилання з результатами: " + shareUrl);
+    });
+  }
+
+  function showTeacherView(encodedRes) {
+    document.getElementById('test-screen').classList.add('hidden');
+    document.getElementById('result-screen').classList.remove('hidden');
+    
+    try {
+      const answers = JSON.parse(atob(encodedRes));
+      let score = 0;
+      const summaryContainer = document.getElementById('summary-container');
+      summaryContainer.innerHTML = '<h4 style="margin:0 0 14px 0; font-size: 1rem; color: #334155;">Звіт для вчителя:</h4>';
+
+      answers.forEach((ans, idx) => {
+        const isCorrect = ans === questions[idx].correct;
+        if (isCorrect) score++;
+        
+        const itemDiv = document.createElement('div');
+        itemDiv.className = 'summary-item';
+        itemDiv.innerHTML = `
+          <div class="summary-q">${idx + 1}. ${questions[idx].q}</div>
+          <div class="summary-ans">
+            Відповідь: <span class="${isCorrect ? 'correct' : 'wrong'}">${questions[idx].options[ans]}</span> 
+            ${!isCorrect ? `<br>Правильна відповідь: <strong class="correct">${questions[idx].options[questions[idx].correct]}</strong>` : ' ✓'}
+          </div>
+        `;
+        summaryContainer.appendChild(itemDiv);
+      });
+
+      document.getElementById('score-text').innerText = `${score} / ${questions.length}`;
+      document.querySelector('.btn-share').style.display = 'none';
+    } catch (e) {
+      alert('Помилка зчитування посилання.');
+    }
+  }
+</script>
+
+</body>
+</html>
