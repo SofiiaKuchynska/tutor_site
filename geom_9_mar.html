@@ -3,7 +3,1251 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Геометрія 9 клас: Метод координат та Тригонометрія</title>
+    <title>Геометрія 9 клас: Координати та Тригонометрія</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; overflow: hidden; }
+        .custom-scrollbar::-webkit-scrollbar { width: 8px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        .task-card { border: 2px solid #e2e8f0; transition: all 0.3s ease; background: white; }
+        .task-card:hover { border-color: #3b82f6; box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.15); }
+        .input-base {
+            width: 100%; padding: 0.75rem 1.25rem; border-radius: 1rem; border: 2px solid #e2e8f0; 
+            background-color: #f8fafc; font-weight: 600; font-size: 1rem; outline: none; transition: border-color 0.2s;
+        }
+        .input-base:focus { border-color: #3b82f6; background-color: #ffffff; }
+        .input-correct { border-color: #22c55e !important; background-color: #dcfce7 !important; color: #166534 !important; }
+        .input-wrong { border-color: #ef4444 !important; background-color: #fee2e2 !important; color: #991b1b !important; }
+        .canvas-container { position: relative; background: #ffffff; cursor: crosshair; touch-action: none; border-radius: 2rem; }
+        .tool-active { background-color: #3b82f6; color: #ffffff; box-shadow: 0 4px 14px rgba(59, 130, 246, 0.4); }
+        .theory-card { background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%); border: 1px solid #e2e8f0; }
+        
+        .trig-table { width: 100%; border-collapse: separate; border-spacing: 0; border-radius: 1rem; overflow: hidden; border: 1px solid #e2e8f0; }
+        .trig-table th, .trig-table td { padding: 0.75rem; text-align: center; border-bottom: 1px solid #e2e8f0; border-right: 1px solid #e2e8f0; }
+        .trig-table th { background-color: #f1f5f9; font-weight: 700; color: #334155; }
+        .trig-table td { font-weight: 500; color: #475569; background-color: #ffffff; }
+        .trig-table tr:last-child td { border-bottom: none; }
+        .trig-table th:last-child, .trig-table td:last-child { border-right: none; }
+        .trig-table tr:hover td { background-color: #f8fafc; }
+    </style>
+</head>
+<body class="h-screen flex text-slate-900">
+
+    <!-- ЛІВА ЧАСТИНА: Контент -->
+    <div class="w-full lg:w-1/2 flex flex-col bg-white border-r border-slate-200 shadow-2xl z-10 relative h-full">
+        <header class="p-6 border-b border-slate-100 flex justify-between items-center sticky top-0 bg-white/95 backdrop-blur-md z-30">
+            <div>
+                <h1 class="text-2xl font-black text-slate-800 tracking-tight">GeoMaster Pro</h1>
+                <p class="text-xs font-bold text-blue-500 uppercase tracking-widest mt-1">9 Клас • Розширений модуль (Теорія + 45 Завдань)</p>
+            </div>
+            <div class="flex flex-col items-end w-40">
+                <div class="flex items-center gap-2 mb-1.5">
+                    <span id="prog-text" class="text-xs font-black text-blue-600 uppercase">0 / 45 виконано</span>
+                </div>
+                <div class="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden shadow-inner">
+                    <div id="prog-bar" class="h-full bg-gradient-to-r from-blue-400 to-indigo-500 transition-all duration-700" style="width: 0%"></div>
+                </div>
+            </div>
+        </header>
+
+        <main class="flex-1 overflow-y-auto p-6 lg:p-10 space-y-16 custom-scrollbar pb-40">
+            
+            <!-- РОЗДІЛ 1: Знайомство з координатами -->
+            <section class="space-y-6">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-blue-100 rounded-2xl flex items-center justify-center text-2xl shadow-sm">📍</div>
+                    <h2 class="text-3xl font-black text-slate-800 tracking-tight">1. Координатна площина (База)</h2>
+                </div>
+                
+                <div class="theory-card p-8 rounded-[2rem] shadow-sm">
+                    <h3 class="font-bold text-xl mb-4 text-blue-900">Як не заблукати на площині?</h3>
+                    <p class="text-base leading-relaxed mb-6 text-slate-600">Координатна площина — це ніби карта міста. Щоб знайти адресу, нам потрібні дві вулиці, що перетинаються під прямим кутом.</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                        <div class="bg-blue-50 p-5 rounded-2xl border border-blue-100">
+                            <p class="text-xs font-black uppercase text-blue-600 mb-2">Осі координат</p>
+                            <ul class="space-y-2 text-sm text-slate-700 font-medium">
+                                <li>➡️ <b>Вісь \(x\)</b> (горизонтальна) — вісь <b>абсцис</b>.</li>
+                                <li>⬆️ <b>Вісь \(y\)</b> (вертикальна) — вісь <b>ординат</b>.</li>
+                                <li>⏺️ Точка \((0;0)\) — <b>початок координат</b>.</li>
+                            </ul>
+                        </div>
+                        <div class="bg-indigo-50 p-5 rounded-2xl border border-indigo-100">
+                            <p class="text-xs font-black uppercase text-indigo-600 mb-2">Координатні чверті</p>
+                            <ul class="space-y-1 text-sm text-slate-700 font-medium">
+                                <li><b>I чверть:</b> \(x > 0, y > 0\) (верхній правий кут)</li>
+                                <li><b>II чверть:</b> \(x < 0, y > 0\) (верхній лівий)</li>
+                                <li><b>III чверть:</b> \(x < 0, y < 0\) (нижній лівий)</li>
+                                <li><b>IV чверть:</b> \(x > 0, y < 0\) (нижній правий)</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <p class="text-sm bg-amber-50 text-amber-800 p-4 rounded-xl border border-amber-100 font-medium">
+                        💡 <b>Запам'ятай:</b> У записі точки \( A(x; y) \) на першому місці ЗАВЖДИ стоїть абсциса (\(x\)), а на другому — ордината (\(y\)). Алфавітний порядок: спочатку "А" (абсциса), потім "О" (ордината).
+                    </p>
+                </div>
+
+                <!-- Легкі завдання з координат -->
+                <h4 class="font-bold text-lg text-slate-700 mt-8 mb-4 flex items-center gap-2"><span class="text-green-500">🟢</span> Розігрів: Легкі завдання</h4>
+                <div id="tasks-coord-easy" class="space-y-4"></div>
+
+                <!-- Середні завдання з координат -->
+                <h4 class="font-bold text-lg text-slate-700 mt-8 mb-4 flex items-center gap-2"><span class="text-yellow-500">🟡</span> Практика: Типові задачі</h4>
+                <div id="tasks-coord-med" class="space-y-4"></div>
+            </section>
+
+            <!-- РОЗДІЛ 2: Тригонометрія (Вступ та Таблиця) -->
+            <section class="space-y-6">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-indigo-100 rounded-2xl flex items-center justify-center text-2xl shadow-sm">📐</div>
+                    <h2 class="text-3xl font-black text-slate-800 tracking-tight">2. Тригонометрія від 0° до 180°</h2>
+                </div>
+                
+                <div class="theory-card p-8 rounded-[2rem] shadow-sm">
+                    <h3 class="font-bold text-xl mb-4 text-indigo-900">Одиничне півколо — головний секрет</h3>
+                    <p class="text-base leading-relaxed mb-6 text-slate-600">Замість прямокутних трикутників у 9 класі ми використовуємо <b>одиничне півколо</b> (радіус \(R=1\)), центр якого лежить у початку координат \((0;0)\). Кожна точка на цьому півколі відповідає певному куту \(\alpha\).</p>
+                    
+                    <ul class="space-y-4 text-sm font-medium bg-slate-50 p-6 rounded-2xl border border-slate-200 mb-6">
+                        <li class="flex gap-3"><span class="text-xl">🔵</span> <div><b>Синус (\(\sin \alpha\))</b> — це ордината (\(y\)) точки на півколі. Оскільки півколо знаходиться зверху, синус від 0° до 180° <b>завжди додатний</b> (або нуль).</div></li>
+                        <li class="flex gap-3"><span class="text-xl">🔴</span> <div><b>Косинус (\(\cos \alpha\))</b> — це абсциса (\(x\)) точки. Для гострих кутів (I чверть) косинус додатний. Для тупих кутів (II чверть, ліворуч) косинус <b>від'ємний</b>!</div></li>
+                        <li class="flex gap-3"><span class="text-xl">🟡</span> <div><b>Тангенс (\(\text{tg} \alpha\))</b> — це відношення \(\sin \alpha / \cos \alpha\) (або \(y / x\)). Не існує для 90°, бо на нуль ділити не можна.</div></li>
+                    </ul>
+
+                    <h4 class="font-bold text-lg mb-3 text-slate-800">Таблиця значень (Вивчи її!)</h4>
+                    <div class="overflow-x-auto pb-2 custom-scrollbar">
+                        <table class="trig-table">
+                            <thead>
+                                <tr>
+                                    <th>\(\alpha\)</th>
+                                    <th>0°</th>
+                                    <th>30°</th>
+                                    <th>45°</th>
+                                    <th>60°</th>
+                                    <th>90°</th>
+                                    <th>120°</th>
+                                    <th>135°</th>
+                                    <th>150°</th>
+                                    <th>180°</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><b>\(\sin \alpha\)</b></td>
+                                    <td>0</td>
+                                    <td>\(\frac{1}{2}\)</td>
+                                    <td>\(\frac{\sqrt{2}}{2}\)</td>
+                                    <td>\(\frac{\sqrt{3}}{2}\)</td>
+                                    <td>1</td>
+                                    <td>\(\frac{\sqrt{3}}{2}\)</td>
+                                    <td>\(\frac{\sqrt{2}}{2}\)</td>
+                                    <td>\(\frac{1}{2}\)</td>
+                                    <td>0</td>
+                                </tr>
+                                <tr>
+                                    <td><b>\(\cos \alpha\)</b></td>
+                                    <td>1</td>
+                                    <td>\(\frac{\sqrt{3}}{2}\)</td>
+                                    <td>\(\frac{\sqrt{2}}{2}\)</td>
+                                    <td>\(\frac{1}{2}\)</td>
+                                    <td>0</td>
+                                    <td>\(-\frac{1}{2}\)</td>
+                                    <td>\(-\frac{\sqrt{2}}{2}\)</td>
+                                    <td>\(-\frac{\sqrt{3}}{2}\)</td>
+                                    <td>-1</td>
+                                </tr>
+                                <tr>
+                                    <td><b>\(\text{tg} \alpha\)</b></td>
+                                    <td>0</td>
+                                    <td>\(\frac{\sqrt{3}}{3}\)</td>
+                                    <td>1</td>
+                                    <td>\(\sqrt{3}\)</td>
+                                    <td class="text-red-500 font-bold text-xs">Не існує</td>
+                                    <td>\(-\sqrt{3}\)</td>
+                                    <td>-1</td>
+                                    <td>\(-\frac{\sqrt{3}}{3}\)</td>
+                                    <td>0</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Легкі завдання з тригонометрії (Таблиця) -->
+                <h4 class="font-bold text-lg text-slate-700 mt-8 mb-4 flex items-center gap-2"><span class="text-green-500">🟢</span> Розігрів: Робота з таблицею</h4>
+                <div id="tasks-trig-easy" class="space-y-4"></div>
+
+                <!-- Середні завдання з тригонометрії -->
+                <h4 class="font-bold text-lg text-slate-700 mt-8 mb-4 flex items-center gap-2"><span class="text-yellow-500">🟡</span> Практика: Знаки та обчислення</h4>
+                <div id="tasks-trig-med" class="space-y-4"></div>
+            </section>
+
+            <!-- РОЗДІЛ 3: Тотожності -->
+            <section class="space-y-6">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-purple-100 rounded-2xl flex items-center justify-center text-2xl shadow-sm">✨</div>
+                    <h2 class="text-3xl font-black text-slate-800 tracking-tight">3. Магія формул</h2>
+                </div>
+                
+                <div class="theory-card p-8 rounded-[2rem] shadow-sm relative overflow-hidden bg-gradient-to-br from-purple-50 to-white">
+                    <div class="absolute -right-10 -bottom-10 opacity-5 text-[150px] leading-none pointer-events-none">∑</div>
+                    <h3 class="font-bold text-xl mb-4 text-purple-900">Основна тригонометрична тотожність</h3>
+                    <p class="text-base leading-relaxed mb-4 text-slate-700">
+                        Оскільки координати точок півкола задовольняють рівняння кола \(x^2 + y^2 = 1\), а \(x = \cos \alpha\), \(y = \sin \alpha\), отримуємо найважливішу формулу:
+                    </p>
+                    <div class="bg-white p-6 rounded-2xl border-2 border-purple-200 text-center mb-6 shadow-sm">
+                        <span class="text-2xl font-black text-purple-700">\[ \sin^2\alpha + \cos^2\alpha = 1 \]</span>
+                    </div>
+
+                    <h3 class="font-bold text-xl mb-4 text-purple-900 mt-8">Формули зведення</h3>
+                    <p class="text-sm mb-4 text-slate-600">Вони дозволяють звести обчислення тупих кутів до гострих:</p>
+                    <ul class="space-y-3 bg-white p-6 rounded-2xl border border-slate-200 text-sm font-bold text-slate-700">
+                        <li class="flex items-center gap-3">✅ <span class="text-lg">\( \sin(180^\circ - \alpha) = \sin\alpha \)</span> (Синус тупого кута додатний)</li>
+                        <li class="flex items-center gap-3">✅ <span class="text-lg">\( \cos(180^\circ - \alpha) = -\cos\alpha \)</span> (Косинус тупого кута від'ємний!)</li>
+                        <li class="flex items-center gap-3">✅ <span class="text-lg">\( \text{tg}(180^\circ - \alpha) = -\text{tg}\alpha \)</span></li>
+                    </ul>
+                </div>
+
+                <div id="tasks-formulas" class="space-y-4"></div>
+            </section>
+
+            <!-- РОЗДІЛ 4: Фінальний тест -->
+            <section class="space-y-6 pt-10 border-t-2 border-dashed border-slate-200">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-slate-800 text-white rounded-2xl flex items-center justify-center text-2xl shadow-lg">🏁</div>
+                    <h2 class="text-3xl font-black text-slate-800 tracking-tight">Фінальний тест</h2>
+                </div>
+                <div class="bg-slate-50 p-6 rounded-3xl border border-slate-200 text-slate-600 text-sm font-medium">
+                    Останній ривок! Застосуй усі знання, які ти щойно отримав(ла).
+                </div>
+                <div id="tasks-test" class="space-y-4"></div>
+            </section>
+
+            <div class="pt-12">
+                <button onclick="finishLesson()" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-6 rounded-[2rem] font-black text-xl hover:shadow-2xl hover:shadow-blue-500/30 transition-all transform hover:-translate-y-1 active:translate-y-0">
+                    ЗАВЕРШИТИ ТА ОТРИМАТИ ОЦІНКУ
+                </button>
+            </div>
+        </main>
+    </div>
+
+    <!-- ПРАВА ЧАСТИНА: Smart Whiteboard -->
+    <div class="hidden lg:flex w-1/2 flex-col bg-slate-100 p-8 h-screen relative">
+        <div class="absolute top-10 left-1/2 -translate-x-1/2 z-40 flex items-center gap-2 bg-white p-2 rounded-2xl shadow-xl border border-slate-200">
+            <button onclick="setTool('pen')" id="tool-pen" class="p-3 rounded-xl tool-active transition" title="Олівець">✏️</button>
+            <button onclick="setTool('eraser')" id="tool-eraser" class="p-3 rounded-xl hover:bg-slate-100 transition" title="Гумка">🧽</button>
+            <div class="w-px h-8 bg-slate-200 mx-1"></div>
+            <button onclick="toggleGrid()" id="tool-grid" class="px-4 py-2 text-xs font-black text-slate-500 hover:bg-slate-100 rounded-xl transition flex items-center gap-2" title="Увімкнути координатну площину">🌐 <span class="hidden xl:inline">ОСІ</span></button>
+            <button onclick="drawUnitCircle()" class="px-4 py-2 text-xs font-black text-slate-500 hover:bg-slate-100 rounded-xl transition flex items-center gap-2" title="Намалювати одиничне півколо">⭕ <span class="hidden xl:inline">ПІВКОЛО</span></button>
+            <div class="w-px h-8 bg-slate-200 mx-1"></div>
+            <button onclick="clearCanvas()" class="p-3 text-red-500 hover:bg-red-50 rounded-xl transition" title="Очистити дошку">🗑️</button>
+        </div>
+        
+        <div class="canvas-container flex-1 shadow-lg border-4 border-white overflow-hidden mt-24" id="canvas-wrap">
+            <canvas id="whiteboard"></canvas>
+        </div>
+        
+        <div class="mt-6 text-center">
+            <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Smart Geometry Lab v2.0</p>
+        </div>
+    </div>
+
+    <!-- Модальне вікно результату -->
+    <div id="result-modal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-6 opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-[3rem] p-12 max-w-lg w-full text-center shadow-2xl transform scale-95 transition-transform duration-300" id="result-content">
+            <div class="text-8xl mb-6" id="res-emoji">🏆</div>
+            <h2 class="text-3xl font-black text-slate-800 mb-3" id="res-title">Чудова робота!</h2>
+            <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-3xl p-8 mb-8 border border-blue-100">
+                <p id="res-score" class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 font-black text-7xl mb-2">0 / 45</p>
+                <p class="text-xs font-bold text-blue-500 uppercase tracking-widest">Твій фінальний результат</p>
+            </div>
+            <p id="res-message" class="text-slate-600 mb-8 font-medium text-lg leading-relaxed">Математика — це гімнастика для розуму. Ти сьогодні відмінно потренувався(лася)!</p>
+            <button onclick="location.reload()" class="w-full bg-slate-900 text-white py-5 rounded-2xl font-bold hover:bg-blue-600 transition shadow-lg text-lg">Пройти ще раз</button>
+        </div>
+    </div>
+
+<script>
+    let score = 0; let answered = 0; const TOTAL = 45;
+    const taskStates = {};
+
+    // 45 завдань
+    const allTasks = {
+        'coord-easy': [
+            { id: 1, type: 'input', q: "Як називається вісь x (горизонтальна)? (одне слово, з малої букви)", a: "абсцис", h: "Починається на 'а'", s: "Вісь x — це вісь абсцис." },
+            { id: 2, type: 'input', q: "Як називається вісь y (вертикальна)? (одне слово, з малої букви)", a: "ординат", h: "Починається на 'о'", s: "Вісь y — це вісь ординат." },
+            { id: 3, type: 'input', q: "Яка абсциса у точки A(7; -2)?", a: 7, h: "Перше число в дужках.", s: "Абсциса (x) = 7." },
+            { id: 4, type: 'input', q: "Яка ордината у точки B(-4; 9)?", a: 9, h: "Друге число в дужках.", s: "Ордината (y) = 9." },
+            { id: 5, type: 'mcq', q: "Точка (0; 0) — це...", opts: ["Точка відліку", "Початок координат", "Центр площини"], a: 1, h: "Офіційна математична назва.", s: "Початок координат." },
+            { id: 6, type: 'mcq', q: "У якій чверті лежить точка C(5; 5)?", opts: ["I", "II", "III", "IV"], a: 0, h: "Обидві координати додатні (+;+).", s: "Перша (I) чверть." },
+            { id: 7, type: 'mcq', q: "У якій чверті лежить точка D(-3; -3)?", opts: ["I", "II", "III", "IV"], a: 2, h: "Обидві координати від'ємні (-;-).", s: "Третя (III) чверть." },
+            { id: 8, type: 'mcq', q: "Де знаходиться точка E(0; 6)?", opts: ["На осі x", "На осі y", "У I чверті"], a: 1, h: "Якщо x = 0, ми не рухаємось ні вправо, ні вліво, а лише вгору.", s: "На осі y (ординат)." },
+            { id: 9, type: 'mcq', q: "Де знаходиться точка F(-8; 0)?", opts: ["На осі x", "На осі y", "У II чверті"], a: 0, h: "Якщо y = 0, висота нульова.", s: "На осі x (абсцис)." },
+            { id: 10, type: 'input', q: "Уляна пробігла 1 км. На площині її старт у точці (0; 0), а фініш на додатній півосі x (1 од = 1 метр). Яка абсциса фінішу?", a: 1000, h: "1 км = 1000 метрів.", s: "Абсциса дорівнює 1000." }
+        ],
+        'coord-med': [
+            { id: 11, type: 'mcq', q: "У якій чверті лежить точка K(-4; 2)?", opts: ["I", "II", "III", "IV"], a: 1, h: "Ліворуч (x<0) і вгору (y>0).", s: "Друга (II) чверть." },
+            { id: 12, type: 'mcq', q: "У якій чверті лежить точка L(7; -1)?", opts: ["I", "II", "III", "IV"], a: 3, h: "Праворуч (x>0) і вниз (y<0).", s: "Четверта (IV) чверть." },
+            { id: 13, type: 'input', q: "Знайдіть відстань від точки M(4; -3) до осі ординат (осі y).", a: 4, h: "Відстань до осі y — це модуль абсциси |x|.", s: "|4| = 4." },
+            { id: 14, type: 'input', q: "Знайдіть відстань від точки N(-5; 8) до осі абсцис (осі x).", a: 8, h: "Відстань до осі x — це модуль ординати |y|.", s: "|8| = 8." },
+            { id: 15, type: 'input', q: "Для приготування лінивих вареників ми рухаємось від столу (0;0) до плити (0; 5) і назад. Який шлях (у метрах, якщо 1 од=1 м) ми пройшли?", a: 10, h: "В один бік 5, і назад 5.", s: "5 + 5 = 10." },
+            { id: 16, type: 'input', q: "На прямій, паралельній осі x, лежать дві точки. Ордината першої дорівнює -7. Яка ордината другої точки?", a: -7, h: "Пряма паралельна осі x горизонтальна. Висота (y) на ній не змінюється.", s: "-7" },
+            { id: 17, type: 'mcq', q: "Якщо добуток x·y > 0 і x < 0, то точка (x; y) лежить у чверті:", opts: ["I", "II", "III", "IV"], a: 2, h: "Щоб добуток був додатним при від'ємному x, y теж має бути від'ємним (- на - дає +).", s: "Обидві координати від'ємні — це III чверть." },
+            { id: 18, type: 'input', q: "Центр кола збігається з початком координат. Радіус дорівнює 12. Знайдіть ординату верхньої точки перетину кола з віссю y.", a: 12, h: "Піднімаємось вгору від (0;0) на величину радіуса.", s: "12" },
+            { id: 19, type: 'input', q: "Дано квадрат ABCD, сторона якого 6. A(0;0), B(6;0), D(0;6). Яка абсциса точки C?", a: 6, h: "Точка С має ту ж абсцису, що і B, бо квадрат.", s: "6" },
+            { id: 20, type: 'mcq', q: "Точка P(x; y) належить бісектрисі першого координатного кута. Що можна сказати про її координати?", opts: ["x = -y", "x = y", "x = 0"], a: 1, h: "Бісектриса ділить кут навпіл, тому координати рівні.", s: "x = y" }
+        ],
+        'trig-easy': [
+            { id: 21, type: 'input', q: "Використовуючи таблицю, знайдіть: \\( \\sin 30^\\circ \\) (десятковим дробом)", a: 0.5, h: "Дивись перший рядок, другий стовпчик таблиці.", s: "1/2 = 0.5" },
+            { id: 22, type: 'input', q: "Використовуючи таблицю, знайдіть: \\( \\cos 60^\\circ \\) (десятковим дробом)", a: 0.5, h: "Косинус 60° дорівнює синусу 30°.", s: "1/2 = 0.5" },
+            { id: 23, type: 'input', q: "Чому дорівнює \\( \\text{tg} 45^\\circ \\)?", a: 1, h: "Дивись таблицю.", s: "1" },
+            { id: 24, type: 'input', q: "Чому дорівнює \\( \\sin 90^\\circ \\)?", a: 1, h: "Це ордината найвищої точки півкола.", s: "1" },
+            { id: 25, type: 'input', q: "Чому дорівнює \\( \\cos 180^\\circ \\)?", a: -1, h: "Це абсциса крайньої лівої точки півкола.", s: "-1" },
+            { id: 26, type: 'input', q: "Чому дорівнює \\( \\sin 0^\\circ \\)?", a: 0, h: "Ордината точки (1; 0).", s: "0" },
+            { id: 27, type: 'mcq', q: "Чи існує тангенс 90 градусів?", opts: ["Так", "Ні"], a: 1, h: "tg = sin/cos. cos 90° = 0. Ділити на 0 не можна.", s: "Ні, не існує." },
+            { id: 28, type: 'input', q: "Обчисліть: \\( 2 \\cdot \\sin 30^\\circ \\)", a: 1, h: "2 * 0.5 = ?", s: "1" },
+            { id: 29, type: 'input', q: "Обчисліть: \\( \\cos 90^\\circ + \\sin 90^\\circ \\)", a: 1, h: "0 + 1 = ?", s: "1" },
+            { id: 30, type: 'mcq', q: "Який знак має синус будь-якого кута від 0° до 180°?", opts: ["Завжди додатний (або 0)", "Може бути від'ємним"], a: 0, h: "Півколо знаходиться у верхній частині площини, де y >= 0.", s: "Завжди додатний (або 0)." }
+        ],
+        'trig-med': [
+            { id: 31, type: 'mcq', q: "Якщо кут тупий (від 90° до 180°), то його косинус...", opts: ["Додатний", "Від'ємний", "Дорівнює 0"], a: 1, h: "Тупі кути лежать у II чверті, де x < 0.", s: "Від'ємний." },
+            { id: 32, type: 'mcq', q: "Чи може абсциса точки одиничного півкола дорівнювати 2?", opts: ["Так", "Ні"], a: 1, h: "Радіус півкола дорівнює 1.", s: "Ні, максимальне значення 1." },
+            { id: 33, type: 'mcq', q: "Який знак має \\( \\cos 140^\\circ \\)?", opts: ["+", "-"], a: 1, h: "140° — тупий кут.", s: "-" },
+            { id: 34, type: 'input', q: "Обчисліть: \\( \\sin 150^\\circ + \\cos 120^\\circ \\). (Підказка: використай таблицю)", a: 0, h: "sin 150° = 0.5, cos 120° = -0.5", s: "0.5 + (-0.5) = 0" },
+            { id: 35, type: 'mcq', q: "Чи існує такий кут \\( \\alpha \\), що \\( \\cos \\alpha = -0.7 \\)?", opts: ["Так", "Ні"], a: 0, h: "Косинус приймає значення від -1 до 1.", s: "Так." },
+            { id: 36, type: 'mcq', q: "Який із записів правильний?", opts: ["sin 130° < 0", "cos 130° < 0"], a: 1, h: "Кут тупий. Синус тупого завжди додатний, косинус — від'ємний.", s: "cos 130° < 0" },
+            { id: 37, type: 'input', q: "Обчисліть: \\( \\text{tg} 135^\\circ \\)", a: -1, h: "Подивись у таблицю.", s: "-1" },
+            { id: 38, type: 'input', q: "Значення виразу \\( 4 \\cdot \\cos 60^\\circ \\):", a: 2, h: "4 * 0.5", s: "2" },
+            { id: 39, type: 'input', q: "Обчисліть: \\( \\sin^2 12^\\circ + \\cos^2 12^\\circ \\)", a: 1, h: "Це основна тригонометрична тотожність.", s: "1" },
+            { id: 40, type: 'input', q: "Обчисліть: \\( 5 - (\\sin^2 75^\\circ + \\cos^2 75^\\circ) \\)", a: 4, h: "В дужках виходить 1.", s: "5 - 1 = 4" }
+        ],
+        'formulas': [
+            { id: 41, type: 'input', q: "Якщо \\( \\sin 20^\\circ = 0.34 \\), чому дорівнює \\( \\sin 160^\\circ \\)?", a: 0.34, h: "sin(180° - α) = sin(α). Синус суміжних кутів однаковий.", s: "0.34" },
+            { id: 42, type: 'input', q: "Якщо \\( \\cos 40^\\circ = 0.76 \\), чому дорівнює \\( \\cos 140^\\circ \\)?", a: -0.76, h: "cos(180° - α) = -cos(α). Постав мінус.", s: "-0.76" },
+            { id: 43, type: 'mcq', q: "Спростіть вираз: \\( 1 - \\cos^2 \\alpha \\)", opts: ["\\( \\sin^2 \\alpha \\)", "\\( -\\sin^2 \\alpha \\)", "\\( \\text{tg}^2 \\alpha \\)"], a: 0, h: "Перенесіть cos²α вправо у формулі sin²α + cos²α = 1.", s: "\\( \\sin^2 \\alpha \\)" },
+            { id: 44, type: 'mcq', q: "Яке з рівнянь є основною тригонометричною тотожністю?", opts: ["sin α + cos α = 1", "sin²α + cos²α = 1", "sin α / cos α = 1"], a: 1, h: "Квадрати!", s: "sin²α + cos²α = 1" }
+        ],
+        'test': [
+            { id: 45, type: 'input', q: "Дано точки A(0; 8) і B(0; 0). Знайдіть довжину відрізка AB.", a: 8, h: "Це відстань вздовж осі y.", s: "8" }
+        ]
+    };
+
+    function render() {
+        for(let cat in allTasks) {
+            const container = document.getElementById(`tasks-${cat}`);
+            allTasks[cat].forEach(t => {
+                const card = document.createElement('div');
+                card.className = 'task-card p-5 lg:p-6 rounded-3xl space-y-4';
+                
+                let actionHTML = '';
+                if(t.type === 'mcq') {
+                    actionHTML = `<div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-left">
+                        ${t.opts.map((o,i)=>`<button onclick="checkMCQ(${t.id},${i},${t.a})" id="opt-${t.id}-${i}" class="text-left p-4 border-2 border-slate-100 bg-slate-50/50 rounded-2xl text-sm font-semibold hover:border-blue-400 hover:bg-blue-50 transition-colors shadow-sm focus:outline-none">${o}</button>`).join('')}
+                    </div>`;
+                } else {
+                    actionHTML = `<div class="flex gap-3">
+                        <input type="text" id="in-${t.id}" class="input-base shadow-sm" placeholder="Ваша відповідь...">
+                        <button onclick="checkIn(${t.id},'${t.a}')" class="bg-slate-800 text-white px-8 rounded-2xl font-black hover:bg-blue-600 transition-colors shadow-md transform hover:scale-105 active:scale-95">OK</button>
+                    </div>`;
+                }
+
+                card.innerHTML = `
+                    <p class="font-bold text-slate-800 text-lg leading-snug">${t.q}</p>
+                    ${actionHTML}
+                    <div class="flex flex-wrap gap-4 pt-3 border-t border-slate-100 mt-4">
+                        <button onclick="toggle('h-${t.id}')" class="text-[11px] font-black uppercase tracking-wider text-slate-400 hover:text-amber-500 transition flex items-center gap-1.5 bg-slate-50 px-3 py-1.5 rounded-lg"><span class="text-sm">💡</span> Підказка</button>
+                        <button onclick="toggle('s-${t.id}')" class="text-[11px] font-black uppercase tracking-wider text-slate-400 hover:text-blue-500 transition flex items-center gap-1.5 bg-slate-50 px-3 py-1.5 rounded-lg"><span class="text-sm">📝</span> Розв'язання</button>
+                    </div>
+                    <div id="h-${t.id}" class="hidden mt-3 p-4 bg-amber-50 rounded-2xl text-sm text-amber-900 border border-amber-200/60 shadow-inner font-medium">${t.h}</div>
+                    <div id="s-${t.id}" class="hidden mt-3 p-4 bg-blue-50 rounded-2xl text-sm text-blue-900 border border-blue-200/60 shadow-inner font-medium"><b>Рішення:</b> ${t.s}</div>
+                `;
+                container.appendChild(card);
+            });
+        }
+    }
+
+    function updateProgress(id) {
+        if(!taskStates[id]) {
+            taskStates[id] = true; 
+            answered++;
+            document.getElementById('prog-text').innerText = `${answered} / ${TOTAL} виконано`;
+            document.getElementById('prog-bar').style.width = `${(answered/TOTAL)*100}%`;
+        }
+    }
+
+    function checkIn(id, corr) {
+        const el = document.getElementById(`in-${id}`);
+        const val = el.value.toString().toLowerCase().trim().replace(',', '.');
+        const correctVal = corr.toString().toLowerCase().trim().replace(',', '.');
+        
+        el.classList.remove('input-correct', 'input-wrong');
+        void el.offsetWidth; // trigger reflow
+        
+        if(val === correctVal) { 
+            el.classList.add('input-correct'); 
+            if(!taskStates[id]) score++; 
+            updateProgress(id);
+        } else { 
+            el.classList.add('input-wrong'); 
+        }
+    }
+
+    function checkMCQ(id, sel, corr) {
+        if(taskStates[id]) return; // Prevent changing answer
+        const allOpts = document.querySelectorAll(`[id^="opt-${id}-"]`);
+        allOpts.forEach(btn => btn.classList.add('opacity-50', 'pointer-events-none', 'grayscale'));
+        
+        const selectedBtn = document.getElementById(`opt-${id}-${sel}`);
+        const correctBtn = document.getElementById(`opt-${id}-${corr}`);
+        
+        if(sel === corr) { 
+            selectedBtn.classList.replace('border-slate-100', 'border-green-500');
+            selectedBtn.classList.add('bg-green-100', 'text-green-900', 'opacity-100', 'shadow-md');
+            selectedBtn.classList.remove('grayscale');
+            score++; 
+        } else { 
+            selectedBtn.classList.replace('border-slate-100', 'border-red-500');
+            selectedBtn.classList.add('bg-red-100', 'text-red-900', 'opacity-100');
+            selectedBtn.classList.remove('grayscale');
+            
+            correctBtn.classList.replace('border-slate-100', 'border-green-500');
+            correctBtn.classList.add('bg-green-50', 'opacity-100', 'text-green-800');
+            correctBtn.classList.remove('grayscale');
+        }
+        updateProgress(id);
+    }
+
+    function toggle(id) { 
+        const el = document.getElementById(id);
+        el.classList.toggle('hidden');
+        if(!el.classList.contains('hidden') && window.MathJax) {
+            MathJax.typesetPromise([el]);
+        }
+    }
+
+    function finishLesson() { 
+        const modal = document.getElementById('result-modal');
+        const content = document.getElementById('result-content');
+        
+        modal.classList.remove('hidden');
+        // Small delay to allow display block to apply before animating opacity
+        setTimeout(() => {
+            modal.classList.remove('opacity-0');
+            content.classList.remove('scale-95');
+        }, 10);
+        
+        document.getElementById('res-score').innerText = `${score} / ${TOTAL}`; 
+        
+        const title = document.getElementById('res-title');
+        const msg = document.getElementById('res-message');
+        const emoji = document.getElementById('res-emoji');
+        
+        const percentage = score / TOTAL;
+        if(percentage >= 0.9) {
+            title.innerText = "Ідеально!"; emoji.innerText = "👑";
+            msg.innerText = "Ти абсолютний геній тригонометрії та координат! Жодна задача не встоїть перед твоїм інтелектом.";
+        } else if(percentage >= 0.7) {
+            title.innerText = "Дуже добре!"; emoji.innerText = "🔥";
+            msg.innerText = "Прекрасний результат. Математика здається перед твоєю наполегливістю! Ще трохи практики, і буде 100%.";
+        } else if(percentage >= 0.4) {
+            title.innerText = "Гарний старт!"; emoji.innerText = "🌱";
+            msg.innerText = "Ти на правильному шляху! Фундамент закладено, залишилось лише відточити майстерність. Переглянь розв'язки там, де були помилки.";
+        } else {
+            title.innerText = "Головне — не здаватись!"; emoji.innerText = "💪";
+            msg.innerText = "Кожна помилка — це крок до розуміння. Прочитай пояснення до завдань, спробуй ще раз, і ти обов'язково розберешся!";
+        }
+    }
+
+    // --- SMART WHITEBOARD LOGIC ---
+    const canvas = document.getElementById('whiteboard'); 
+    const ctx = canvas.getContext('2d');
+    let isDrawing = false; 
+    let currentTool = 'pen'; 
+    let showGrid = false;
+
+    function resizeCanvas() { 
+        const parent = canvas.parentElement;
+        canvas.width = parent.clientWidth; 
+        canvas.height = parent.clientHeight; 
+        redrawBackground();
+    }
+
+    function getCursorPos(e) {
+        const rect = canvas.getBoundingClientRect();
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        return { x: clientX - rect.left, y: clientY - rect.top };
+    }
+
+    function drawLogic(e) {
+        if(!isDrawing) return; 
+        const pos = getCursorPos(e);
+        ctx.strokeStyle = currentTool === 'pen' ? '#1e293b' : '#ffffff'; 
+        ctx.lineWidth = currentTool === 'pen' ? 3 : 40;
+        ctx.lineTo(pos.x, pos.y); 
+        ctx.stroke(); 
+        ctx.beginPath(); 
+        ctx.moveTo(pos.x, pos.y);
+    }
+
+    function setTool(t) { 
+        currentTool = t; 
+        document.getElementById('tool-pen').classList.toggle('tool-active', t === 'pen'); 
+        document.getElementById('tool-eraser').classList.toggle('tool-active', t === 'eraser'); 
+    }
+
+    function clearCanvas() { 
+        ctx.clearRect(0, 0, canvas.width, canvas.height); 
+        redrawBackground();
+    }
+
+    function redrawBackground() {
+        if(showGrid) drawGridAndAxes();
+    }
+
+    function drawGridAndAxes() {
+        ctx.save();
+        // Сітка
+        ctx.strokeStyle = '#f1f5f9'; ctx.lineWidth = 2; ctx.beginPath(); 
+        const step = 40;
+        for(let i = 0; i < canvas.width; i += step){ ctx.moveTo(i, 0); ctx.lineTo(i, canvas.height); } 
+        for(let i = 0; i < canvas.height; i += step){ ctx.moveTo(0, i); ctx.lineTo(canvas.width, i); } 
+        ctx.stroke(); 
+        
+        // Осі координат
+        ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 2.5; ctx.beginPath();
+        const midX = Math.round(canvas.width/2 / step) * step;
+        const midY = Math.round(canvas.height/2 / step) * step;
+        
+        // Y вісь
+        ctx.moveTo(midX, 0); ctx.lineTo(midX, canvas.height); 
+        // X вісь
+        ctx.moveTo(0, midY); ctx.lineTo(canvas.width, midY); 
+        ctx.stroke();
+        
+        // Стрілки та підписи
+        ctx.fillStyle = '#64748b'; ctx.font = 'bold 16px "Plus Jakarta Sans"';
+        ctx.fillText('x', canvas.width - 25, midY - 12);
+        ctx.fillText('y', midX + 12, 25);
+        ctx.fillText('0', midX - 15, midY + 18);
+        
+        // Засічки (одиничні відрізки)
+        ctx.beginPath();
+        ctx.moveTo(midX + step, midY - 5); ctx.lineTo(midX + step, midY + 5); // 1 по x
+        ctx.moveTo(midX - 5, midY - step); ctx.lineTo(midX + 5, midY - step); // 1 по y
+        ctx.stroke();
+        ctx.font = '12px "Plus Jakarta Sans"';
+        ctx.fillText('1', midX + step - 4, midY + 18);
+        ctx.fillText('1', midX - 15, midY - step + 4);
+        
+        ctx.restore();
+    }
+
+    function toggleGrid() { 
+        showGrid = !showGrid; 
+        const btn = document.getElementById('tool-grid');
+        if(showGrid) {
+            btn.classList.add('bg-blue-50', 'text-blue-600', 'border-blue-200');
+            drawGridAndAxes();
+        } else {
+            btn.classList.remove('bg-blue-50', 'text-blue-600', 'border-blue-200');
+            clearCanvas();
+        }
+    }
+
+    function drawUnitCircle() {
+        if(!showGrid) toggleGrid(); // Автоматично вмикаємо осі
+        const step = 40;
+        const midX = Math.round(canvas.width/2 / step) * step;
+        const midY = Math.round(canvas.height/2 / step) * step;
+        const radius = step * 4; // Радіус = 4 клітинки для наочності
+        
+        ctx.save();
+        ctx.strokeStyle = '#3b82f6'; 
+        ctx.lineWidth = 4; 
+        ctx.beginPath();
+        // Малюємо півколо (від 0 до 180 градусів - тобто верхня частина)
+        // В canvas 0 це праворуч, PI це ліворуч, малюємо проти годинникової
+        ctx.arc(midX, midY, radius, Math.PI, 0, false);
+        ctx.stroke();
+        
+        // Точки та підписи
+        ctx.fillStyle = '#1d4ed8'; ctx.font = 'bold 14px "Plus Jakarta Sans"';
+        // (1;0)
+        ctx.beginPath(); ctx.arc(midX + radius, midY, 5, 0, Math.PI*2); ctx.fill();
+        ctx.fillText('0°', midX + radius + 10, midY - 10);
+        // (0;1)
+        ctx.beginPath(); ctx.arc(midX, midY - radius, 5, 0, Math.PI*2); ctx.fill();
+        ctx.fillText('90°', midX - 30, midY - radius - 10);
+        // (-1;0)
+        ctx.beginPath(); ctx.arc(midX - radius, midY, 5, 0, Math.PI*2); ctx.fill();
+        ctx.fillText('180°', midX - radius - 40, midY - 10);
+        
+        ctx.restore();
+    }
+
+    // Слухачі подій для Canvas
+    canvas.addEventListener('mousedown', (e) => { 
+        isDrawing = true; ctx.lineCap = 'round'; ctx.lineJoin = 'round'; 
+        ctx.beginPath(); const pos = getCursorPos(e); ctx.moveTo(pos.x, pos.y); 
+    });
+    canvas.addEventListener('mousemove', drawLogic); 
+    window.addEventListener('mouseup', () => isDrawing = false);
+    canvas.addEventListener('mouseout', () => isDrawing = false);
+
+    canvas.addEventListener('touchstart', (e) => {
+        isDrawing = true; ctx.lineCap = 'round'; ctx.lineJoin = 'round'; 
+        ctx.beginPath(); const pos = getCursorPos(e); ctx.moveTo(pos.x, pos.y); 
+        e.preventDefault();
+    }, {passive:false});
+    canvas.addEventListener('touchmove', (e) => { drawLogic(e); e.preventDefault(); }, {passive:false});
+    canvas.addEventListener('touchend', () => isDrawing = false);
+
+    // Ініціалізація
+    window.onload = () => { 
+        render(); 
+        resizeCanvas(); 
+        setTimeout(() => { if(window.MathJax) MathJax.typeset(); }, 500);
+    };
+    window.onresize = resizeCanvas;
+</script>
+</body>
+</html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Геометрія 9 клас: Метод координат та Тригонометрія</t<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Геометрія 9 клас: Координати та Тригонометрія (Розширений курс)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; overflow: hidden; }
+        .custom-scrollbar::-webkit-scrollbar { width: 8px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        .task-card { border: 2px solid #e2e8f0; transition: all 0.3s ease; background: white; }
+        .task-card:hover { border-color: #3b82f6; box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.15); }
+        .input-base {
+            width: 100%; padding: 0.75rem 1.25rem; border-radius: 1rem; border: 2px solid #e2e8f0; 
+            background-color: #f8fafc; font-weight: 600; font-size: 1rem; outline: none; transition: border-color 0.2s;
+        }
+        .input-base:focus { border-color: #3b82f6; background-color: #ffffff; }
+        .input-correct { border-color: #22c55e !important; background-color: #dcfce7 !important; color: #166534 !important; }
+        .input-wrong { border-color: #ef4444 !important; background-color: #fee2e2 !important; color: #991b1b !important; }
+        .canvas-container { position: relative; background: #ffffff; cursor: crosshair; touch-action: none; border-radius: 2rem; }
+        .tool-active { background-color: #3b82f6; color: #ffffff; box-shadow: 0 4px 14px rgba(59, 130, 246, 0.4); }
+        .theory-card { background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%); border: 1px solid #e2e8f0; }
+        
+        .trig-table { width: 100%; border-collapse: separate; border-spacing: 0; border-radius: 1rem; overflow: hidden; border: 1px solid #e2e8f0; }
+        .trig-table th, .trig-table td { padding: 0.75rem; text-align: center; border-bottom: 1px solid #e2e8f0; border-right: 1px solid #e2e8f0; }
+        .trig-table th { background-color: #f1f5f9; font-weight: 700; color: #334155; }
+        .trig-table td { font-weight: 500; color: #475569; background-color: #ffffff; }
+        .trig-table tr:last-child td { border-bottom: none; }
+        .trig-table th:last-child, .trig-table td:last-child { border-right: none; }
+        .trig-table tr:hover td { background-color: #f8fafc; }
+    </style>
+</head>
+<body class="h-screen flex text-slate-900">
+
+    <!-- ЛІВА ЧАСТИНА: Контент -->
+    <div class="w-full lg:w-1/2 flex flex-col bg-white border-r border-slate-200 shadow-2xl z-10 relative h-full">
+        <header class="p-6 border-b border-slate-100 flex justify-between items-center sticky top-0 bg-white/95 backdrop-blur-md z-30">
+            <div>
+                <h1 class="text-2xl font-black text-slate-800 tracking-tight">GeoMaster Pro</h1>
+                <p class="text-xs font-bold text-blue-500 uppercase tracking-widest mt-1">9 Клас • Розширений модуль (Теорія + 45 Завдань)</p>
+            </div>
+            <div class="flex flex-col items-end w-40">
+                <div class="flex items-center gap-2 mb-1.5">
+                    <span id="prog-text" class="text-xs font-black text-blue-600 uppercase">0 / 45 виконано</span>
+                </div>
+                <div class="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden shadow-inner">
+                    <div id="prog-bar" class="h-full bg-gradient-to-r from-blue-400 to-indigo-500 transition-all duration-700" style="width: 0%"></div>
+                </div>
+            </div>
+        </header>
+
+        <main class="flex-1 overflow-y-auto p-6 lg:p-10 space-y-16 custom-scrollbar pb-40">
+            
+            <!-- РОЗДІЛ 1: Знайомство з координатами -->
+            <section class="space-y-6">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-blue-100 rounded-2xl flex items-center justify-center text-2xl shadow-sm">📍</div>
+                    <h2 class="text-3xl font-black text-slate-800 tracking-tight">1. Координатна площина (База)</h2>
+                </div>
+                
+                <div class="theory-card p-8 rounded-[2rem] shadow-sm">
+                    <h3 class="font-bold text-xl mb-4 text-blue-900">Як не заблукати на площині?</h3>
+                    <p class="text-base leading-relaxed mb-6 text-slate-600">Координатна площина — це ніби карта міста. Щоб знайти адресу, нам потрібні дві вулиці, що перетинаються під прямим кутом.</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                        <div class="bg-blue-50 p-5 rounded-2xl border border-blue-100">
+                            <p class="text-xs font-black uppercase text-blue-600 mb-2">Осі координат</p>
+                            <ul class="space-y-2 text-sm text-slate-700 font-medium">
+                                <li>➡️ <b>Вісь \(x\)</b> (горизонтальна) — вісь <b>абсцис</b>.</li>
+                                <li>⬆️ <b>Вісь \(y\)</b> (вертикальна) — вісь <b>ординат</b>.</li>
+                                <li>⏺️ Точка \((0;0)\) — <b>початок координат</b>.</li>
+                            </ul>
+                        </div>
+                        <div class="bg-indigo-50 p-5 rounded-2xl border border-indigo-100">
+                            <p class="text-xs font-black uppercase text-indigo-600 mb-2">Координатні чверті</p>
+                            <ul class="space-y-1 text-sm text-slate-700 font-medium">
+                                <li><b>I чверть:</b> \(x > 0, y > 0\) (верхній правий кут)</li>
+                                <li><b>II чверть:</b> \(x < 0, y > 0\) (верхній лівий)</li>
+                                <li><b>III чверть:</b> \(x < 0, y < 0\) (нижній лівий)</li>
+                                <li><b>IV чверть:</b> \(x > 0, y < 0\) (нижній правий)</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <p class="text-sm bg-amber-50 text-amber-800 p-4 rounded-xl border border-amber-100 font-medium">
+                        💡 <b>Запам'ятай:</b> У записі точки \( A(x; y) \) на першому місці ЗАВЖДИ стоїть абсциса (\(x\)), а на другому — ордината (\(y\)). Алфавітний порядок: спочатку "А" (абсциса), потім "О" (ордината).
+                    </p>
+                </div>
+
+                <!-- Легкі завдання з координат -->
+                <h4 class="font-bold text-lg text-slate-700 mt-8 mb-4 flex items-center gap-2"><span class="text-green-500">🟢</span> Розігрів: Легкі завдання</h4>
+                <div id="tasks-coord-easy" class="space-y-4"></div>
+
+                <!-- Середні завдання з координат -->
+                <h4 class="font-bold text-lg text-slate-700 mt-8 mb-4 flex items-center gap-2"><span class="text-yellow-500">🟡</span> Практика: Типові задачі</h4>
+                <div id="tasks-coord-med" class="space-y-4"></div>
+            </section>
+
+            <!-- РОЗДІЛ 2: Тригонометрія (Вступ та Таблиця) -->
+            <section class="space-y-6">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-indigo-100 rounded-2xl flex items-center justify-center text-2xl shadow-sm">📐</div>
+                    <h2 class="text-3xl font-black text-slate-800 tracking-tight">2. Тригонометрія від 0° до 180°</h2>
+                </div>
+                
+                <div class="theory-card p-8 rounded-[2rem] shadow-sm">
+                    <h3 class="font-bold text-xl mb-4 text-indigo-900">Одиничне півколо — головний секрет</h3>
+                    <p class="text-base leading-relaxed mb-6 text-slate-600">Замість прямокутних трикутників у 9 класі ми використовуємо <b>одиничне півколо</b> (радіус \(R=1\)), центр якого лежить у початку координат \((0;0)\). Кожна точка на цьому півколі відповідає певному куту \(\alpha\).</p>
+                    
+                    <ul class="space-y-4 text-sm font-medium bg-slate-50 p-6 rounded-2xl border border-slate-200 mb-6">
+                        <li class="flex gap-3"><span class="text-xl">🔵</span> <div><b>Синус (\(\sin \alpha\))</b> — це ордината (\(y\)) точки на півколі. Оскільки півколо знаходиться зверху, синус від 0° до 180° <b>завжди додатний</b> (або нуль).</div></li>
+                        <li class="flex gap-3"><span class="text-xl">🔴</span> <div><b>Косинус (\(\cos \alpha\))</b> — це абсциса (\(x\)) точки. Для гострих кутів (I чверть) косинус додатний. Для тупих кутів (II чверть, ліворуч) косинус <b>від'ємний</b>!</div></li>
+                        <li class="flex gap-3"><span class="text-xl">🟡</span> <div><b>Тангенс (\(\text{tg} \alpha\))</b> — це відношення \(\sin \alpha / \cos \alpha\) (або \(y / x\)). Не існує для 90°, бо на нуль ділити не можна.</div></li>
+                    </ul>
+
+                    <h4 class="font-bold text-lg mb-3 text-slate-800">Таблиця значень (Вивчи її!)</h4>
+                    <div class="overflow-x-auto pb-2 custom-scrollbar">
+                        <table class="trig-table">
+                            <thead>
+                                <tr>
+                                    <th>\(\alpha\)</th>
+                                    <th>0°</th>
+                                    <th>30°</th>
+                                    <th>45°</th>
+                                    <th>60°</th>
+                                    <th>90°</th>
+                                    <th>120°</th>
+                                    <th>135°</th>
+                                    <th>150°</th>
+                                    <th>180°</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><b>\(\sin \alpha\)</b></td>
+                                    <td>0</td>
+                                    <td>\(\frac{1}{2}\)</td>
+                                    <td>\(\frac{\sqrt{2}}{2}\)</td>
+                                    <td>\(\frac{\sqrt{3}}{2}\)</td>
+                                    <td>1</td>
+                                    <td>\(\frac{\sqrt{3}}{2}\)</td>
+                                    <td>\(\frac{\sqrt{2}}{2}\)</td>
+                                    <td>\(\frac{1}{2}\)</td>
+                                    <td>0</td>
+                                </tr>
+                                <tr>
+                                    <td><b>\(\cos \alpha\)</b></td>
+                                    <td>1</td>
+                                    <td>\(\frac{\sqrt{3}}{2}\)</td>
+                                    <td>\(\frac{\sqrt{2}}{2}\)</td>
+                                    <td>\(\frac{1}{2}\)</td>
+                                    <td>0</td>
+                                    <td>\(-\frac{1}{2}\)</td>
+                                    <td>\(-\frac{\sqrt{2}}{2}\)</td>
+                                    <td>\(-\frac{\sqrt{3}}{2}\)</td>
+                                    <td>-1</td>
+                                </tr>
+                                <tr>
+                                    <td><b>\(\text{tg} \alpha\)</b></td>
+                                    <td>0</td>
+                                    <td>\(\frac{\sqrt{3}}{3}\)</td>
+                                    <td>1</td>
+                                    <td>\(\sqrt{3}\)</td>
+                                    <td class="text-red-500 font-bold text-xs">Не існує</td>
+                                    <td>\(-\sqrt{3}\)</td>
+                                    <td>-1</td>
+                                    <td>\(-\frac{\sqrt{3}}{3}\)</td>
+                                    <td>0</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Легкі завдання з тригонометрії (Таблиця) -->
+                <h4 class="font-bold text-lg text-slate-700 mt-8 mb-4 flex items-center gap-2"><span class="text-green-500">🟢</span> Розігрів: Робота з таблицею</h4>
+                <div id="tasks-trig-easy" class="space-y-4"></div>
+
+                <!-- Середні завдання з тригонометрії -->
+                <h4 class="font-bold text-lg text-slate-700 mt-8 mb-4 flex items-center gap-2"><span class="text-yellow-500">🟡</span> Практика: Знаки та обчислення</h4>
+                <div id="tasks-trig-med" class="space-y-4"></div>
+            </section>
+
+            <!-- РОЗДІЛ 3: Тотожності -->
+            <section class="space-y-6">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-purple-100 rounded-2xl flex items-center justify-center text-2xl shadow-sm">✨</div>
+                    <h2 class="text-3xl font-black text-slate-800 tracking-tight">3. Магія формул</h2>
+                </div>
+                
+                <div class="theory-card p-8 rounded-[2rem] shadow-sm relative overflow-hidden bg-gradient-to-br from-purple-50 to-white">
+                    <div class="absolute -right-10 -bottom-10 opacity-5 text-[150px] leading-none pointer-events-none">∑</div>
+                    <h3 class="font-bold text-xl mb-4 text-purple-900">Основна тригонометрична тотожність</h3>
+                    <p class="text-base leading-relaxed mb-4 text-slate-700">
+                        Оскільки координати точок півкола задовольняють рівняння кола \(x^2 + y^2 = 1\), а \(x = \cos \alpha\), \(y = \sin \alpha\), отримуємо найважливішу формулу:
+                    </p>
+                    <div class="bg-white p-6 rounded-2xl border-2 border-purple-200 text-center mb-6 shadow-sm">
+                        <span class="text-2xl font-black text-purple-700">\[ \sin^2\alpha + \cos^2\alpha = 1 \]</span>
+                    </div>
+
+                    <h3 class="font-bold text-xl mb-4 text-purple-900 mt-8">Формули зведення</h3>
+                    <p class="text-sm mb-4 text-slate-600">Вони дозволяють звести обчислення тупих кутів до гострих:</p>
+                    <ul class="space-y-3 bg-white p-6 rounded-2xl border border-slate-200 text-sm font-bold text-slate-700">
+                        <li class="flex items-center gap-3">✅ <span class="text-lg">\( \sin(180^\circ - \alpha) = \sin\alpha \)</span> (Синус тупого кута додатний)</li>
+                        <li class="flex items-center gap-3">✅ <span class="text-lg">\( \cos(180^\circ - \alpha) = -\cos\alpha \)</span> (Косинус тупого кута від'ємний!)</li>
+                        <li class="flex items-center gap-3">✅ <span class="text-lg">\( \text{tg}(180^\circ - \alpha) = -\text{tg}\alpha \)</span></li>
+                    </ul>
+                </div>
+
+                <div id="tasks-formulas" class="space-y-4"></div>
+            </section>
+
+            <!-- РОЗДІЛ 4: Фінальний тест -->
+            <section class="space-y-6 pt-10 border-t-2 border-dashed border-slate-200">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-slate-800 text-white rounded-2xl flex items-center justify-center text-2xl shadow-lg">🏁</div>
+                    <h2 class="text-3xl font-black text-slate-800 tracking-tight">Фінальний тест</h2>
+                </div>
+                <div class="bg-slate-50 p-6 rounded-3xl border border-slate-200 text-slate-600 text-sm font-medium">
+                    Останній ривок! Застосуй усі знання, які ти щойно отримав(ла).
+                </div>
+                <div id="tasks-test" class="space-y-4"></div>
+            </section>
+
+            <div class="pt-12">
+                <button onclick="finishLesson()" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-6 rounded-[2rem] font-black text-xl hover:shadow-2xl hover:shadow-blue-500/30 transition-all transform hover:-translate-y-1 active:translate-y-0">
+                    ЗАВЕРШИТИ ТА ОТРИМАТИ ОЦІНКУ
+                </button>
+            </div>
+        </main>
+    </div>
+
+    <!-- ПРАВА ЧАСТИНА: Smart Whiteboard -->
+    <div class="hidden lg:flex w-1/2 flex-col bg-slate-100 p-8 h-screen relative">
+        <div class="absolute top-10 left-1/2 -translate-x-1/2 z-40 flex items-center gap-2 bg-white p-2 rounded-2xl shadow-xl border border-slate-200">
+            <button onclick="setTool('pen')" id="tool-pen" class="p-3 rounded-xl tool-active transition" title="Олівець">✏️</button>
+            <button onclick="setTool('eraser')" id="tool-eraser" class="p-3 rounded-xl hover:bg-slate-100 transition" title="Гумка">🧽</button>
+            <div class="w-px h-8 bg-slate-200 mx-1"></div>
+            <button onclick="toggleGrid()" id="tool-grid" class="px-4 py-2 text-xs font-black text-slate-500 hover:bg-slate-100 rounded-xl transition flex items-center gap-2" title="Увімкнути координатну площину">🌐 <span class="hidden xl:inline">ОСІ</span></button>
+            <button onclick="drawUnitCircle()" class="px-4 py-2 text-xs font-black text-slate-500 hover:bg-slate-100 rounded-xl transition flex items-center gap-2" title="Намалювати одиничне півколо">⭕ <span class="hidden xl:inline">ПІВКОЛО</span></button>
+            <div class="w-px h-8 bg-slate-200 mx-1"></div>
+            <button onclick="clearCanvas()" class="p-3 text-red-500 hover:bg-red-50 rounded-xl transition" title="Очистити дошку">🗑️</button>
+        </div>
+        
+        <div class="canvas-container flex-1 shadow-lg border-4 border-white overflow-hidden mt-24" id="canvas-wrap">
+            <canvas id="whiteboard"></canvas>
+        </div>
+        
+        <div class="mt-6 text-center">
+            <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Smart Geometry Lab v2.0</p>
+        </div>
+    </div>
+
+    <!-- Модальне вікно результату -->
+    <div id="result-modal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-6 opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-[3rem] p-12 max-w-lg w-full text-center shadow-2xl transform scale-95 transition-transform duration-300" id="result-content">
+            <div class="text-8xl mb-6" id="res-emoji">🏆</div>
+            <h2 class="text-3xl font-black text-slate-800 mb-3" id="res-title">Чудова робота!</h2>
+            <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-3xl p-8 mb-8 border border-blue-100">
+                <p id="res-score" class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 font-black text-7xl mb-2">0 / 45</p>
+                <p class="text-xs font-bold text-blue-500 uppercase tracking-widest">Твій фінальний результат</p>
+            </div>
+            <p id="res-message" class="text-slate-600 mb-8 font-medium text-lg leading-relaxed">Математика — це гімнастика для розуму. Ти сьогодні відмінно потренувався(лася)!</p>
+            <button onclick="location.reload()" class="w-full bg-slate-900 text-white py-5 rounded-2xl font-bold hover:bg-blue-600 transition shadow-lg text-lg">Пройти ще раз</button>
+        </div>
+    </div>
+
+<script>
+    let score = 0; let answered = 0; const TOTAL = 45;
+    const taskStates = {};
+
+    // 45 завдань
+    const allTasks = {
+        'coord-easy': [
+            { id: 1, type: 'input', q: "Як називається вісь x (горизонтальна)? (одне слово, з малої букви)", a: "абсцис", h: "Починається на 'а'", s: "Вісь x — це вісь абсцис." },
+            { id: 2, type: 'input', q: "Як називається вісь y (вертикальна)? (одне слово, з малої букви)", a: "ординат", h: "Починається на 'о'", s: "Вісь y — це вісь ординат." },
+            { id: 3, type: 'input', q: "Яка абсциса у точки A(7; -2)?", a: 7, h: "Перше число в дужках.", s: "Абсциса (x) = 7." },
+            { id: 4, type: 'input', q: "Яка ордината у точки B(-4; 9)?", a: 9, h: "Друге число в дужках.", s: "Ордината (y) = 9." },
+            { id: 5, type: 'mcq', q: "Точка (0; 0) — це...", opts: ["Точка відліку", "Початок координат", "Центр площини"], a: 1, h: "Офіційна математична назва.", s: "Початок координат." },
+            { id: 6, type: 'mcq', q: "У якій чверті лежить точка C(5; 5)?", opts: ["I", "II", "III", "IV"], a: 0, h: "Обидві координати додатні (+;+).", s: "Перша (I) чверть." },
+            { id: 7, type: 'mcq', q: "У якій чверті лежить точка D(-3; -3)?", opts: ["I", "II", "III", "IV"], a: 2, h: "Обидві координати від'ємні (-;-).", s: "Третя (III) чверть." },
+            { id: 8, type: 'mcq', q: "Де знаходиться точка E(0; 6)?", opts: ["На осі x", "На осі y", "У I чверті"], a: 1, h: "Якщо x = 0, ми не рухаємось ні вправо, ні вліво, а лише вгору.", s: "На осі y (ординат)." },
+            { id: 9, type: 'mcq', q: "Де знаходиться точка F(-8; 0)?", opts: ["На осі x", "На осі y", "У II чверті"], a: 0, h: "Якщо y = 0, висота нульова.", s: "На осі x (абсцис)." },
+            { id: 10, type: 'input', q: "Софія пробігла 1 км (за 4:29!). На площині її старт у точці (0; 0), а фініш на додатній півосі x (1 од = 1 метр). Яка абсциса фінішу?", a: 1000, h: "1 км = 1000 метрів.", s: "Абсциса дорівнює 1000." }
+        ],
+        'coord-med': [
+            { id: 11, type: 'mcq', q: "У якій чверті лежить точка K(-4; 2)?", opts: ["I", "II", "III", "IV"], a: 1, h: "Ліворуч (x<0) і вгору (y>0).", s: "Друга (II) чверть." },
+            { id: 12, type: 'mcq', q: "У якій чверті лежить точка L(7; -1)?", opts: ["I", "II", "III", "IV"], a: 3, h: "Праворуч (x>0) і вниз (y<0).", s: "Четверта (IV) чверть." },
+            { id: 13, type: 'input', q: "Знайдіть відстань від точки M(4; -3) до осі ординат (осі y).", a: 4, h: "Відстань до осі y — це модуль абсциси |x|.", s: "|4| = 4." },
+            { id: 14, type: 'input', q: "Знайдіть відстань від точки N(-5; 8) до осі абсцис (осі x).", a: 8, h: "Відстань до осі x — це модуль ординати |y|.", s: "|8| = 8." },
+            { id: 15, type: 'input', q: "Для приготування лінивих вареників ми рухаємось від столу (0;0) до плити (0; 5) і назад. Який шлях (у метрах, якщо 1 од=1 м) ми пройшли?", a: 10, h: "В один бік 5, і назад 5.", s: "5 + 5 = 10." },
+            { id: 16, type: 'input', q: "На прямій, паралельній осі x, лежать дві точки. Ордината першої дорівнює -7. Яка ордината другої точки?", a: -7, h: "Пряма паралельна осі x горизонтальна. Висота (y) на ній не змінюється.", s: "-7" },
+            { id: 17, type: 'mcq', q: "Якщо добуток x·y > 0 і x < 0, то точка (x; y) лежить у чверті:", opts: ["I", "II", "III", "IV"], a: 2, h: "Щоб добуток був додатним при від'ємному x, y теж має бути від'ємним (- на - дає +).", s: "Обидві координати від'ємні — це III чверть." },
+            { id: 18, type: 'input', q: "Центр кола збігається з початком координат. Радіус дорівнює 12. Знайдіть ординату верхньої точки перетину кола з віссю y.", a: 12, h: "Піднімаємось вгору від (0;0) на величину радіуса.", s: "12" },
+            { id: 19, type: 'input', q: "Дано квадрат ABCD, сторона якого 6. A(0;0), B(6;0), D(0;6). Яка абсциса точки C?", a: 6, h: "Точка С має ту ж абсцису, що і B, бо квадрат.", s: "6" },
+            { id: 20, type: 'mcq', q: "Точка P(x; y) належить бісектрисі першого координатного кута. Що можна сказати про її координати?", opts: ["x = -y", "x = y", "x = 0"], a: 1, h: "Бісектриса ділить кут навпіл, тому координати рівні.", s: "x = y" }
+        ],
+        'trig-easy': [
+            { id: 21, type: 'input', q: "Використовуючи таблицю, знайдіть: \\( \\sin 30^\\circ \\) (десятковим дробом)", a: 0.5, h: "Дивись перший рядок, другий стовпчик таблиці.", s: "1/2 = 0.5" },
+            { id: 22, type: 'input', q: "Використовуючи таблицю, знайдіть: \\( \\cos 60^\\circ \\) (десятковим дробом)", a: 0.5, h: "Косинус 60° дорівнює синусу 30°.", s: "1/2 = 0.5" },
+            { id: 23, type: 'input', q: "Чому дорівнює \\( \\text{tg} 45^\\circ \\)?", a: 1, h: "Дивись таблицю.", s: "1" },
+            { id: 24, type: 'input', q: "Чому дорівнює \\( \\sin 90^\\circ \\)?", a: 1, h: "Це ордината найвищої точки півкола.", s: "1" },
+            { id: 25, type: 'input', q: "Чому дорівнює \\( \\cos 180^\\circ \\)?", a: -1, h: "Це абсциса крайньої лівої точки півкола.", s: "-1" },
+            { id: 26, type: 'input', q: "Чому дорівнює \\( \\sin 0^\\circ \\)?", a: 0, h: "Ордината точки (1; 0).", s: "0" },
+            { id: 27, type: 'mcq', q: "Чи існує тангенс 90 градусів?", opts: ["Так", "Ні"], a: 1, h: "tg = sin/cos. cos 90° = 0. Ділити на 0 не можна.", s: "Ні, не існує." },
+            { id: 28, type: 'input', q: "Обчисліть: \\( 2 \\cdot \\sin 30^\\circ \\)", a: 1, h: "2 * 0.5 = ?", s: "1" },
+            { id: 29, type: 'input', q: "Обчисліть: \\( \\cos 90^\\circ + \\sin 90^\\circ \\)", a: 1, h: "0 + 1 = ?", s: "1" },
+            { id: 30, type: 'mcq', q: "Який знак має синус будь-якого кута від 0° до 180°?", opts: ["Завжди додатний (або 0)", "Може бути від'ємним"], a: 0, h: "Півколо знаходиться у верхній частині площини, де y >= 0.", s: "Завжди додатний (або 0)." }
+        ],
+        'trig-med': [
+            { id: 31, type: 'mcq', q: "Якщо кут тупий (від 90° до 180°), то його косинус...", opts: ["Додатний", "Від'ємний", "Дорівнює 0"], a: 1, h: "Тупі кути лежать у II чверті, де x < 0.", s: "Від'ємний." },
+            { id: 32, type: 'mcq', q: "Чи може абсциса точки одиничного півкола дорівнювати 2?", opts: ["Так", "Ні"], a: 1, h: "Радіус півкола дорівнює 1.", s: "Ні, максимальне значення 1." },
+            { id: 33, type: 'mcq', q: "Який знак має \\( \\cos 140^\\circ \\)?", opts: ["+", "-"], a: 1, h: "140° — тупий кут.", s: "-" },
+            { id: 34, type: 'input', q: "Обчисліть: \\( \\sin 150^\\circ + \\cos 120^\\circ \\). (Підказка: використай таблицю)", a: 0, h: "sin 150° = 0.5, cos 120° = -0.5", s: "0.5 + (-0.5) = 0" },
+            { id: 35, type: 'mcq', q: "Чи існує такий кут \\( \\alpha \\), що \\( \\cos \\alpha = -0.7 \\)?", opts: ["Так", "Ні"], a: 0, h: "Косинус приймає значення від -1 до 1.", s: "Так." },
+            { id: 36, type: 'mcq', q: "Який із записів правильний?", opts: ["sin 130° < 0", "cos 130° < 0"], a: 1, h: "Кут тупий. Синус тупого завжди додатний, косинус — від'ємний.", s: "cos 130° < 0" },
+            { id: 37, type: 'input', q: "Обчисліть: \\( \\text{tg} 135^\\circ \\)", a: -1, h: "Подивись у таблицю.", s: "-1" },
+            { id: 38, type: 'input', q: "Значення виразу \\( 4 \\cdot \\cos 60^\\circ \\):", a: 2, h: "4 * 0.5", s: "2" },
+            { id: 39, type: 'input', q: "Обчисліть: \\( \\sin^2 12^\\circ + \\cos^2 12^\\circ \\)", a: 1, h: "Це основна тригонометрична тотожність.", s: "1" },
+            { id: 40, type: 'input', q: "Обчисліть: \\( 5 - (\\sin^2 75^\\circ + \\cos^2 75^\\circ) \\)", a: 4, h: "В дужках виходить 1.", s: "5 - 1 = 4" }
+        ],
+        'formulas': [
+            { id: 41, type: 'input', q: "Якщо \\( \\sin 20^\\circ = 0.34 \\), чому дорівнює \\( \\sin 160^\\circ \\)?", a: 0.34, h: "sin(180° - α) = sin(α). Синус суміжних кутів однаковий.", s: "0.34" },
+            { id: 42, type: 'input', q: "Якщо \\( \\cos 40^\\circ = 0.76 \\), чому дорівнює \\( \\cos 140^\\circ \\)?", a: -0.76, h: "cos(180° - α) = -cos(α). Постав мінус.", s: "-0.76" },
+            { id: 43, type: 'mcq', q: "Спростіть вираз: \\( 1 - \\cos^2 \\alpha \\)", opts: ["\\( \\sin^2 \\alpha \\)", "\\( -\\sin^2 \\alpha \\)", "\\( \\text{tg}^2 \\alpha \\)"], a: 0, h: "Перенесіть cos²α вправо у формулі sin²α + cos²α = 1.", s: "\\( \\sin^2 \\alpha \\)" },
+            { id: 44, type: 'mcq', q: "Яке з рівнянь є основною тригонометричною тотожністю?", opts: ["sin α + cos α = 1", "sin²α + cos²α = 1", "sin α / cos α = 1"], a: 1, h: "Квадрати!", s: "sin²α + cos²α = 1" }
+        ],
+        'test': [
+            { id: 45, type: 'input', q: "Дано точки A(0; 8) і B(0; 0). Знайдіть довжину відрізка AB.", a: 8, h: "Це відстань вздовж осі y.", s: "8" }
+        ]
+    };
+
+    function render() {
+        for(let cat in allTasks) {
+            const container = document.getElementById(`tasks-${cat}`);
+            allTasks[cat].forEach(t => {
+                const card = document.createElement('div');
+                card.className = 'task-card p-5 lg:p-6 rounded-3xl space-y-4';
+                
+                let actionHTML = '';
+                if(t.type === 'mcq') {
+                    actionHTML = `<div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-left">
+                        ${t.opts.map((o,i)=>`<button onclick="checkMCQ(${t.id},${i},${t.a})" id="opt-${t.id}-${i}" class="text-left p-4 border-2 border-slate-100 bg-slate-50/50 rounded-2xl text-sm font-semibold hover:border-blue-400 hover:bg-blue-50 transition-colors shadow-sm focus:outline-none">${o}</button>`).join('')}
+                    </div>`;
+                } else {
+                    actionHTML = `<div class="flex gap-3">
+                        <input type="text" id="in-${t.id}" class="input-base shadow-sm" placeholder="Ваша відповідь...">
+                        <button onclick="checkIn(${t.id},'${t.a}')" class="bg-slate-800 text-white px-8 rounded-2xl font-black hover:bg-blue-600 transition-colors shadow-md transform hover:scale-105 active:scale-95">OK</button>
+                    </div>`;
+                }
+
+                card.innerHTML = `
+                    <p class="font-bold text-slate-800 text-lg leading-snug">${t.q}</p>
+                    ${actionHTML}
+                    <div class="flex flex-wrap gap-4 pt-3 border-t border-slate-100 mt-4">
+                        <button onclick="toggle('h-${t.id}')" class="text-[11px] font-black uppercase tracking-wider text-slate-400 hover:text-amber-500 transition flex items-center gap-1.5 bg-slate-50 px-3 py-1.5 rounded-lg"><span class="text-sm">💡</span> Підказка</button>
+                        <button onclick="toggle('s-${t.id}')" class="text-[11px] font-black uppercase tracking-wider text-slate-400 hover:text-blue-500 transition flex items-center gap-1.5 bg-slate-50 px-3 py-1.5 rounded-lg"><span class="text-sm">📝</span> Розв'язання</button>
+                    </div>
+                    <div id="h-${t.id}" class="hidden mt-3 p-4 bg-amber-50 rounded-2xl text-sm text-amber-900 border border-amber-200/60 shadow-inner font-medium">${t.h}</div>
+                    <div id="s-${t.id}" class="hidden mt-3 p-4 bg-blue-50 rounded-2xl text-sm text-blue-900 border border-blue-200/60 shadow-inner font-medium"><b>Рішення:</b> ${t.s}</div>
+                `;
+                container.appendChild(card);
+            });
+        }
+    }
+
+    function updateProgress(id) {
+        if(!taskStates[id]) {
+            taskStates[id] = true; 
+            answered++;
+            document.getElementById('prog-text').innerText = `${answered} / ${TOTAL} виконано`;
+            document.getElementById('prog-bar').style.width = `${(answered/TOTAL)*100}%`;
+        }
+    }
+
+    function checkIn(id, corr) {
+        const el = document.getElementById(`in-${id}`);
+        const val = el.value.toString().toLowerCase().trim().replace(',', '.');
+        const correctVal = corr.toString().toLowerCase().trim().replace(',', '.');
+        
+        el.classList.remove('input-correct', 'input-wrong');
+        void el.offsetWidth; // trigger reflow
+        
+        if(val === correctVal) { 
+            el.classList.add('input-correct'); 
+            if(!taskStates[id]) score++; 
+            updateProgress(id);
+        } else { 
+            el.classList.add('input-wrong'); 
+        }
+    }
+
+    function checkMCQ(id, sel, corr) {
+        if(taskStates[id]) return; // Prevent changing answer
+        const allOpts = document.querySelectorAll(`[id^="opt-${id}-"]`);
+        allOpts.forEach(btn => btn.classList.add('opacity-50', 'pointer-events-none', 'grayscale'));
+        
+        const selectedBtn = document.getElementById(`opt-${id}-${sel}`);
+        const correctBtn = document.getElementById(`opt-${id}-${corr}`);
+        
+        if(sel === corr) { 
+            selectedBtn.classList.replace('border-slate-100', 'border-green-500');
+            selectedBtn.classList.add('bg-green-100', 'text-green-900', 'opacity-100', 'shadow-md');
+            selectedBtn.classList.remove('grayscale');
+            score++; 
+        } else { 
+            selectedBtn.classList.replace('border-slate-100', 'border-red-500');
+            selectedBtn.classList.add('bg-red-100', 'text-red-900', 'opacity-100');
+            selectedBtn.classList.remove('grayscale');
+            
+            correctBtn.classList.replace('border-slate-100', 'border-green-500');
+            correctBtn.classList.add('bg-green-50', 'opacity-100', 'text-green-800');
+            correctBtn.classList.remove('grayscale');
+        }
+        updateProgress(id);
+    }
+
+    function toggle(id) { 
+        const el = document.getElementById(id);
+        el.classList.toggle('hidden');
+        if(!el.classList.contains('hidden') && window.MathJax) {
+            MathJax.typesetPromise([el]);
+        }
+    }
+
+    function finishLesson() { 
+        const modal = document.getElementById('result-modal');
+        const content = document.getElementById('result-content');
+        
+        modal.classList.remove('hidden');
+        // Small delay to allow display block to apply before animating opacity
+        setTimeout(() => {
+            modal.classList.remove('opacity-0');
+            content.classList.remove('scale-95');
+        }, 10);
+        
+        document.getElementById('res-score').innerText = `${score} / ${TOTAL}`; 
+        
+        const title = document.getElementById('res-title');
+        const msg = document.getElementById('res-message');
+        const emoji = document.getElementById('res-emoji');
+        
+        const percentage = score / TOTAL;
+        if(percentage >= 0.9) {
+            title.innerText = "Ідеально!"; emoji.innerText = "👑";
+            msg.innerText = "Ти абсолютний геній тригонометрії та координат! Жодна задача не встоїть перед твоїм інтелектом.";
+        } else if(percentage >= 0.7) {
+            title.innerText = "Дуже добре!"; emoji.innerText = "🔥";
+            msg.innerText = "Прекрасний результат. Математика здається перед твоєю наполегливістю! Ще трохи практики, і буде 100%.";
+        } else if(percentage >= 0.4) {
+            title.innerText = "Гарний старт!"; emoji.innerText = "🌱";
+            msg.innerText = "Ти на правильному шляху! Фундамент закладено, залишилось лише відточити майстерність. Переглянь розв'язки там, де були помилки.";
+        } else {
+            title.innerText = "Головне — не здаватись!"; emoji.innerText = "💪";
+            msg.innerText = "Кожна помилка — це крок до розуміння. Прочитай пояснення до завдань, спробуй ще раз, і ти обов'язково розберешся!";
+        }
+    }
+
+    // --- SMART WHITEBOARD LOGIC ---
+    const canvas = document.getElementById('whiteboard'); 
+    const ctx = canvas.getContext('2d');
+    let isDrawing = false; 
+    let currentTool = 'pen'; 
+    let showGrid = false;
+
+    function resizeCanvas() { 
+        const parent = canvas.parentElement;
+        canvas.width = parent.clientWidth; 
+        canvas.height = parent.clientHeight; 
+        redrawBackground();
+    }
+
+    function getCursorPos(e) {
+        const rect = canvas.getBoundingClientRect();
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        return { x: clientX - rect.left, y: clientY - rect.top };
+    }
+
+    function drawLogic(e) {
+        if(!isDrawing) return; 
+        const pos = getCursorPos(e);
+        ctx.strokeStyle = currentTool === 'pen' ? '#1e293b' : '#ffffff'; 
+        ctx.lineWidth = currentTool === 'pen' ? 3 : 40;
+        ctx.lineTo(pos.x, pos.y); 
+        ctx.stroke(); 
+        ctx.beginPath(); 
+        ctx.moveTo(pos.x, pos.y);
+    }
+
+    function setTool(t) { 
+        currentTool = t; 
+        document.getElementById('tool-pen').classList.toggle('tool-active', t === 'pen'); 
+        document.getElementById('tool-eraser').classList.toggle('tool-active', t === 'eraser'); 
+    }
+
+    function clearCanvas() { 
+        ctx.clearRect(0, 0, canvas.width, canvas.height); 
+        redrawBackground();
+    }
+
+    function redrawBackground() {
+        if(showGrid) drawGridAndAxes();
+    }
+
+    function drawGridAndAxes() {
+        ctx.save();
+        // Сітка
+        ctx.strokeStyle = '#f1f5f9'; ctx.lineWidth = 2; ctx.beginPath(); 
+        const step = 40;
+        for(let i = 0; i < canvas.width; i += step){ ctx.moveTo(i, 0); ctx.lineTo(i, canvas.height); } 
+        for(let i = 0; i < canvas.height; i += step){ ctx.moveTo(0, i); ctx.lineTo(canvas.width, i); } 
+        ctx.stroke(); 
+        
+        // Осі координат
+        ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 2.5; ctx.beginPath();
+        const midX = Math.round(canvas.width/2 / step) * step;
+        const midY = Math.round(canvas.height/2 / step) * step;
+        
+        // Y вісь
+        ctx.moveTo(midX, 0); ctx.lineTo(midX, canvas.height); 
+        // X вісь
+        ctx.moveTo(0, midY); ctx.lineTo(canvas.width, midY); 
+        ctx.stroke();
+        
+        // Стрілки та підписи
+        ctx.fillStyle = '#64748b'; ctx.font = 'bold 16px "Plus Jakarta Sans"';
+        ctx.fillText('x', canvas.width - 25, midY - 12);
+        ctx.fillText('y', midX + 12, 25);
+        ctx.fillText('0', midX - 15, midY + 18);
+        
+        // Засічки (одиничні відрізки)
+        ctx.beginPath();
+        ctx.moveTo(midX + step, midY - 5); ctx.lineTo(midX + step, midY + 5); // 1 по x
+        ctx.moveTo(midX - 5, midY - step); ctx.lineTo(midX + 5, midY - step); // 1 по y
+        ctx.stroke();
+        ctx.font = '12px "Plus Jakarta Sans"';
+        ctx.fillText('1', midX + step - 4, midY + 18);
+        ctx.fillText('1', midX - 15, midY - step + 4);
+        
+        ctx.restore();
+    }
+
+    function toggleGrid() { 
+        showGrid = !showGrid; 
+        const btn = document.getElementById('tool-grid');
+        if(showGrid) {
+            btn.classList.add('bg-blue-50', 'text-blue-600', 'border-blue-200');
+            drawGridAndAxes();
+        } else {
+            btn.classList.remove('bg-blue-50', 'text-blue-600', 'border-blue-200');
+            clearCanvas();
+        }
+    }
+
+    function drawUnitCircle() {
+        if(!showGrid) toggleGrid(); // Автоматично вмикаємо осі
+        const step = 40;
+        const midX = Math.round(canvas.width/2 / step) * step;
+        const midY = Math.round(canvas.height/2 / step) * step;
+        const radius = step * 4; // Радіус = 4 клітинки для наочності
+        
+        ctx.save();
+        ctx.strokeStyle = '#3b82f6'; 
+        ctx.lineWidth = 4; 
+        ctx.beginPath();
+        // Малюємо півколо (від 0 до 180 градусів - тобто верхня частина)
+        // В canvas 0 це праворуч, PI це ліворуч, малюємо проти годинникової
+        ctx.arc(midX, midY, radius, Math.PI, 0, false);
+        ctx.stroke();
+        
+        // Точки та підписи
+        ctx.fillStyle = '#1d4ed8'; ctx.font = 'bold 14px "Plus Jakarta Sans"';
+        // (1;0)
+        ctx.beginPath(); ctx.arc(midX + radius, midY, 5, 0, Math.PI*2); ctx.fill();
+        ctx.fillText('0°', midX + radius + 10, midY - 10);
+        // (0;1)
+        ctx.beginPath(); ctx.arc(midX, midY - radius, 5, 0, Math.PI*2); ctx.fill();
+        ctx.fillText('90°', midX - 30, midY - radius - 10);
+        // (-1;0)
+        ctx.beginPath(); ctx.arc(midX - radius, midY, 5, 0, Math.PI*2); ctx.fill();
+        ctx.fillText('180°', midX - radius - 40, midY - 10);
+        
+        ctx.restore();
+    }
+
+    // Слухачі подій для Canvas
+    canvas.addEventListener('mousedown', (e) => { 
+        isDrawing = true; ctx.lineCap = 'round'; ctx.lineJoin = 'round'; 
+        ctx.beginPath(); const pos = getCursorPos(e); ctx.moveTo(pos.x, pos.y); 
+    });
+    canvas.addEventListener('mousemove', drawLogic); 
+    window.addEventListener('mouseup', () => isDrawing = false);
+    canvas.addEventListener('mouseout', () => isDrawing = false);
+
+    canvas.addEventListener('touchstart', (e) => {
+        isDrawing = true; ctx.lineCap = 'round'; ctx.lineJoin = 'round'; 
+        ctx.beginPath(); const pos = getCursorPos(e); ctx.moveTo(pos.x, pos.y); 
+        e.preventDefault();
+    }, {passive:false});
+    canvas.addEventListener('touchmove', (e) => { drawLogic(e); e.preventDefault(); }, {passive:false});
+    canvas.addEventListener('touchend', () => isDrawing = false);
+
+    // Ініціалізація
+    window.onload = () => { 
+        render(); 
+        resizeCanvas(); 
+        setTimeout(() => { if(window.MathJax) MathJax.typeset(); }, 500);
+    };
+    window.onresize = resizeCanvas;
+</script>
+</body>
+</html>itle>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         window.MathJax = {
