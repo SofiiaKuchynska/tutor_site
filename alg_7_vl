@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Алгебра 7 клас: Властивості степенів (Тестовий тренажер)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; overflow: hidden; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .task-card { border: 1px solid #e2e8f0; transition: all 0.25s ease; background: white; }
+        .task-card:hover { border-color: #6366f1; box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.08); }
+        .opt-btn {
+            border: 2px solid #f1f5f9; background-color: #ffffff;
+            transition: all 0.15s ease; cursor: pointer; user-select: none;
+        }
+        .opt-btn:hover:not(:disabled) { border-color: #c7d2fe; background-color: #f5f7ff; transform: translateY(-1px); }
+        .opt-correct { border-color: #22c55e !important; background-color: #dcfce7 !important; color: #15803d !important; }
+        .opt-wrong { border-color: #ef4444 !important; background-color: #fee2e2 !important; color: #b91c1c !important; }
+        .canvas-container { position: relative; background: #ffffff; cursor: crosshair; touch-action: none; }
+        .tool-active { background-color: #4f46e5 !important; color: #ffffff !important; }
+        .bubble-factor { transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        .bubble-factor:hover { transform: scale(1.15) rotate(4deg); }
+    </style>
+</head>
+<body class="h-screen flex text-slate-900">
+
+    <!-- ЛІВА ЧАСТИНА: КОНТЕНТ (СКРОЛ ТА ТЕСТОВІ КАРТКИ) -->
+    <div class="w-full lg:w-1/2 flex flex-col bg-white border-r border-slate-200 shadow-xl z-10 relative">
+        <header class="p-6 border-b border-slate-100 flex justify-between items-center sticky top-0 bg-white/95 backdrop-blur-md z-30">
+            <div>
+                <h1 class="text-2xl font-black text-slate-800 tracking-tight">Algebra Pro</h1>
+                <p class="text-[11px] font-bold text-indigo-500 uppercase tracking-widest mt-0.5">7 Клас • 50 Тестових завдань «В один клік»</p>
+            </div>
+            <div class="flex flex-col items-end w-36">
+                <div class="flex items-center gap-2 mb-1">
+                    <span id="prog-text" class="text-xs font-black text-indigo-600 uppercase">0 / 50 готово</span>
+                </div>
+                <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+                    <div id="prog-bar" class="h-full bg-gradient-to-r from-indigo-500 to-purple-500 transition-all duration-500" style="width: 0%"></div>
+                </div>
+            </div>
+        </header>
+
+        <main class="flex-1 overflow-y-auto p-6 lg:p-10 space-y-12 custom-scrollbar pb-32">
+            
+            <!-- ІНТЕРАКТИВНА ЛАБОРАТОРІЯ МНОЖНИКІВ -->
+            <section class="space-y-4">
+                <div class="flex items-center gap-3">
+                    <span class="text-3xl">🔬</span>
+                    <h2 class="text-xl font-black text-slate-800">Жива лабораторія: Анатомія показника</h2>
+                </div>
+                <div class="bg-gradient-to-br from-indigo-50/70 via-blue-50/50 to-purple-50/60 p-6 rounded-[2.5rem] border border-indigo-100 shadow-sm space-y-5">
+                    <div class="flex flex-wrap items-center justify-between gap-3 bg-white/80 p-3.5 rounded-2xl border border-indigo-100">
+                        <div class="flex items-center gap-2">
+                            <span class="text-[11px] font-black text-slate-400 uppercase">Основа:</span>
+                            <div class="flex gap-1.5" id="lab-base-btns">
+                                <button onclick="setLabBase('a')" class="px-3 py-1 text-xs font-black rounded-xl bg-indigo-600 text-white transition">a</button>
+                                <button onclick="setLabBase('x')" class="px-3 py-1 text-xs font-black rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 transition">x</button>
+                                <button onclick="setLabBase('2')" class="px-3 py-1 text-xs font-black rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 transition">2</button>
+                                <button onclick="setLabBase('3')" class="px-3 py-1 text-xs font-black rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 transition">3</button>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-[11px] font-black text-slate-400 uppercase">Режим:</span>
+                            <div class="flex gap-1.5">
+                                <button onclick="setLabOp('mul')" id="op-mul-btn" class="px-3 py-1 text-xs font-black rounded-xl bg-indigo-600 text-white transition">\( \cdot \) Множення</button>
+                                <button onclick="setLabOp('pow')" id="op-pow-btn" class="px-3 py-1 text-xs font-black rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 transition">\( (a^m)^n \) Степінь</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div class="bg-white/80 p-3.5 rounded-2xl border border-indigo-100">
+                            <div class="flex justify-between items-center mb-1.5">
+                                <span class="text-[11px] font-black text-indigo-500 uppercase">Показник m:</span>
+                                <span id="lab-m-val" class="font-black text-indigo-700 bg-indigo-50 px-2.5 py-0.5 rounded-lg text-xs">3</span>
+                            </div>
+                            <input type="range" id="lab-m-slider" min="1" max="5" value="3" class="w-full accent-indigo-600 cursor-pointer" oninput="updateLab()">
+                        </div>
+                        <div class="bg-white/80 p-3.5 rounded-2xl border border-indigo-100">
+                            <div class="flex justify-between items-center mb-1.5">
+                                <span class="text-[11px] font-black text-purple-500 uppercase">Показник n:</span>
+                                <span id="lab-n-val" class="font-black text-purple-700 bg-purple-50 px-2.5 py-0.5 rounded-lg text-xs">2</span>
+                            </div>
+                            <input type="range" id="lab-n-slider" min="1" max="4" value="2" class="w-full accent-purple-600 cursor-pointer" oninput="updateLab()">
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-4 rounded-2xl border border-indigo-100 shadow-inner space-y-2.5">
+                        <p class="text-[10px] font-black uppercase tracking-wider text-slate-400">Розклад на живі множники (тикай для анімації):</p>
+                        <div id="lab-atoms-view" class="flex flex-wrap items-center gap-2 min-h-[40px]"></div>
+                        <div class="pt-2 border-t border-slate-100 flex items-center justify-between">
+                            <span class="text-xs font-bold text-slate-500">Математична рівність:</span>
+                            <div id="lab-formula-res" class="text-sm font-black text-indigo-700"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- РОЗДІЛ 1 -->
+            <section class="space-y-5">
+                <div class="flex items-center gap-3">
+                    <span class="text-3xl">⚡</span>
+                    <h2 class="text-xl font-black text-slate-800">1. Добуток степенів \(a^m \cdot a^n = a^{m+n}\)</h2>
+                </div>
+                <div class="bg-blue-50/70 p-6 rounded-[2.5rem] border border-blue-100 text-xs text-slate-700 leading-relaxed">
+                    При множенні однакових основ показники <b>додаються</b>. Якщо показника немає біля букви, там невидима <b>1</b>!
+                </div>
+                <div id="tasks-sec1" class="space-y-4"></div>
+            </section>
+
+            <!-- РОЗДІЛ 2 -->
+            <section class="space-y-5">
+                <div class="flex items-center gap-3">
+                    <span class="text-3xl">✂️</span>
+                    <h2 class="text-xl font-black text-slate-800">2. Частка степенів \(a^m : a^n = a^{m-n}\)</h2>
+                </div>
+                <div class="bg-indigo-50/70 p-6 rounded-[2.5rem] border border-indigo-100 text-xs text-slate-700 leading-relaxed">
+                    При діленні степенів з однаковими основами показники <b>віднімаються</b>. Вираз, поділений сам на себе, дає <b>1</b>.
+                </div>
+                <div id="tasks-sec2" class="space-y-4"></div>
+            </section>
+
+            <!-- РОЗДІЛ 3 -->
+            <section class="space-y-5">
+                <div class="flex items-center gap-3">
+                    <span class="text-3xl">🚀</span>
+                    <h2 class="text-xl font-black text-slate-800">3. Степінь до степеня \((a^m)^n = a^{m \cdot n}\)</h2>
+                </div>
+                <div class="bg-emerald-50/70 p-6 rounded-[2.5rem] border border-emerald-100 text-xs text-slate-700 leading-relaxed">
+                    Степінь у степені — показники <b>перемножуються</b>. При кількох поверхах перемножуй абсолютно всі!
+                </div>
+                <div id="tasks-sec3" class="space-y-4"></div>
+            </section>
+
+            <!-- РОЗДІЛ 4 -->
+            <section class="space-y-5">
+                <div class="flex items-center gap-3">
+                    <span class="text-3xl">📦</span>
+                    <h2 class="text-xl font-black text-slate-800">4. Степінь добутку та обчислення \((ab)^n = a^n b^n\)</h2>
+                </div>
+                <div class="bg-amber-50/70 p-6 rounded-[2.5rem] border border-amber-100 text-xs text-slate-700 leading-relaxed">
+                    Степінь дужки поширюється на <b>кожен множник</b> усередині. Якщо показники однакові — множники можна об'єднати.
+                </div>
+                <div id="tasks-sec4" class="space-y-4"></div>
+            </section>
+
+            <!-- РОЗДІЛ 5 -->
+            <section class="space-y-5">
+                <div class="flex items-center gap-3">
+                    <span class="text-3xl">🛡️</span>
+                    <h2 class="text-xl font-black text-slate-800">5. Знаки, дроби та зведення основ</h2>
+                </div>
+                <div class="bg-rose-50/70 p-6 rounded-[2.5rem] border border-rose-100 text-xs text-slate-700 leading-relaxed">
+                    Парний степінь знищує мінус: \((-a)^4 = a^4\). Непарний степінь зберігає мінус: \((-a)^3 = -a^3\).
+                </div>
+                <div id="tasks-sec5" class="space-y-4"></div>
+            </section>
+
+            <!-- РОЗДІЛ 6 -->
+            <section class="space-y-5">
+                <div class="flex items-center gap-3">
+                    <span class="text-3xl">👑</span>
+                    <h2 class="text-xl font-black text-slate-800">6. Поглиблений рівень та логіка</h2>
+                </div>
+                <div class="bg-purple-50/70 p-6 rounded-[2.5rem] border border-purple-100 text-xs text-slate-700 leading-relaxed">
+                    Порівнюй через спільні показники: \(2^{300} = (2^3)^{100} = 8^{100}\), а \(3^{200} = 9^{100}\). Слідкуй за циклічністю цифр!
+                </div>
+                <div id="tasks-sec6" class="space-y-4"></div>
+            </section>
+
+            <div class="pt-6">
+                <button onclick="finishLesson()" class="w-full bg-slate-900 text-white py-6 rounded-[2.5rem] font-black text-xl hover:bg-indigo-600 transition-all shadow-xl active:scale-95">ЗАВЕРШИТИ ТРЕНУВАННЯ ТА ОТРИМАТИ ОЦІНКУ</button>
+            </div>
+        </main>
+    </div>
+
+    <!-- ПРАВА ЧАСТИНА: ІНТЕРАКТИВНА ДОШКА (WHITEBOARD) -->
+    <div class="hidden lg:flex w-1/2 flex-col bg-slate-50 p-8 h-screen relative">
+        <div class="absolute top-8 left-1/2 -translate-x-1/2 z-40 flex items-center gap-2 bg-white/95 backdrop-blur-md p-3 rounded-2xl shadow-xl border border-slate-100">
+            <button onclick="setTool('pen')" id="tool-pen" class="p-3.5 rounded-xl tool-active transition font-bold" title="Олівець">✏️</button>
+            <button onclick="setTool('eraser')" id="tool-eraser" class="p-3.5 rounded-xl hover:bg-slate-100 transition font-bold" title="Гумка">🧽</button>
+            
+            <div class="w-px h-8 bg-slate-200 mx-1"></div>
+            
+            <input type="color" id="board-color" value="#1e293b" class="w-8 h-8 rounded-lg cursor-pointer border-0 bg-transparent" title="Колір" onchange="changeColor(this.value)">
+            
+            <div class="flex items-center gap-1 bg-slate-100 p-1 rounded-xl">
+                <button onclick="setSize(2)" class="px-2 py-1 text-xs font-bold rounded-lg text-slate-600 hover:bg-white transition">2px</button>
+                <button onclick="setSize(4)" class="px-2 py-1 text-xs font-bold rounded-lg bg-white text-indigo-600 shadow-sm transition">4px</button>
+                <button onclick="setSize(8)" class="px-2 py-1 text-xs font-bold rounded-lg text-slate-600 hover:bg-white transition">8px</button>
+            </div>
+
+            <div class="w-px h-8 bg-slate-200 mx-1"></div>
+
+            <button onclick="toggleGrid()" id="tool-grid" class="px-3.5 py-2 text-xs font-black text-slate-500 hover:bg-slate-100 rounded-xl transition">📐 СІТКА</button>
+            <button onclick="clearCanvas()" class="p-3.5 text-red-500 hover:bg-red-50 rounded-xl transition" title="Очистити">🗑️</button>
+        </div>
+
+        <div class="canvas-container flex-1 bg-white rounded-[3rem] shadow-sm border border-slate-200 overflow-hidden mt-16" id="canvas-wrap">
+            <canvas id="whiteboard"></canvas>
+        </div>
+        <div class="mt-4 text-center">
+            <p class="text-[10px] font-black text-slate-300 uppercase tracking-[0.3em]">Smart Sketchpad • Чернетка для розрахунків</p>
+        </div>
+    </div>
+
+    <!-- МОДАЛЬНЕ ВІКНО ФІНАЛЬНИХ РЕЗУЛЬТАТІВ -->
+    <div id="result-modal" class="fixed inset-0 bg-slate-900/70 backdrop-blur-md z-50 hidden flex items-center justify-center p-6">
+        <div class="bg-white rounded-[3rem] p-10 max-w-md w-full text-center shadow-2xl space-y-6">
+            <div class="text-7xl" id="res-badge">🏆</div>
+            <h2 class="text-3xl font-black text-slate-800" id="res-title">Чудова робота!</h2>
+            
+            <div class="bg-indigo-50 rounded-3xl p-6">
+                <p id="res-score" class="text-indigo-600 font-black text-6xl">0 / 50</p>
+                <p class="text-xs font-bold text-indigo-400 uppercase mt-2">Правильних відповідей</p>
+                <div class="mt-3 inline-block px-4 py-1.5 rounded-full bg-indigo-600 text-white font-black text-sm" id="res-grade">
+                    Оцінка: 12 балів
+                </div>
+            </div>
+
+            <p id="res-message" class="text-slate-600 font-medium italic text-sm leading-relaxed">
+                Ти володієш властивостями степенів на рівні майстра!
+            </p>
+
+            <div class="flex gap-3">
+                <button onclick="closeModal()" class="flex-1 bg-slate-100 text-slate-700 py-4 rounded-2xl font-bold hover:bg-slate-200 transition">Переглянути</button>
+                <button onclick="location.reload()" class="flex-1 bg-slate-900 text-white py-4 rounded-2xl font-bold hover:bg-indigo-600 transition shadow-lg">Ще раз</button>
+            </div>
+        </div>
+    </div>
+
+<script>
+    // ==========================================
+    // 50 ЗАВДАНЬ У ТЕСТОВОМУ ФОРМАТІ (КЛІКАБЕЛЬНІ КАРТКИ)
+    // ==========================================
+    const allQuizTasks = {
+        sec1: [
+            { id: 1, q: "Подайте у вигляді степеня: \\( m^5 \\cdot m^4 \\)", opts: ["\\( m^9 \\)", "\\( m^{20} \\)", "\\( m^1 \\)"], a: 0, h: "Додайте показники: 5 + 4.", s: "\\( m^{5+4} = m^9 \\)" },
+            { id: 2, q: "Подайте у вигляді степеня: \\( x \\cdot x^7 \\)", opts: ["\\( x^7 \\)", "\\( x^8 \\)", "\\( x^{14} \\)"], a: 1, h: "Пам'ятайте, що x = x^1. 1 + 7 = 8.", s: "\\( x^{1+7} = x^8 \\)" },
+            { id: 3, q: "Подайте у вигляді степеня: \\( a^3 \\cdot a^3 \\)", opts: ["\\( a^6 \\)", "\\( a^9 \\)", "\\( 2a^3 \\)"], a: 0, h: "3 + 3 = 6.", s: "\\( a^{3+3} = a^6 \\)" },
+            { id: 4, q: "Подайте у вигляді степеня: \\( 6^8 \\cdot 6^3 \\)", opts: ["\\( 36^{11} \\)", "\\( 6^{24} \\)", "\\( 6^{11} \\)"], a: 2, h: "Основа 6 залишається без змін! 8 + 3 = 11.", s: "\\( 6^{8+3} = 6^{11} \\)" },
+            { id: 5, q: "Спростіть: \\( y^3 \\cdot y^5 \\cdot y^9 \\)", opts: ["\\( y^{17} \\)", "\\( y^{135} \\)", "\\( y^{15} \\)"], a: 0, h: "Додайте всі показники: 3 + 5 + 9.", s: "\\( y^{3+5+9} = y^{17} \\)" },
+            { id: 6, q: "Подайте у вигляді степеня: \\( c^8 \\cdot c^9 \\cdot c \\)", opts: ["\\( c^{17} \\)", "\\( c^{18} \\)", "\\( c^{72} \\)"], a: 1, h: "Останній множник має показник 1: 8 + 9 + 1 = 18.", s: "\\( c^{8+9+1} = c^{18} \\)" },
+            { id: 7, q: "Спростіть: \\( (b-c)^{10} \\cdot (b-c)^6 \\)", opts: ["\\( (b-c)^{16} \\)", "\\( (b-c)^{60} \\)", "\\( (b-c)^4 \\)"], a: 0, h: "Основа (b-c) лишається цілою, 10 + 6 = 16.", s: "\\( (b-c)^{10+6} = (b-c)^{16} \\)" },
+            { id: 8, q: "Подайте у вигляді степеня: \\( 11^2 \\cdot 11^4 \\cdot 11^6 \\)", opts: ["\\( 11^{48} \\)", "\\( 11^{12} \\)", "\\( 33^{12} \\)"], a: 1, h: "2 + 4 + 6 = 12.", s: "\\( 11^{2+4+6} = 11^{12} \\)" },
+            { id: 9, q: "Спростіть: \\( x^4 \\cdot x \\cdot x^{11} \\cdot x^2 \\)", opts: ["\\( x^{17} \\)", "\\( x^{18} \\)", "\\( x^{88} \\)"], a: 1, h: "4 + 1 + 11 + 2 = 18.", s: "\\( x^{4+1+11+2} = x^{18} \\)" },
+            { id: 10, q: "Подайте у вигляді степеня: \\( (ab)^5 \\cdot (ab)^{15} \\)", opts: ["\\( (ab)^{20} \\)", "\\( (ab)^{75} \\)", "\\( a^5 b^{15} \\)"], a: 0, h: "5 + 15 = 20.", s: "\\( (ab)^{5+15} = (ab)^{20} \\)" }
+        ],
+        sec2: [
+            { id: 11, q: "Подайте у вигляді степеня частку: \\( a^{12} : a^3 \\)", opts: ["\\( a^4 \\)", "\\( a^9 \\)", "\\( a^{15} \\)"], a: 1, h: "При діленні віднімаємо: 12 - 3.", s: "\\( a^{12-3} = a^9 \\)" },
+            { id: 12, q: "Чому дорівнює частка \\( c^7 : c^6 \\)?", opts: ["\\( c \\)", "\\( c^0 \\)", "\\( 1 \\)"], a: 0, h: "7 - 6 = 1, тобто c^1 = c.", s: "\\( c^{7-6} = c \\)" },
+            { id: 13, q: "Спростіть: \\( (a+b)^8 : (a+b)^4 \\)", opts: ["\\( (a+b)^2 \\)", "\\( (a+b)^4 \\)", "\\( a^4 + b^4 \\)"], a: 1, h: "8 - 4 = 4.", s: "\\( (a+b)^{8-4} = (a+b)^4 \\)" },
+            { id: 14, q: "Обчисліть значення виразу: \\( 7^7 : 7^5 \\)", opts: ["\\( 14 \\)", "\\( 7 \\)", "\\( 49 \\)"], a: 2, h: "7^(7-5) = 7^2 = 49.", s: "\\( 7^{7-5} = 7^2 = 49 \\)" },
+            { id: 15, q: "Обчисліть значення: \\( 10^{18} : 10^{14} \\)", opts: ["\\( 10000 \\)", "\\( 1000 \\)", "\\( 100000 \\)"], a: 0, h: "10^(18-14) = 10^4 = 10000.", s: "\\( 10^4 = 10000 \\)" },
+            { id: 16, q: "Який степінь замість зірочки: \\( a^6 \\cdot * = a^{14} \\)?", opts: ["\\( a^7 \\)", "\\( a^8 \\)", "\\( a^{20} \\)"], a: 1, h: "14 - 6 = 8.", s: "\\( * = a^{14-6} = a^8 \\)" },
+            { id: 17, q: "Замініть зірочку: \\( a^{10} \\cdot * \\cdot a^2 = a^{18} \\)", opts: ["\\( a^6 \\)", "\\( a^8 \\)", "\\( a^4 \\)"], a: 0, h: "Разом відомо 10 + 2 = 12. 18 - 12 = 6.", s: "\\( * = a^{18-12} = a^6 \\)" },
+            { id: 18, q: "Виконайте ділення: \\( m^{10} : m^2 \\)", opts: ["\\( m^5 \\)", "\\( m^8 \\)", "\\( m^{12} \\)"], a: 1, h: "10 - 2 = 8.", s: "\\( m^{10-2} = m^8 \\)" }
+        ],
+        sec3: [
+            { id: 19, q: "Подайте у вигляді степеня: \\( (m^5)^3 \\)", opts: ["\\( m^8 \\)", "\\( m^{15} \\)", "\\( m^{125} \\)"], a: 1, h: "Показники перемножуються: 5 * 3 = 15.", s: "\\( m^{5 \\cdot 3} = m^{15} \\)" },
+            { id: 20, q: "Подайте у вигляді степеня: \\( (m^3)^4 \\)", opts: ["\\( m^{12} \\)", "\\( m^7 \\)", "\\( m^{64} \\)"], a: 0, h: "3 * 4 = 12.", s: "\\( m^{12} \\)" },
+            { id: 21, q: "Спростіть триповерховий степінь: \\( ((m^2)^4)^6 \\)", opts: ["\\( m^{12} \\)", "\\( m^{48} \\)", "\\( m^{24} \\)"], a: 1, h: "2 * 4 * 6 = 48.", s: "\\( m^{2 \\cdot 4 \\cdot 6} = m^{48} \\)" },
+            { id: 22, q: "Спростіть: \\( (m^7)^2 \\cdot (m^4)^9 \\)", opts: ["\\( m^{50} \\)", "\\( m^{22} \\)", "\\( m^{72} \\)"], a: 0, h: "m^14 * m^36 = m^(14+36) = m^50.", s: "\\( m^{14} \\cdot m^{36} = m^{50} \\)" },
+            { id: 23, q: "Подайте у вигляді степеня: \\( (n^2)^8 \\)", opts: ["\\( n^{10} \\)", "\\( n^{16} \\)", "\\( n^{64} \\)"], a: 1, h: "2 * 8 = 16.", s: "\\( n^{16} \\)" },
+            { id: 24, q: "Подайте у вигляді степеня: \\( (n^9)^5 \\)", opts: ["\\( n^{45} \\)", "\\( n^{14} \\)", "\\( n^{54} \\)"], a: 0, h: "9 * 5 = 45.", s: "\\( n^{45} \\)" },
+            { id: 25, q: "Спростіть вираз: \\( ((n^3)^2)^{10} \\)", opts: ["\\( n^{15} \\)", "\\( n^{50} \\)", "\\( n^{60} \\)"], a: 2, h: "3 * 2 * 10 = 60.", s: "\\( n^{60} \\)" },
+            { id: 26, q: "Спростіть: \\( (n^{12})^4 \\cdot (n^{21})^2 \\)", opts: ["\\( n^{90} \\)", "\\( n^{78} \\)", "\\( n^{84} \\)"], a: 0, h: "n^48 * n^42 = n^(48+42) = n^90.", s: "\\( n^{48+42} = n^{90} \\)" }
+        ],
+        sec4: [
+            { id: 27, q: "Розкрийте дужки: \\( (ab)^6 \\)", opts: ["\\( ab^6 \\)", "\\( a^6 b^6 \\)", "\\( 6ab \\)"], a: 1, h: "Показник іде до кожного множника.", s: "\\( a^6 b^6 \\)" },
+            { id: 28, q: "Піднесіть до степеня: \\( (3c)^7 \\)", opts: ["\\( 3c^7 \\)", "\\( 21c^7 \\)", "\\( 3^7 c^7 \\)"], a: 2, h: "3^7 * c^7 = 2187 c^7.", s: "\\( 3^7 c^7 \\)" },
+            { id: 29, q: "Згорніть у степінь добутку: \\( a^2 b^2 \\)", opts: ["\\( (ab)^4 \\)", "\\( (ab)^2 \\)", "\\( 2ab \\)"], a: 1, h: "Виносимо спільний показник 2.", s: "\\( (ab)^2 \\)" },
+            { id: 30, q: "Подайте у вигляді куба: \\( 64x^3 y^3 \\)", opts: ["\\( (4xy)^3 \\)", "\\( (8xy)^3 \\)", "\\( (16xy)^3 \\)"], a: 0, h: "64 це 4^3, тому (4xy)^3.", s: "\\( (4xy)^3 \\)" },
+            { id: 31, q: "Обчисліть значення: \\( 2^3 \\cdot 2^4 \\)", opts: ["\\( 64 \\)", "\\( 128 \\)", "\\( 256 \\)"], a: 1, h: "2^7 = 128.", s: "\\( 2^7 = 128 \\)" },
+            { id: 32, q: "Обчисліть значення: \\( (3^2)^3 \\)", opts: ["\\( 729 \\)", "\\( 243 \\)", "\\( 81 \\)"], a: 0, h: "3^6 = 729.", s: "\\( 3^6 = 729 \\)" },
+            { id: 33, q: "Обчисліть хитрим способом: \\( 0.5^{12} \\cdot 2^{12} \\)", opts: ["\\( 0 \\)", "\\( 1 \\)", "\\( 12 \\)"], a: 1, h: "(0.5 * 2)^12 = 1^12 = 1.", s: "\\( 1^{12} = 1 \\)" },
+            { id: 34, q: "Обчисліть: \\( 2.5^5 \\cdot 40^5 \\)", opts: ["\\( 10^5 \\)", "\\( 10^7 \\)", "\\( 10^{10} \\)"], a: 2, h: "2.5 * 40 = 100. Далі 100^5 = (10^2)^5 = 10^10.", s: "\\( 100^5 = 10^{10} \\)" }
+        ],
+        sec5: [
+            { id: 35, q: "Спростіть вираз: \\( -x \\cdot x^2 \\)", opts: ["\\( x^3 \\)", "\\( -x^3 \\)", "\\( -x^2 \\)"], a: 1, h: "Мінус зберігається, 1 + 2 = 3.", s: "\\( -x^3 \\)" },
+            { id: 36, q: "Спростіть вираз: \\( (-x)^2 \\cdot x \\)", opts: ["\\( x^3 \\)", "\\( -x^3 \\)", "\\( x^2 \\)"], a: 0, h: "(-x)^2 = x^2 (парний степінь). x^2 * x = x^3.", s: "\\( x^2 \\cdot x = x^3 \\)" },
+            { id: 37, q: "Спростіть вираз: \\( (-a)^2 \\cdot a^3 \\)", opts: ["\\( a^5 \\)", "\\( -a^5 \\)", "\\( a^6 \\)"], a: 0, h: "(-a)^2 = a^2. a^2 * a^3 = a^5.", s: "\\( a^5 \\)" },
+            { id: 38, q: "Спростіть вираз: \\( -a^2 \\cdot a^3 \\)", opts: ["\\( a^5 \\)", "\\( -a^5 \\)", "\\( -a^6 \\)"], a: 1, h: "Мінус стоїть попереду, тому -a^5.", s: "\\( -a^5 \\)" },
+            { id: 39, q: "Обчисліть: \\( (6^4)^4 : (6^5)^3 \\)", opts: ["\\( 1 \\)", "\\( 36 \\)", "\\( 6 \\)"], a: 2, h: "6^16 : 6^15 = 6^1 = 6.", s: "\\( 6^1 = 6 \\)" },
+            { id: 40, q: "Обчисліть: \\( 8^3 : 4^4 \\)", opts: ["\\( 2 \\)", "\\( 4 \\)", "\\( 1 \\)"], a: 0, h: "(2^3)^3 : (2^2)^4 = 2^9 : 2^8 = 2.", s: "\\( 2^9 : 2^8 = 2 \\)" },
+            { id: 41, q: "Обчисліть значення дробу: \\( \\frac{7^{14} \\cdot (7^2)^3}{(7^3)^6 \\cdot 7^2} \\)", opts: ["\\( 7 \\)", "\\( 1 \\)", "\\( 49 \\)"], a: 1, h: "7^20 : 7^20 = 1.", s: "\\( \\frac{7^{20}}{7^{20}} = 1 \\)" },
+            { id: 42, q: "Обчисліть: \\( \\frac{25^3 \\cdot 125^2}{5^{10}} \\)", opts: ["\\( 5 \\)", "\\( 125 \\)", "\\( 25 \\)"], a: 2, h: "(5^2)^3 * (5^3)^2 = 5^12. 5^12 : 5^10 = 5^2 = 25.", s: "\\( 5^2 = 25 \\)" }
+        ],
+        sec6: [
+            { id: 43, q: "Обчисліть значення: \\( \\frac{3^8 \\cdot 7^8}{21^7} \\)", opts: ["\\( 21 \\)", "\\( 1 \\)", "\\( 441 \\)"], a: 0, h: "(3*7)^8 = 21^8. 21^8 : 21^7 = 21.", s: "\\( 21 \\)" },
+            { id: 44, q: "Обчисліть: \\( 100^6 : 1000^2 \\)", opts: ["\\( 10^3 \\)", "\\( 10^6 \\)", "\\( 10^8 \\)"], a: 1, h: "(10^2)^6 : (10^3)^2 = 10^12 : 10^6 = 10^6.", s: "\\( 10^6 \\)" },
+            { id: 45, q: "Порівняйте значення: \\( 2^{300} \\) та \\( 3^{200} \\)", opts: ["\\( 2^{300} > 3^{200} \\)", "\\( 2^{300} < 3^{200} \\)", "\\( 2^{300} = 3^{200} \\)"], a: 1, h: "2^300 = 8^100, 3^200 = 9^100. 8 < 9.", s: "\\( 8^{100} < 9^{100} \\implies 2^{300} < 3^{200} \\)" },
+            { id: 46, q: "Порівняйте: \\( (-5)^{21} \\cdot (-5) \\) та \\( (-5)^{24} \\)", opts: ["Перше менше", "Перше більше", "Вони рівні"], a: 0, h: "Перше це 5^22, друге 5^24. 5^22 < 5^24.", s: "\\( 5^{22} < 5^{24} \\)" },
+            { id: 47, q: "Сума \\( 625 + 625 + \\dots + 625 = 5^{101} \\). Скільки доданків?", opts: ["\\( 5^{97} \\)", "\\( 5^{98} \\)", "\\( 5^{96} \\)"], a: 0, h: "k * 5^4 = 5^101 => k = 5^101 : 5^4 = 5^97.", s: "\\( 5^{97} \\)" },
+            { id: 48, q: "Якою цифрою закінчується вираз \\( 4^{100} \\)?", opts: ["4", "6", "0"], a: 1, h: "Степені четвірки: 4, 16, 64, 256... Для парного 100 — це 6.", s: "6" },
+            { id: 49, q: "Якою цифрою закінчується значення \\( 3^{4n} \\)?", opts: ["3", "7", "1"], a: 2, h: "3^(4n) = (3^4)^n = 81^n. Будь-який степінь числа 81 закінчується на 1.", s: "1" },
+            { id: 50, q: "Розв'яжіть рівняння: \\( x^7 = 6^{14} \\)", opts: ["\\( x = 12 \\)", "\\( x = 36 \\)", "\\( x = 6 \\)"], a: 1, h: "6^14 = (6^2)^7 = 36^7. Отже, x = 36.", s: "\\( x = 36 \\)" }
+        ]
+    };
+
+    let score = 0;
+    let answered = 0;
+    const TOTAL_ITEMS = 50;
+    const taskStates = {};
+
+    function renderQuiz() {
+        for (let sec in allQuizTasks) {
+            const container = document.getElementById(`tasks-${sec}`);
+            allQuizTasks[sec].forEach(t => {
+                const card = document.createElement('div');
+                card.className = 'task-card p-6 rounded-[2rem] space-y-4';
+                card.id = `card-${t.id}`;
+
+                const optionsHtml = t.opts.map((opt, idx) => `
+                    <button onclick="handleSelect(${t.id}, ${idx}, ${t.a})" id="btn-${t.id}-${idx}" class="opt-btn w-full text-left p-4 rounded-2xl text-sm font-bold flex items-center justify-between">
+                        <span>${opt}</span>
+                        <span id="mark-${t.id}-${idx}" class="text-xs font-black opacity-0">✓</span>
+                    </button>
+                `).join('');
+
+                card.innerHTML = `
+                    <div class="flex justify-between items-center">
+                        <span class="text-[10px] font-black uppercase tracking-wider text-slate-400">Питання №${t.id}</span>
+                        <span id="badge-${t.id}" class="hidden text-[10px] font-black uppercase px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-700">Відповіли</span>
+                    </div>
+                    <p class="font-bold text-slate-800 text-base leading-snug">${t.q}</p>
+                    <div class="grid gap-2">
+                        ${optionsHtml}
+                    </div>
+                    <div class="flex gap-4 pt-1">
+                        <button onclick="toggleBox('h-${t.id}')" class="text-[11px] font-black uppercase text-slate-400 hover:text-indigo-600 transition">💡 Підказка</button>
+                        <button onclick="toggleBox('s-${t.id}')" class="text-[11px] font-black uppercase text-slate-400 hover:text-indigo-600 transition">📘 Розв'язання</button>
+                    </div>
+                    <p id="h-${t.id}" class="hidden text-xs text-amber-700 bg-amber-50 p-4 rounded-2xl border border-amber-200 font-medium">${t.h}</p>
+                    <p id="s-${t.id}" class="hidden text-xs text-indigo-700 bg-indigo-50 p-4 rounded-2xl border border-indigo-200 font-medium italic"><b>Пояснення:</b> ${t.s}</p>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        if (window.MathJax) {
+            MathJax.typesetPromise();
+        }
+    }
+
+    function handleSelect(id, selectedIdx, correctIdx) {
+        if (taskStates[id]) return;
+        taskStates[id] = true;
+        answered++;
+
+        // Блокуємо всі кнопки цього завдання
+        let task = null;
+        for (let sec in allQuizTasks) {
+            const found = allQuizTasks[sec].find(x => x.id === id);
+            if (found) { task = found; break; }
+        }
+
+        task.opts.forEach((_, idx) => {
+            const b = document.getElementById(`btn-${id}-${idx}`);
+            b.disabled = true;
+            b.style.cursor = 'default';
+        });
+
+        const selectedBtn = document.getElementById(`btn-${id}-${selectedIdx}`);
+        const correctBtn = document.getElementById(`btn-${id}-${correctIdx}`);
+
+        if (selectedIdx === correctIdx) {
+            selectedBtn.classList.add('opt-correct');
+            const mark = document.getElementById(`mark-${id}-${selectedIdx}`);
+            mark.innerText = '✅ Правильно';
+            mark.style.opacity = '1';
+            score++;
+        } else {
+            selectedBtn.classList.add('opt-wrong');
+            const markW = document.getElementById(`mark-${id}-${selectedIdx}`);
+            markW.innerText = '❌ Помилка';
+            markW.style.opacity = '1';
+
+            correctBtn.classList.add('opt-correct');
+            const markC = document.getElementById(`mark-${id}-${correctIdx}`);
+            markC.innerText = 'Правильна відповідь';
+            markC.style.opacity = '1';
+        }
+
+        document.getElementById(`badge-${id}`).classList.remove('hidden');
+        document.getElementById('prog-text').innerText = `${answered} / ${TOTAL_ITEMS} готово`;
+        document.getElementById('prog-bar').style.width = `${(answered / TOTAL_ITEMS) * 100}%`;
+    }
+
+    function toggleBox(elId) {
+        const el = document.getElementById(elId);
+        el.classList.toggle('hidden');
+        if (!el.classList.contains('hidden') && window.MathJax) {
+            MathJax.typesetPromise([el]);
+        }
+    }
+
+    // ==========================================
+    // ЛАБОРАТОРІЯ МНОЖНИКІВ
+    // ==========================================
+    let labBase = 'a';
+    let labOp = 'mul';
+
+    function setLabBase(b) {
+        labBase = b;
+        const btns = document.getElementById('lab-base-btns').children;
+        for (let btn of btns) {
+            if (btn.innerText.trim() === b) {
+                btn.className = "px-3 py-1 text-xs font-black rounded-xl bg-indigo-600 text-white transition";
+            } else {
+                btn.className = "px-3 py-1 text-xs font-black rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 transition";
+            }
+        }
+        updateLab();
+    }
+
+    function setLabOp(op) {
+        labOp = op;
+        document.getElementById('op-mul-btn').className = op === 'mul'
+            ? "px-3 py-1 text-xs font-black rounded-xl bg-indigo-600 text-white transition"
+            : "px-3 py-1 text-xs font-black rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 transition";
+        document.getElementById('op-pow-btn').className = op === 'pow'
+            ? "px-3 py-1 text-xs font-black rounded-xl bg-indigo-600 text-white transition"
+            : "px-3 py-1 text-xs font-black rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 transition";
+        updateLab();
+    }
+
+    function updateLab() {
+        const m = parseInt(document.getElementById('lab-m-slider').value, 10);
+        const n = parseInt(document.getElementById('lab-n-slider').value, 10);
+        document.getElementById('lab-m-val').innerText = m;
+        document.getElementById('lab-n-val').innerText = n;
+
+        const container = document.getElementById('lab-atoms-view');
+        container.innerHTML = '';
+
+        if (labOp === 'mul') {
+            const g1 = document.createElement('div');
+            g1.className = "flex items-center gap-1 bg-indigo-50 p-2 rounded-xl border border-indigo-100";
+            for (let i = 0; i < m; i++) {
+                const b = document.createElement('span');
+                b.className = "bubble-factor px-2 py-1 rounded-lg bg-indigo-600 text-white font-black text-xs cursor-pointer";
+                b.innerText = labBase;
+                g1.appendChild(b);
+            }
+            container.appendChild(g1);
+
+            const dot = document.createElement('span');
+            dot.className = "font-black text-slate-400 text-lg";
+            dot.innerText = "×";
+            container.appendChild(dot);
+
+            const g2 = document.createElement('div');
+            g2.className = "flex items-center gap-1 bg-purple-50 p-2 rounded-xl border border-purple-100";
+            for (let i = 0; i < n; i++) {
+                const b = document.createElement('span');
+                b.className = "bubble-factor px-2 py-1 rounded-lg bg-purple-600 text-white font-black text-xs cursor-pointer";
+                b.innerText = labBase;
+                g2.appendChild(b);
+            }
+            container.appendChild(g2);
+
+            const eq = document.createElement('span');
+            eq.className = "font-black text-slate-400 text-sm";
+            eq.innerText = "=";
+            container.appendChild(eq);
+
+            const resTag = document.createElement('span');
+            resTag.className = "px-3 py-1 rounded-xl bg-slate-900 text-white font-black text-xs";
+            resTag.innerText = `Разом ${m + n} множників`;
+            container.appendChild(resTag);
+
+            const formBox = document.getElementById('lab-formula-res');
+            let numCalc = (!isNaN(Number(labBase))) ? ` = ${Math.pow(Number(labBase), m + n)}` : '';
+            formBox.innerHTML = `\\( ${labBase}^{${m}} \\cdot ${labBase}^{${n}} = ${labBase}^{${m}+${n}} = ${labBase}^{${m+n}} ${numCalc} \\)`;
+        } else {
+            for (let j = 0; j < n; j++) {
+                const grp = document.createElement('div');
+                grp.className = "flex items-center gap-1 bg-purple-50 p-1.5 rounded-xl border border-purple-200";
+                const obr = document.createElement('span'); obr.className="text-xs font-black text-purple-400"; obr.innerText="(";
+                grp.appendChild(obr);
+                for (let i = 0; i < m; i++) {
+                    const b = document.createElement('span');
+                    b.className = "bubble-factor px-1.5 py-0.5 rounded bg-purple-600 text-white font-black text-[10px] cursor-pointer";
+                    b.innerText = labBase;
+                    grp.appendChild(b);
+                }
+                const cbr = document.createElement('span'); cbr.className="text-xs font-black text-purple-400"; cbr.innerText=")";
+                grp.appendChild(cbr);
+                container.appendChild(grp);
+            }
+
+            const eq = document.createElement('span');
+            eq.className = "font-black text-slate-400 text-sm";
+            eq.innerText = "=";
+            container.appendChild(eq);
+
+            const resTag = document.createElement('span');
+            resTag.className = "px-3 py-1 rounded-xl bg-slate-900 text-white font-black text-xs";
+            resTag.innerText = `${n} груп по ${m} = ${m * n} множників`;
+            container.appendChild(resTag);
+
+            const formBox = document.getElementById('lab-formula-res');
+            let numCalc = (!isNaN(Number(labBase))) ? ` = ${Math.pow(Number(labBase), m * n)}` : '';
+            formBox.innerHTML = `\\( (${labBase}^{${m}})^{${n}} = ${labBase}^{${m} \\cdot ${n}} = ${labBase}^{${m*n}} ${numCalc} \\)`;
+        }
+
+        if (window.MathJax) {
+            MathJax.typesetPromise([document.getElementById('lab-formula-res')]);
+        }
+    }
+
+    // ==========================================
+    // ФІНАЛЬНИЙ РЕЗУЛЬТАТ
+    // ==========================================
+    function finishLesson() {
+        const grade12 = Math.max(1, Math.min(12, Math.round((score / TOTAL_ITEMS) * 12)));
+        document.getElementById('res-score').innerText = `${score} / ${TOTAL_ITEMS}`;
+        document.getElementById('res-grade').innerText = `Підсумкова оцінка: ${grade12} балів`;
+
+        let praise = "Ти неймовірно попрацював! Усі властивості степенів відпрацьовано на відмінно!";
+        let badge = "🏆";
+        if (grade12 < 5) {
+            praise = "Гарний перший крок! Переглянь підказки до завдань і спробуй ще раз — ти обов'язково досягнеш більшого!";
+            badge = "🌱";
+        } else if (grade12 < 9) {
+            praise = "Чудовий результат! Більшість властивостей уже закріплені на практиці!";
+            badge = "⭐";
+        }
+
+        document.getElementById('res-title').innerText = grade12 >= 10 ? "Блискучий тріумф!" : "Практикум завершено!";
+        document.getElementById('res-badge').innerText = badge;
+        document.getElementById('res-message').innerText = praise;
+        document.getElementById('result-modal').classList.remove('hidden');
+    }
+
+    function closeModal() {
+        document.getElementById('result-modal').classList.add('hidden');
+    }
+
+    // ==========================================
+    // WHITEBOARD
+    // ==========================================
+    const canvas = document.getElementById('whiteboard');
+    const ctx = canvas.getContext('2d');
+    let isDrawing = false;
+    let tool = 'pen';
+    let currentPenColor = '#1e293b';
+    let currentPenSize = 4;
+    let showGrid = false;
+
+    function initBoard() {
+        const wrap = document.getElementById('canvas-wrap');
+        canvas.width = wrap.clientWidth;
+        canvas.height = wrap.clientHeight;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+    }
+
+    function drawGrid() {
+        ctx.save();
+        ctx.strokeStyle = '#f1f5f9';
+        ctx.lineWidth = 1;
+        const step = 32;
+        for (let x = 0; x < canvas.width; x += step) {
+            ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
+        }
+        for (let y = 0; y < canvas.height; y += step) {
+            ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
+        }
+        ctx.restore();
+    }
+
+    function getPos(e) {
+        const rect = canvas.getBoundingClientRect();
+        const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+        const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+        return {
+            x: clientX - rect.left,
+            y: clientY - rect.top
+        };
+    }
+
+    function startDraw(e) {
+        isDrawing = true;
+        const pos = getPos(e);
+        ctx.beginPath();
+        ctx.moveTo(pos.x, pos.y);
+    }
+
+    function draw(e) {
+        if (!isDrawing) return;
+        const pos = getPos(e);
+        ctx.strokeStyle = tool === 'pen' ? currentPenColor : '#ffffff';
+        ctx.lineWidth = tool === 'pen' ? currentPenSize : 36;
+        ctx.lineTo(pos.x, pos.y);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(pos.x, pos.y);
+    }
+
+    function stopDraw() {
+        isDrawing = false;
+    }
+
+    function setTool(t) {
+        tool = t;
+        document.getElementById('tool-pen').classList.toggle('tool-active', t === 'pen');
+        document.getElementById('tool-eraser').classList.toggle('tool-active', t === 'eraser');
+    }
+
+    function setSize(s) {
+        currentPenSize = s;
+    }
+
+    function changeColor(c) {
+        currentPenColor = c;
+        setTool('pen');
+    }
+
+    function toggleGrid() {
+        showGrid = !showGrid;
+        document.getElementById('tool-grid').classList.toggle('bg-slate-200', showGrid);
+        clearCanvas();
+    }
+
+    function clearCanvas() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        if (showGrid) drawGrid();
+    }
+
+    canvas.addEventListener('mousedown', startDraw);
+    canvas.addEventListener('mousemove', draw);
+    window.addEventListener('mouseup', stopDraw);
+
+    canvas.addEventListener('touchstart', (e) => { startDraw(e); e.preventDefault(); }, { passive: false });
+    canvas.addEventListener('touchmove', (e) => { draw(e); e.preventDefault(); }, { passive: false });
+    window.addEventListener('touchend', stopDraw);
+
+    window.onload = () => {
+        renderQuiz();
+        initBoard();
+        updateLab();
+    };
+
+    window.onresize = () => {
+        initBoard();
+    };
+</script>
+</body>
+</html>
