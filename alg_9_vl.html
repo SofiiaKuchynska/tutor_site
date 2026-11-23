@@ -1,0 +1,1269 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Алгебра 9 клас: Властивості функцій</title>
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+      },
+      svg: { fontCache: 'global' }
+    };
+  </script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <style>
+    :root {
+      --bg-main: #f4f6fb;
+      --bg-card: #ffffff;
+      --primary: #4f46e5;
+      --primary-light: #eef2ff;
+      --primary-dark: #3730a3;
+      --accent: #0ea5e9;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --success: #16a34a;
+      --success-bg: #dcfce7;
+      --error: #dc2626;
+      --error-bg: #fee2e2;
+      --shadow: 0 4px 16px rgba(15, 23, 42, 0.06);
+      --radius: 14px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+      z-index: 10;
+    }
+
+    .header-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .badge {
+      background: var(--primary-light);
+      color: var(--primary);
+      font-weight: 700;
+      font-size: 0.85rem;
+      padding: 4px 10px;
+      border-radius: 20px;
+    }
+
+    .header-title h1 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .progress-bar-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .progress-track {
+      width: 160px;
+      height: 10px;
+      background: #e2e8f0;
+      border-radius: 99px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      transition: width 0.3s ease;
+    }
+
+    .workspace {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    /* LEFT PANE */
+    .left-pane {
+      width: 55%;
+      height: 100%;
+      overflow-y: auto;
+      padding: 24px;
+      scroll-behavior: smooth;
+    }
+
+    .left-pane::-webkit-scrollbar {
+      width: 8px;
+    }
+    .left-pane::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      padding: 22px;
+      margin-bottom: 22px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+    }
+
+    .theory-card {
+      border-left: 5px solid var(--primary);
+      background: linear-gradient(to right, #f8faff, #ffffff);
+    }
+
+    .theory-card h2 {
+      font-size: 1.2rem;
+      color: var(--primary-dark);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .theory-card p {
+      line-height: 1.6;
+      margin-bottom: 10px;
+      font-size: 0.98rem;
+    }
+
+    .analogy-box {
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      border-radius: 10px;
+      padding: 12px 16px;
+      margin-top: 10px;
+      font-size: 0.94rem;
+      color: #92400e;
+    }
+
+    .formula-pill {
+      display: inline-block;
+      background: var(--primary-light);
+      color: var(--primary-dark);
+      padding: 4px 10px;
+      border-radius: 8px;
+      font-weight: 600;
+      margin: 4px 0;
+    }
+
+    /* Interactive Lab */
+    .lab-card {
+      border-left: 5px solid var(--accent);
+    }
+
+    .lab-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin: 14px 0;
+      align-items: center;
+      background: #f8fafc;
+      padding: 12px;
+      border-radius: 10px;
+    }
+
+    .lab-controls label {
+      font-size: 0.9rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .lab-output {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .lab-stats {
+      background: #f1f5f9;
+      padding: 14px;
+      border-radius: 10px;
+      font-size: 0.92rem;
+      line-height: 1.7;
+    }
+
+    /* Tasks */
+    .task-card {
+      transition: border-color 0.2s;
+    }
+
+    .task-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .task-num {
+      font-weight: 700;
+      color: var(--primary);
+      font-size: 0.95rem;
+      background: var(--primary-light);
+      padding: 3px 10px;
+      border-radius: 8px;
+    }
+
+    .task-tag {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      background: #f1f5f9;
+      padding: 3px 8px;
+      border-radius: 6px;
+    }
+
+    .task-text {
+      font-size: 1.02rem;
+      line-height: 1.55;
+      margin-bottom: 14px;
+    }
+
+    .svg-box {
+      display: flex;
+      justify-content: center;
+      margin: 12px 0;
+      background: #f8fafc;
+      border-radius: 10px;
+      padding: 10px;
+      border: 1px dashed #cbd5e1;
+    }
+
+    .answer-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .answer-input {
+      flex: 1;
+      min-width: 180px;
+      padding: 10px 14px;
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      font-size: 1rem;
+      outline: none;
+      transition: all 0.2s;
+    }
+
+    .answer-input:focus {
+      border-color: var(--primary);
+    }
+
+    .answer-input.correct {
+      border-color: var(--success);
+      background-color: var(--success-bg);
+      color: #14532d;
+      font-weight: 600;
+    }
+
+    .answer-input.incorrect {
+      border-color: var(--error);
+      background-color: var(--error-bg);
+      color: #7f1d1d;
+    }
+
+    .btn {
+      padding: 10px 16px;
+      border: none;
+      border-radius: 10px;
+      font-size: 0.92rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #fff;
+    }
+    .btn-primary:hover {
+      background: var(--primary-dark);
+    }
+
+    .btn-secondary {
+      background: #f1f5f9;
+      color: var(--text-main);
+    }
+    .btn-secondary:hover {
+      background: #e2e8f0;
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+    }
+    .btn-outline:hover {
+      background: #f8fafc;
+      color: var(--text-main);
+    }
+
+    .helper-panel {
+      display: none;
+      margin-top: 12px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      font-size: 0.93rem;
+      line-height: 1.5;
+    }
+
+    .hint-box {
+      background: #eff6ff;
+      border-left: 4px solid #3b82f6;
+      color: #1e3a8a;
+    }
+
+    .solution-box {
+      background: #f0fdf4;
+      border-left: 4px solid #22c55e;
+      color: #14532d;
+    }
+
+    .feedback-msg {
+      margin-top: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    /* Final Test */
+    .quiz-item {
+      margin-bottom: 18px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .quiz-item p {
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .quiz-option {
+      display: block;
+      margin: 6px 0;
+      padding: 8px 12px;
+      background: #f8fafc;
+      border-radius: 8px;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: 0.15s;
+    }
+
+    .quiz-option:hover {
+      background: var(--primary-light);
+    }
+
+    .finish-btn {
+      width: 100%;
+      padding: 14px;
+      font-size: 1.1rem;
+      background: linear-gradient(135deg, var(--primary), #6366f1);
+      color: white;
+      justify-content: center;
+      margin-top: 10px;
+      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+    }
+
+    .result-banner {
+      display: none;
+      margin-top: 20px;
+      padding: 22px;
+      border-radius: var(--radius);
+      background: linear-gradient(135deg, #eef2ff, #e0f2fe);
+      border: 2px solid var(--primary);
+      text-align: center;
+    }
+
+    .result-score {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--primary-dark);
+      margin-bottom: 8px;
+    }
+
+    .result-praise {
+      font-size: 1.05rem;
+      color: var(--text-main);
+      font-weight: 500;
+    }
+
+    /* RIGHT PANE: WHITEBOARD */
+    .right-pane {
+      width: 45%;
+      height: 100%;
+      background: #ffffff;
+      border-left: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .wb-toolbar {
+      padding: 10px 14px;
+      background: #f8fafc;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .wb-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding-right: 10px;
+      border-right: 1px solid var(--border);
+    }
+
+    .wb-group:last-child {
+      border-right: none;
+    }
+
+    .tool-btn {
+      padding: 7px 11px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: #ffffff;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-main);
+      transition: 0.15s;
+    }
+
+    .tool-btn.active {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+    }
+
+    .tool-btn.smart-active {
+      background: #0ea5e9;
+      color: #ffffff;
+      border-color: #0ea5e9;
+    }
+
+    .color-dot {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 2px solid #fff;
+      box-shadow: 0 0 0 1px #cbd5e1;
+      cursor: pointer;
+    }
+
+    .color-dot.active {
+      transform: scale(1.18);
+      box-shadow: 0 0 0 2px var(--primary);
+    }
+
+    .canvas-container {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+      background-color: #ffffff;
+      cursor: crosshair;
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    @media (max-width: 960px) {
+      body {
+        height: auto;
+        overflow: auto;
+      }
+      .workspace {
+        flex-direction: column;
+      }
+      .left-pane, .right-pane {
+        width: 100%;
+        height: auto;
+      }
+      .canvas-container {
+        height: 450px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-title">
+    <span class="badge">Алгебра • 9 клас</span>
+    <h1>Властивості функцій: ОДЗ, нулі, монотонність</h1>
+  </div>
+  <div class="progress-bar-wrap">
+    <span id="progress-text">Виконано: 0 / 20</span>
+    <div class="progress-track">
+      <div class="progress-fill" id="progress-fill"></div>
+    </div>
+  </div>
+</header>
+
+<div class="workspace">
+  <!-- ЛІВА ЧАСТИНА: КОНТЕНТ -->
+  <div class="left-pane" id="left-pane">
+
+    <!-- БЛОК ТЕОРІЇ 1 -->
+    <div class="card theory-card">
+      <h2>📘 Блок 1. Область визначення ($D(f)$ або ОДЗ) та область значень ($E(f)$)</h2>
+      <p><strong>Область визначення функції $D(f)$</strong> — це всі допустимі значення аргументу $x$, при яких формула функції має зміст.</p>
+      <p>У 9 класі головні «заборони» при знаходженні ОДЗ такі:</p>
+      <ul style="margin-left: 20px; margin-bottom: 10px; line-height: 1.6;">
+        <li><strong>Ділити на нуль не можна:</strong> у дробі $\frac{A}{B}$ вимагаємо $B \neq 0$.</li>
+        <li><strong>Корінь парного степеня з від'ємного числа не існує:</strong> у виразі $\sqrt{A}$ вимагаємо $A \ge 0$.</li>
+        <li><strong>Корінь у знаменнику $\frac{1}{\sqrt{A}}$:</strong> вимагаємо строго $A > 0$.</li>
+      </ul>
+      <p><strong>Область значень функції $E(f)$</strong> — це всі значення, яких може набувати залежна змінна $y$.</p>
+      <div class="analogy-box">
+        💡 <strong>Аналогія:</strong> Уяви кавомашину. $D(f)$ — це перелік монет і кнопок, які машина приймає (не можна засунути ґудзик). $E(f)$ — це напої, які вона здатна видати на виході (еспресо, лате, але не борщ).
+      </div>
+    </div>
+
+    <!-- ЗАВДАННЯ 1-5 -->
+    <div id="tasks-block-1"></div>
+
+    <!-- БЛОК ТЕОРІЇ 2 -->
+    <div class="card theory-card">
+      <h2>📗 Блок 2. Нулі функції та проміжки знакосталості</h2>
+      <p><strong>Нулі функції</strong> — це значення аргументу $x$, при яких значення функції дорівнює нулю: <span class="formula-pill">$f(x) = 0$</span>.</p>
+      <p>Геометрично нулі функції — це <strong>абсциси ($x$) точок перетину графіка з віссю $Ox$</strong>.</p>
+      <p><strong>Проміжки знакосталості</strong> — це проміжки з області визначення, на яких функція зберігає свій знак: набуває лише додатних значень ($f(x) > 0$, графік <em>вище</em> осі $Ox$) або лише від'ємних ($f(x) < 0$, графік <em>нижче</em> осі $Ox$).</p>
+      <div class="analogy-box">
+        🌊 <strong>Аналогія:</strong> Вісь $Ox$ — це рівень моря. Нулі функції — це точки берегової лінії ($y = 0$). Там, де гори ($y > 0$) — функція додатна; там, де морське дно ($y < 0$) — від'ємна.
+      </div>
+    </div>
+
+    <!-- ЗАВДАННЯ 6-10 -->
+    <div id="tasks-block-2"></div>
+
+    <!-- БЛОК ТЕОРІЇ 3 -->
+    <div class="card theory-card">
+      <h2>📙 Блок 3. Монотонність: зростання та спадання функції</h2>
+      <p>Функцію називають <strong>зростаючою</strong> на проміжку, якщо більшому значенню аргументу відповідає <em>більше</em> значення функції: якщо $x_2 > x_1$, то $f(x_2) > f(x_1)$. Рухаючись зліва направо, графік іде <strong>вгору</strong>.</p>
+      <p>Функцію називають <strong>спадною</strong> на проміжку, якщо більшому значенню аргументу відповідає <em>менше</em> значення функції: якщо $x_2 > x_1$, то $f(x_2) < f(x_1)$. Рухаючись зліва направо, графік іде <strong>вниз</strong>.</p>
+      <div class="analogy-box">
+        📈 <strong>Аналогія:</strong> Читаємо графік завжди як книгу — <strong>зліва направо</strong>! Якщо піднімаємося в гору — функція зростає, якщо спускаємося з гірки — спадає.
+      </div>
+    </div>
+
+    <!-- ВІРТУАЛЬНА ЛАБОРАТОРІЯ -->
+    <div class="card lab-card">
+      <h2>🔬 Віртуальна лабораторія: Досліджуємо лінійну функцію $y = kx + b$</h2>
+      <p style="font-size: 0.93rem; color: var(--text-muted);">Змінюй коефіцієнти $k$ та $b$, щоб побачити, як змінюються монотонність, нуль функції та перетин із осями.</p>
+      <div class="lab-controls">
+        <label>Кутовий коефіцієнт $k$: <input type="range" id="lab-k" min="-4" max="4" step="1" value="2"> <span id="val-k" style="color:var(--primary); min-width:24px;">2</span></label>
+        <label>Вільний член $b$: <input type="range" id="lab-b" min="-4" max="4" step="1" value="-2"> <span id="val-b" style="color:var(--primary); min-width:24px;">-2</span></label>
+      </div>
+      <div class="lab-output">
+        <svg id="lab-svg" width="240" height="200" viewBox="0 0 240 200" style="background:#f8fafc; border-radius:10px; border:1px solid #e2e8f0; width:100%;"></svg>
+        <div class="lab-stats" id="lab-stats"></div>
+      </div>
+    </div>
+
+    <!-- ЗАВДАННЯ 11-15 -->
+    <div id="tasks-block-3"></div>
+
+    <!-- БЛОК ТЕОРІЇ 4 -->
+    <div class="card theory-card">
+      <h2>📕 Блок 4. Парність / непарність та читання графіків</h2>
+      <p><strong>Парна функція:</strong> для кожного $x \in D(f)$ виконується $f(-x) = f(x)$. Графік симетричний відносно <strong>осі ординат ($Oy$)</strong>. Приклади: $y = |x|$, $y = x^4$.</p>
+      <p><strong>Непарна функція:</strong> для кожного $x \in D(f)$ виконується $f(-x) = -f(x)$. Графік симетричний відносно <strong>початку координат $(0; 0)$</strong>. Приклади: $y = x^3$, $y = \frac{6}{x}$.</p>
+      <p><em>Важливо:</em> якщо область визначення не симетрична відносно нуля (наприклад, $x \ge 0$ для $y = \sqrt{x}$), функція є <strong>ні парною, ні непарною</strong>.</p>
+    </div>
+
+    <!-- ЗАВДАННЯ 16-20 -->
+    <div id="tasks-block-4"></div>
+
+    <!-- ФІНАЛЬНИЙ ТЕСТ -->
+    <div class="card" style="border-top: 5px solid var(--primary);">
+      <h2 style="margin-bottom: 14px;">🏁 Підсумковий міні-тест</h2>
+
+      <div class="quiz-item">
+        <p>1. Яка з наведених функцій зростає на всій області визначення?</p>
+        <label class="quiz-option"><input type="radio" name="q1" value="a"> $y = -3x + 5$</label>
+        <label class="quiz-option"><input type="radio" name="q1" value="b"> $y = 4x - 7$</label>
+        <label class="quiz-option"><input type="radio" name="q1" value="c"> $y = \frac{5}{x}$</label>
+      </div>
+
+      <div class="quiz-item">
+        <p>2. Знайдіть нуль функції $y = 0{,}5x - 3$.</p>
+        <label class="quiz-option"><input type="radio" name="q2" value="a"> $x = -3$</label>
+        <label class="quiz-option"><input type="radio" name="q2" value="b"> $x = 1{,}5$</label>
+        <label class="quiz-option"><input type="radio" name="q2" value="c"> $x = 6$</label>
+      </div>
+
+      <div class="quiz-item">
+        <p>3. Яка область визначення функції $y = \sqrt{x - 4}$?</p>
+        <label class="quiz-option"><input type="radio" name="q3" value="a"> $x \ge 4$</label>
+        <label class="quiz-option"><input type="radio" name="q3" value="b"> $x > 4$</label>
+        <label class="quiz-option"><input type="radio" name="q3" value="c"> $x \neq 4$</label>
+      </div>
+
+      <div class="quiz-item" style="border-bottom: none; margin-bottom: 6px;">
+        <p>4. Графік непарної функції завжди симетричний відносно:</p>
+        <label class="quiz-option"><input type="radio" name="q4" value="a"> Осі $Ox$</label>
+        <label class="quiz-option"><input type="radio" name="q4" value="b"> Осі $Oy$</label>
+        <label class="quiz-option"><input type="radio" name="q4" value="c"> Початку координат $(0; 0)$</label>
+      </div>
+
+      <button class="btn finish-btn" onclick="finishLesson()">✅ Завершити урок та отримати результат</button>
+
+      <div class="result-banner" id="result-banner">
+        <div class="result-score" id="result-score"></div>
+        <div class="result-details" id="result-details" style="margin-bottom: 10px; color: var(--text-muted);"></div>
+        <div class="result-praise" id="result-praise"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ПРАВА ЧАСТИНА: ДОШКА-ЧЕРНЕТКА -->
+  <div class="right-pane">
+    <div class="wb-toolbar">
+      <div class="wb-group">
+        <button class="tool-btn active" id="btn-pen" onclick="setTool('pen')">✏️ Олівець</button>
+        <button class="tool-btn" id="btn-eraser" onclick="setTool('eraser')">🧽 Гумка</button>
+      </div>
+
+      <div class="wb-group">
+        <div class="color-dot active" style="background:#1e293b;" onclick="setColor('#1e293b', this)"></div>
+        <div class="color-dot" style="background:#4f46e5;" onclick="setColor('#4f46e5', this)"></div>
+        <div class="color-dot" style="background:#dc2626;" onclick="setColor('#dc2626', this)"></div>
+        <div class="color-dot" style="background:#16a34a;" onclick="setColor('#16a34a', this)"></div>
+      </div>
+
+      <div class="wb-group">
+        <button class="tool-btn" id="btn-grid" onclick="toggleGrid()">📐 Координатна площина</button>
+        <button class="tool-btn" onclick="clearCanvas()">🗑️ Очистити</button>
+      </div>
+    </div>
+
+    <div class="canvas-container" id="canvas-container">
+      <canvas id="whiteboard"></canvas>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ДАНІ 20 ЗАВДАНЬ (БЕЗ КВАДРАТИЧНОЇ ФУНКЦІЇ)
+  const tasksData = [
+    // БЛОК 1: ОДЗ та Область значень (1-5)
+    {
+      id: 1,
+      block: 1,
+      tag: "Область визначення (ОДЗ)",
+      text: "Знайдіть значення $x$, яке <strong>не входить</strong> в область визначення функції $y = \\frac{2x + 5}{x - 7}$. У відповідь запишіть лише це число.",
+      answers: ["7"],
+      hint: "Знаменник дробу не може дорівнювати нулю: $x - 7 \\neq 0$.",
+      solution: "Щоб дріб мав зміст, знаменник не може дорівнювати нулю: $x - 7 = 0 \\Rightarrow x = 7$. Отже, число $7$ виключається з області визначення."
+    },
+    {
+      id: 2,
+      block: 1,
+      tag: "Область визначення (ОДЗ)",
+      text: "Знайдіть найменше ціле число з області визначення функції $y = \\sqrt{x - 3} + 5$.",
+      answers: ["3"],
+      hint: "Підкореневий вираз має бути невід'ємним: $x - 3 \\ge 0$.",
+      solution: "Вираз під квадратним коренем повинен бути $\\ge 0$: $x - 3 \\ge 0 \\Rightarrow x \\ge 3$. Найменше ціле число з проміжку $[3; +\\infty)$ — це $3$."
+    },
+    {
+      id: 3,
+      block: 1,
+      tag: "Область визначення (ОДЗ)",
+      text: "Знайдіть найбільше ціле число з області визначення функції $y = \\sqrt{8 - 2x}$.",
+      answers: ["4"],
+      hint: "Розв'яжіть нерівність $8 - 2x \\ge 0$.",
+      solution: "$8 - 2x \\ge 0 \\Rightarrow -2x \\ge -8 \\Rightarrow x \\le 4$. Найбільше ціле число, яке задовольняє умову $x \\le 4$, дорівнює $4$."
+    },
+    {
+      id: 4,
+      block: 1,
+      tag: "Область значень",
+      text: "Знайдіть найменше значення функції $y = \\sqrt{x + 1} + 6$ на всій її області визначення.",
+      answers: ["6"],
+      hint: "Арифметичний квадратний корінь завжди невід'ємний: $\\sqrt{A} \\ge 0$.",
+      solution: "Оскільки $\\sqrt{x + 1} \\ge 0$ для всіх $x \\ge -1$, то $y = \\sqrt{x + 1} + 6 \\ge 0 + 6 = 6$. Найменше значення досягається при $x = -1$ і дорівнює $6$."
+    },
+    {
+      id: 5,
+      block: 1,
+      tag: "Область значень",
+      text: "Знайдіть найбільше значення функції $y = 10 - |x - 2|$.",
+      answers: ["10"],
+      hint: "Модуль будь-якого числа невід'ємний: $|x - 2| \\ge 0$, тому $-|x - 2| \\le 0$.",
+      solution: "Найменше значення модуля $|x - 2|$ дорівнює $0$ (при $x = 2$). Тоді найбільше значення виразу $10 - |x - 2|$ дорівнює $10 - 0 = 10$."
+    },
+
+    // БЛОК 2: Нулі функції та знакосталість (6-10)
+    {
+      id: 6,
+      block: 2,
+      tag: "Нулі функції",
+      text: "Знайдіть нуль лінійної функції $y = 3x - 12$.",
+      answers: ["4"],
+      hint: "Підставте $y = 0$ та розв'яжіть рівняння $3x - 12 = 0$.",
+      solution: "Нуль функції — це значення $x$, при якому $y = 0$: $3x - 12 = 0 \\Rightarrow 3x = 12 \\Rightarrow x = 4$."
+    },
+    {
+      id: 7,
+      block: 2,
+      tag: "Нулі функції",
+      text: "Знайдіть нуль функції $y = \\frac{x + 9}{x - 3}$.",
+      answers: ["-9"],
+      hint: "Дріб дорівнює нулю тоді, коли чисельник дорівнює нулю, а знаменник не дорівнює нулю.",
+      solution: "Прирівнюємо чисельник до нуля: $x + 9 = 0 \\Rightarrow x = -9$. Перевіряємо знаменник: $-9 - 3 = -12 \\neq 0$. Отже, $x = -9$."
+    },
+    {
+      id: 8,
+      block: 2,
+      tag: "Нулі функції",
+      text: "Скільки нулів має функція $y = |x| - 5$?",
+      answers: ["2"],
+      hint: "Розв'яжіть рівняння $|x| - 5 = 0$.",
+      solution: "$|x| - 5 = 0 \\Rightarrow |x| = 5$. Це рівняння має два корені: $x_1 = 5$ та $x_2 = -5$. Отже, функція має $2$ нулі."
+    },
+    {
+      id: 9,
+      block: 2,
+      tag: "Знакосталість",
+      text: "При якому найбільшому цілому значенні $x$ функція $y = 14 - 2x$ набуває <strong>додатних</strong> значень ($y > 0$)?",
+      answers: ["6"],
+      hint: "Розв'яжіть строгу нерівність $14 - 2x > 0$.",
+      solution: "$14 - 2x > 0 \\Rightarrow -2x > -14 \\Rightarrow x < 7$. Найбільше ціле число, менше за $7$, — це $6$."
+    },
+    {
+      id: 10,
+      block: 2,
+      tag: "Читання графіка (Нулі)",
+      text: "На рисунку зображено графік функції $y = f(x)$ на проміжку $[-4; 5]$. Скільки нулів має ця функція на вказаному проміжку?",
+      svg: `<svg width="260" height="150" viewBox="0 0 260 150">
+              <line x1="15" y1="80" x2="245" y2="80" stroke="#94a3b8" stroke-width="1.5"/>
+              <line x1="110" y1="10" x2="110" y2="140" stroke="#94a3b8" stroke-width="1.5"/>
+              <polyline points="30,120 50,80 80,30 110,80 150,125 190,80 220,40" fill="none" stroke="#4f46e5" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+              <circle cx="50" cy="80" r="4" fill="#dc2626"/>
+              <circle cx="110" cy="80" r="4" fill="#dc2626"/>
+              <circle cx="190" cy="80" r="4" fill="#dc2626"/>
+              <text x="235" y="74" font-size="12" fill="#475569">x</text>
+              <text x="116" y="20" font-size="12" fill="#475569">y</text>
+            </svg>`,
+      answers: ["3"],
+      hint: "Порахуйте кількість точок перетину графіка з горизонтальною віссю $Ox$.",
+      solution: "Графік перетинає вісь $Ox$ у трьох точках (виділені червоним). Кожна точка перетину з віссю $Ox$ відповідає нулю функції. Відповідь: $3$."
+    },
+
+    // БЛОК 3: Монотонність (11-15)
+    {
+      id: 11,
+      block: 3,
+      tag: "Монотонність",
+      text: "Відомо, що функція $f(x)$ є <strong>зростаючою</strong> на всій числовій прямій. Порівняйте $f(5)$ і $f(8)$. У відповідь введіть <code>&lt;</code> або <code>&gt;</code>.",
+      answers: ["<"],
+      hint: "Для зростаючої функції: якщо $x_1 < x_2$, то $f(x_1) < f(x_2)$.",
+      solution: "Оскільки $5 < 8$, а функція $f(x)$ зростаюча, то більшому аргументу відповідає більше значення функції: $f(5) < f(8)$."
+    },
+    {
+      id: 12,
+      block: 3,
+      tag: "Монотонність",
+      text: "Відомо, що функція $g(x)$ є <strong>спадною</strong> на всій числовій прямій. Порівняйте $g(-3)$ і $g(2)$. У відповідь введіть <code>&lt;</code> або <code>&gt;</code>.",
+      answers: [">"],
+      hint: "Для спадної функції знак нерівності між значеннями функції змінюється на протилежний.",
+      solution: "Оскільки $-3 < 2$, а функція $g(x)$ спадна, то меншому аргументу відповідає більше значення функції: $g(-3) > g(2)$."
+    },
+    {
+      id: 13,
+      block: 3,
+      tag: "Найбільше/найменше значення",
+      text: "Функція $y = \\sqrt{x} + 2$ зростає на проміжку $[0; 9]$. Знайдіть її <strong>найбільше</strong> значення на цьому відрізку.",
+      answers: ["5"],
+      hint: "Зростаюча функція набуває найбільшого значення на правому кінці відрізка (при $x = 9$).",
+      solution: "Оскільки функція зростає, найбільше значення на $[0; 9]$ вона приймає при $x = 9$: $y(9) = \\sqrt{9} + 2 = 3 + 2 = 5$."
+    },
+    {
+      id: 14,
+      block: 3,
+      tag: "Найбільше/найменше значення",
+      text: "Функція $y = \\frac{12}{x}$ спадає на проміжку $[2; 6]$. Знайдіть її <strong>найменше</strong> значення на цьому відрізку.",
+      answers: ["2"],
+      hint: "Спадна функція набуває найменшого значення на правому кінці відрізка (при $x = 6$).",
+      solution: "Оскільки на проміжку $[2; 6]$ функція спадає, найменше значення буде при найбільшому $x = 6$: $y(6) = \\frac{12}{6} = 2$."
+    },
+    {
+      id: 15,
+      block: 3,
+      tag: "Обернена пропорційність",
+      text: "При якому значенні $k$ функція $y = \\frac{k - 4}{x}$ <strong>спадає</strong> на проміжку $(0; +\\infty)$? Введіть найменше ціле таке число $k$.",
+      answers: ["5"],
+      hint: "Гіпербола $y = \\frac{a}{x}$ спадає на $(0; +\\infty)$, коли чисельник $a > 0$.",
+      solution: "Щоб функція спадала на $(0; +\\infty)$, потрібно, щоб $k - 4 > 0 \\Rightarrow k > 4$. Найменше ціле число, більше за $4$, — це $5$."
+    },
+
+    // БЛОК 4: Парність, графіки та комбіновані задачі (16-20)
+    {
+      id: 16,
+      block: 4,
+      tag: "Парність функції",
+      text: "Функція $f(x)$ є <strong>парною</strong>, і відомо, що $f(4) = -7$. Чому дорівнює $f(-4)$?",
+      answers: ["-7"],
+      hint: "За означенням парної функції $f(-x) = f(x)$.",
+      solution: "Оскільки функція парна, для протилежних значень аргументу її значення рівні: $f(-4) = f(4) = -7$."
+    },
+    {
+      id: 17,
+      block: 4,
+      tag: "Непарність функції",
+      text: "Функція $g(x)$ є <strong>непарною</strong>, і відомо, що $g(-3) = 11$. Чому дорівнює $g(3)$?",
+      answers: ["-11"],
+      hint: "За означенням непарної функції $g(-x) = -g(x)$.",
+      solution: "Оскільки функція непарна, протилежним значенням аргументу відповідають протилежні значення функції: $g(3) = -g(-3) = -11$."
+    },
+    {
+      id: 18,
+      block: 4,
+      tag: "Читання графіка (Зростання)",
+      text: "На рисунку зображено ламану — графік функції на проміжку $[-3; 6]$. Чому дорівнює <strong>довжина</strong> проміжку, на якому функція <strong>спадає</strong>?",
+      svg: `<svg width="260" height="150" viewBox="0 0 260 150">
+              <line x1="15" y1="110" x2="245" y2="110" stroke="#94a3b8" stroke-width="1.5"/>
+              <line x1="80" y1="10" x2="80" y2="140" stroke="#94a3b8" stroke-width="1.5"/>
+              <!-- (-3, 0) -> (20, 110); (1, 4) -> (100, 30); (4, -1) -> (160, 130); (6, 2) -> (200, 70) -->
+              <polyline points="20,110 100,30 160,130 200,70" fill="none" stroke="#0ea5e9" stroke-width="3" stroke-linejoin="round"/>
+              <circle cx="100" cy="30" r="4" fill="#4f46e5"/>
+              <circle cx="160" cy="130" r="4" fill="#4f46e5"/>
+              <text x="92" y="22" font-size="11" fill="#1e293b">(1; 4)</text>
+              <text x="150" y="145" font-size="11" fill="#1e293b">(4; -1)</text>
+              <text x="235" y="104" font-size="12" fill="#475569">x</text>
+              <text x="86" y="20" font-size="12" fill="#475569">y</text>
+            </svg>`,
+      answers: ["3"],
+      hint: "Знайдіть за рисунком абсциси ($x$) початку та кінця ділянки, де графік іде вниз, і відніміть їх.",
+      solution: "Графік іде вниз (функція спадає) від точки з абсцисою $x = 1$ до точки з абсцисою $x = 4$, тобто на проміжку $[1; 4]$. Довжина цього проміжку: $4 - 1 = 3$."
+    },
+    {
+      id: 19,
+      block: 4,
+      tag: "Область визначення",
+      text: "Скільки <strong>цілих</strong> чисел належить області визначення функції $y = \\sqrt{x + 2} + \\sqrt{3 - x}$?",
+      answers: ["6"],
+      hint: "Обидва підкореневі вирази мають бути $\\ge 0$ одночасно: $x + 2 \\ge 0$ і $3 - x \\ge 0$.",
+      solution: "Маємо систему: $x \\ge -2$ та $x \\le 3$, тобто $x \\in [-2; 3]$. Цілі числа з цього відрізка: $-2, -1, 0, 1, 2, 3$. Всього їх $6$."
+    },
+    {
+      id: 20,
+      block: 4,
+      tag: "Комбінована задача",
+      text: "Лінійна функція $y = kx + b$ проходить через точку $A(0; 6)$ і має нуль функції $x = 2$. Знайдіть значення коефіцієнта $k$.",
+      answers: ["-3"],
+      hint: "Точка $A(0; 6)$ дає $b = 6$. Нуль функції означає, що при $x = 2$ значення $y = 0$.",
+      solution: "Підставимо $A(0; 6)$ у формулу: $6 = k \\cdot 0 + b \\Rightarrow b = 6$. Оскільки $x = 2$ — нуль функції, то $0 = k \\cdot 2 + 6 \\Rightarrow 2k = -6 \\Rightarrow k = -3$."
+    }
+  ];
+
+  const solvedSet = new Set();
+
+  function renderTasks() {
+    tasksData.forEach(task => {
+      const container = document.getElementById(`tasks-block-${task.block}`);
+      const card = document.createElement('div');
+      card.className = 'card task-card';
+      card.id = `card-${task.id}`;
+
+      card.innerHTML = `
+        <div class="task-header">
+          <span class="task-num">Завдання №${task.id}</span>
+          <span class="task-tag">${task.tag}</span>
+        </div>
+        <div class="task-text">${task.text}</div>
+        ${task.svg ? `<div class="svg-box">${task.svg}</div>` : ''}
+        <div class="answer-row">
+          <input type="text" class="answer-input" id="input-${task.id}" placeholder="Введіть відповідь..." onkeydown="if(event.key==='Enter') checkAnswer(${task.id})">
+          <button class="btn btn-primary" onclick="checkAnswer(${task.id})">Перевірити</button>
+          <button class="btn btn-outline" onclick="toggleHelper('hint-${task.id}')">💡 Підказка</button>
+          <button class="btn btn-secondary" onclick="toggleHelper('sol-${task.id}')">📖 Показати розв'язання</button>
+        </div>
+        <div class="feedback-msg" id="fb-${task.id}"></div>
+        <div class="helper-panel hint-box" id="hint-${task.id}"><strong>Підказка:</strong> ${task.hint}</div>
+        <div class="helper-panel solution-box" id="sol-${task.id}"><strong>Розв'язання:</strong> ${task.solution}</div>
+      `;
+      container.appendChild(card);
+    });
+  }
+
+  function normalizeStr(str) {
+    return str.trim().toLowerCase().replace(',', '.').replace(/\s+/g, '');
+  }
+
+  function checkAnswer(id) {
+    const task = tasksData.find(t => t.id === id);
+    const input = document.getElementById(`input-${id}`);
+    const fb = document.getElementById(`fb-${id}`);
+    const userVal = normalizeStr(input.value);
+
+    if (!userVal) {
+      fb.style.color = '#d97706';
+      fb.textContent = '⚠️ Спочатку введіть вашу відповідь у поле.';
+      return;
+    }
+
+    const isCorrect = task.answers.some(ans => normalizeStr(ans) === userVal);
+
+    input.classList.remove('correct', 'incorrect');
+    if (isCorrect) {
+      input.classList.add('correct');
+      fb.style.color = 'var(--success)';
+      fb.textContent = '✅ Правильно! Чудова робота.';
+      solvedSet.add(id);
+    } else {
+      input.classList.add('incorrect');
+      fb.style.color = 'var(--error)';
+      fb.textContent = '❌ Помилка. Перевірте обчислення або скористайтеся підказкою.';
+      solvedSet.delete(id);
+    }
+    updateProgress();
+  }
+
+  function toggleHelper(elementId) {
+    const el = document.getElementById(elementId);
+    el.style.display = (el.style.display === 'block') ? 'none' : 'block';
+  }
+
+  function updateProgress() {
+    const count = solvedSet.size;
+    document.getElementById('progress-text').textContent = `Виконано: ${count} / 20`;
+    document.getElementById('progress-fill').style.width = `${(count / 20) * 100}%`;
+  }
+
+  // ВІРТУАЛЬНА ЛАБОРАТОРІЯ
+  function updateLab() {
+    const k = parseInt(document.getElementById('lab-k').value, 10);
+    const b = parseInt(document.getElementById('lab-b').value, 10);
+    document.getElementById('val-k').textContent = k;
+    document.getElementById('val-b').textContent = b;
+
+    const svg = document.getElementById('lab-svg');
+    const w = 240, h = 200;
+    const cx = w / 2, cy = h / 2;
+    const scale = 20;
+
+    let gridLines = '';
+    for (let x = -5; x <= 5; x++) {
+      const px = cx + x * scale;
+      gridLines += `<line x1="${px}" y1="0" x2="${px}" y2="${h}" stroke="#e2e8f0" stroke-width="1"/>`;
+    }
+    for (let y = -4; y <= 4; y++) {
+      const py = cy - y * scale;
+      gridLines += `<line x1="0" y1="${py}" x2="${w}" y2="${py}" stroke="#e2e8f0" stroke-width="1"/>`;
+    }
+
+    const x1 = -6, y1 = k * x1 + b;
+    const x2 = 6, y2 = k * x2 + b;
+    const px1 = cx + x1 * scale, py1 = cy - y1 * scale;
+    const px2 = cx + x2 * scale, py2 = cy - y2 * scale;
+
+    let zeroDot = '';
+    let zeroText = '';
+    if (k !== 0) {
+      const zx = -b / k;
+      const zpx = cx + zx * scale;
+      zeroDot = `<circle cx="${zpx}" cy="${cy}" r="5" fill="#dc2626"/>`;
+      zeroText = `x = ${Number.isInteger(zx) ? zx : zx.toFixed(2)}`;
+    } else {
+      zeroText = (b === 0) ? 'Безліч (вся вісь Ox)' : 'Немає нулів';
+    }
+
+    svg.innerHTML = `
+      ${gridLines}
+      <line x1="0" y1="${cy}" x2="${w}" y2="${cy}" stroke="#64748b" stroke-width="1.5"/>
+      <line x1="${cx}" y1="0" x2="${cx}" y2="${h}" stroke="#64748b" stroke-width="1.5"/>
+      <line x1="${px1}" y1="${py1}" x2="${px2}" y2="${py2}" stroke="#4f46e5" stroke-width="3"/>
+      ${zeroDot}
+    `;
+
+    let monoText = '';
+    if (k > 0) monoText = '📈 Зростає на всій $D(f)$ ($k > 0$)';
+    else if (k < 0) monoText = '📉 Спадає на всій $D(f)$ ($k < 0$)';
+    else monoText = '➡️ Стала функція ($k = 0$)';
+
+    const stats = document.getElementById('lab-stats');
+    stats.innerHTML = `
+      <div><strong>Формула:</strong> $y = ${k}x ${b >= 0 ? '+ ' + b : '- ' + Math.abs(b)}$</div>
+      <div><strong>Монотонність:</strong> ${monoText}</div>
+      <div><strong>Нуль функції:</strong> ${zeroText}</div>
+      <div><strong>Перетин з $Oy$:</strong> $(0; ${b})$</div>
+    `;
+    if (window.MathJax && MathJax.typesetPromise) {
+      MathJax.typesetPromise([stats]);
+    }
+  }
+
+  document.getElementById('lab-k').addEventListener('input', updateLab);
+  document.getElementById('lab-b').addEventListener('input', updateLab);
+
+  // ФІНАЛЬНИЙ ТЕСТ ТА ОЦІНЮВАННЯ
+  function finishLesson() {
+    const quizAnswers = { q1: 'b', q2: 'c', q3: 'a', q4: 'c' };
+    let quizScore = 0;
+
+    for (const [q, correctVal] of Object.entries(quizAnswers)) {
+      const selected = document.querySelector(`input[name="${q}"]:checked`);
+      if (selected && selected.value === correctVal) {
+        quizScore++;
+      }
+    }
+
+    const tasksCount = solvedSet.size;
+    // 20 завдань по 0.4 бала = 8 балів; 4 тести по 1 балу = 4 бали. Разом 12 балів.
+    const rawGrade = tasksCount * 0.4 + quizScore * 1.0;
+    const finalGrade = Math.max(1, Math.round(rawGrade));
+
+    let praise = '';
+    if (finalGrade >= 10) {
+      praise = '🌟 Блискучий результат! Ти впевнено володієш властивостями функцій, бачиш графіки наскрізь і безпомилково працюєш з ОДЗ та монотонністю. Так тримати!';
+    } else if (finalGrade >= 7) {
+      praise = '👏 Чудова робота! Ти вже добре розбираєшся у нулях функції, зростанні та спаданні. Ще трохи практики з комбінованими прикладами — і буде тверда 12!';
+    } else {
+      praise = '💪 Ти молодець, що пройшов(ла) урок до кінця! Кожна розв’язана задача — це крок уперед. Переглянь розв’язання до складних номерів і спробуй ще раз — у тебе точно все вийде!';
+    }
+
+    const banner = document.getElementById('result-banner');
+    document.getElementById('result-score').textContent = `Твоя оцінка: ${finalGrade} / 12 балів`;
+    document.getElementById('result-details').textContent = `Виконано завдань: ${tasksCount} із 20 • Правильних відповідей у тесті: ${quizScore} із 4`;
+    document.getElementById('result-praise').textContent = praise;
+    banner.style.display = 'block';
+    banner.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  // ІНТЕРАКТИВНА ДОШКА (WHITEBOARD)
+  const canvas = document.getElementById('whiteboard');
+  const ctx = canvas.getContext('2d');
+  const container = document.getElementById('canvas-container');
+
+  let drawing = false;
+  let tool = 'pen';
+  let penColor = '#1e293b';
+  let showGrid = false;
+  let strokes = [];
+  let currentStroke = null;
+
+  function resizeCanvas() {
+    const rect = container.getBoundingClientRect();
+    canvas.width = rect.width;
+    canvas.height = rect.height;
+    redrawAll();
+  }
+
+  window.addEventListener('resize', resizeCanvas);
+
+  function setTool(newTool) {
+    tool = newTool;
+    document.getElementById('btn-pen').classList.toggle('active', tool === 'pen');
+    document.getElementById('btn-eraser').classList.toggle('active', tool === 'eraser');
+  }
+
+  function setColor(color, el) {
+    penColor = color;
+    setTool('pen');
+    document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active'));
+    el.classList.add('active');
+  }
+
+  function toggleGrid() {
+    showGrid = !showGrid;
+    document.getElementById('btn-grid').classList.toggle('smart-active', showGrid);
+    redrawAll();
+  }
+
+  function drawCoordinatePlane() {
+    if (!showGrid) return;
+    const w = canvas.width;
+    const h = canvas.height;
+    const step = 30;
+    const cx = Math.floor(w / 2 / step) * step;
+    const cy = Math.floor(h / 2 / step) * step;
+
+    ctx.save();
+    ctx.strokeStyle = '#e2e8f0';
+    ctx.lineWidth = 1;
+
+    for (let x = cx % step; x < w; x += step) {
+      ctx.beginPath();
+      ctx.moveTo(x, 0);
+      ctx.lineTo(x, h);
+      ctx.stroke();
+    }
+    for (let y = cy % step; y < h; y += step) {
+      ctx.beginPath();
+      ctx.moveTo(0, y);
+      ctx.lineTo(w, y);
+      ctx.stroke();
+    }
+
+    // Осі координат
+    ctx.strokeStyle = '#64748b';
+    ctx.lineWidth = 2;
+
+    // Вісь X
+    ctx.beginPath();
+    ctx.moveTo(0, cy);
+    ctx.lineTo(w, cy);
+    ctx.stroke();
+
+    // Стрілка X
+    ctx.beginPath();
+    ctx.moveTo(w - 10, cy - 5);
+    ctx.lineTo(w - 2, cy);
+    ctx.lineTo(w - 10, cy + 5);
+    ctx.stroke();
+
+    // Вісь Y
+    ctx.beginPath();
+    ctx.moveTo(cx, 0);
+    ctx.lineTo(cx, h);
+    ctx.stroke();
+
+    // Стрілка Y
+    ctx.beginPath();
+    ctx.moveTo(cx - 5, 10);
+    ctx.lineTo(cx, 2);
+    ctx.lineTo(cx + 5, 10);
+    ctx.stroke();
+
+    ctx.fillStyle = '#475569';
+    ctx.font = 'bold 14px sans-serif';
+    ctx.fillText('x', w - 16, cy - 10);
+    ctx.fillText('y', cx + 10, 16);
+    ctx.fillText('0', cx - 14, cy + 16);
+    ctx.fillText('1', cx + step - 4, cy + 16);
+    ctx.fillText('1', cx - 14, cy - step + 4);
+    ctx.restore();
+  }
+
+  function redrawAll() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drawCoordinatePlane();
+
+    strokes.forEach(stroke => {
+      if (stroke.points.length < 2) return;
+      ctx.save();
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      if (stroke.tool === 'eraser') {
+        ctx.globalCompositeOperation = 'destination-out';
+        ctx.lineWidth = 22;
+      } else {
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.strokeStyle = stroke.color;
+        ctx.lineWidth = 2.8;
+      }
+      ctx.beginPath();
+      ctx.moveTo(stroke.points[0].x, stroke.points[0].y);
+      for (let i = 1; i < stroke.points.length; i++) {
+        ctx.lineTo(stroke.points[i].x, stroke.points[i].y);
+      }
+      ctx.stroke();
+      ctx.restore();
+    });
+
+    if (showGrid) {
+      // Перемальовуємо сітку на задній план, якщо гумка її затерла
+      ctx.save();
+      ctx.globalCompositeOperation = 'destination-over';
+      drawCoordinatePlane();
+      ctx.restore();
+    }
+  }
+
+  function getPos(e) {
+    const rect = canvas.getBoundingClientRect();
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+    return {
+      x: clientX - rect.left,
+      y: clientY - rect.top
+    };
+  }
+
+  function startDraw(e) {
+    drawing = true;
+    const pos = getPos(e);
+    currentStroke = {
+      tool: tool,
+      color: penColor,
+      points: [pos]
+    };
+    strokes.push(currentStroke);
+  }
+
+  function moveDraw(e) {
+    if (!drawing) return;
+    e.preventDefault();
+    const pos = getPos(e);
+    currentStroke.points.push(pos);
+    redrawAll();
+  }
+
+  function endDraw() {
+    drawing = false;
+    currentStroke = null;
+  }
+
+  function clearCanvas() {
+    strokes = [];
+    redrawAll();
+  }
+
+  canvas.addEventListener('mousedown', startDraw);
+  canvas.addEventListener('mousemove', moveDraw);
+  window.addEventListener('mouseup', endDraw);
+
+  canvas.addEventListener('touchstart', startDraw, { passive: false });
+  canvas.addEventListener('touchmove', moveDraw, { passive: false });
+  window.addEventListener('touchend', endDraw);
+
+  // ІНІЦІАЛІЗАЦІЯ
+  renderTasks();
+  updateLab();
+  setTimeout(resizeCanvas, 50);
+</script>
+</body>
+</html>
